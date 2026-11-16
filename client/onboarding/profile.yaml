@@ -21,6 +21,10 @@ meta:
   client_sponsor_role: "Product Lead, Agentic Experience"   # who authorised the work
   client_sponsor_name: "Tobias Jensen"   # client copy only; never copy into the generic package
   client_sponsor_confirmed: false        # stated by the consultant; not yet confirmed by the sponsor
+  day_to_day_contact_role: "consultant"  # field added; see template_feedback
+  scope_assumptions:
+    - item: "The consultant can answer for AX day to day; questions only AX staff can answer (owners, permissions, data access) are routed through the sponsor."
+      check_with: "Product Lead, Agentic Experience"
   overall_status: in_progress   # not_started | in_progress | ready_to_build | blocked
   scope_unit: team             # one of: company | division | team
   scope_description: "The Agentic Experience (AX) team. Company-level goals may be needed as context above the team, but the first version focuses on AX."
