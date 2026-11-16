@@ -238,7 +238,7 @@ schema_alignment:
     principles: null
     strategy: null
     objectives: null
-    division_level_needed: null # true if product-line or division strategy must sit between objectives and work
+    division_level_needed: false # PROVISIONAL (consultant believes, 4.3): AX strategies serve Org objectives directly; confirm with the Product Lead, Agentic Experience
     division_units: []          # names of divisions or product lines
   default_schema_used: true     # Strategy Mirror model is the default (consultant, 4.1)
   planning_horizon: null        # e.g. "annual objectives, quarterly reviews"
