@@ -17,6 +17,7 @@ Early. Each implementation is built bespoke for a client. Only the onboarding st
 | `design/dist/*.html` | Built mockup of the modern skin with placeholder data (open in a browser) |
 | `design/src`, `design/skins`, `design/build.py` | Shared base, per-skin styles and the build script |
 | `docs/SKINS.md` | How skins work and how to add one |
+| `docs/DATA_MODEL.md` | The JSON shape the page renders; `design/data/sample.json` is the synthetic sample |
 | `docs/DESIGN_NOTES.md` | Design decisions, assumptions and open items |
 
 ## Prerequisites per client
