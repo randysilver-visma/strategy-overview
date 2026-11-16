@@ -271,7 +271,7 @@ footer.credits a{color:inherit}
 <header class="top"><div class="wrap">
   <div class="top-row">
     <div class="brand"><!--@LOGO@-->
-      <h1><span class="wm" id="wm">Strategy Mirror</span> <span class="proto">Prototype</span></h1>
+      <h1><span class="wm" id="wm">Starling</span> <span class="proto">Prototype</span></h1>
       <div class="tag" id="tagline" hidden></div>
       <div class="sub" id="hdrSub"></div>
       <div class="hdr-actions"><button class="btn" id="themeBtn" type="button">Theme</button></div>
@@ -405,7 +405,7 @@ const measureLine=m=>`<div class="meas">${m.by?`<span class="by">by ${m.by}</spa
 const VIEWS=[["overview","Overview"],["strategy","Strategy"],["work","Work"],["decisions","Decisions",decisionCount],["questions","Open questions",()=>QUESTIONS.length],["review","Review",reviewCount]];
 function renderHeader(){
   const SK=window.SKIN||{};
-  if(SK.wordmark){$("#wm").innerHTML='Strategy M<span class="wm-i">ı<svg class="wm-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg></span>rror';$("#wm").setAttribute("aria-label","Strategy Mirror")}
+  if(SK.wordmark){$("#wm").innerHTML='Starl<span class="wm-i">ı<svg class="wm-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg></span>ng';$("#wm").setAttribute("aria-label","Starling")}
   if(SK.tagline){$("#tagline").textContent=SK.tagline;$("#tagline").hidden=false}
   $("#hdrSub").innerHTML=`${esc(META.org)} · ${esc(META.teamFull)} · Airtable snapshot <span class="mono">${esc(META.snapshot)}</span> · ${META.sources} sources, ${META.claims} claims`;
   $("#tabs").innerHTML=VIEWS.map(([id,l,n])=>`<a href="#${id}" ${state.view===id?'aria-current="page"':""}>${l}${n?` <span class="n">${n()}</span>`:""}</a>`).join("");

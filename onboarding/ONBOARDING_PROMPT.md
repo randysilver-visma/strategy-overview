@@ -1,4 +1,4 @@
-# Onboarding prompt: Strategy Mirror
+# Onboarding prompt: Starling
 
 Paste this into the client's Claude environment (or load it as a skill) to start onboarding. It runs as a guided interview with the people at the client who can answer, and it produces a completed `client/onboarding/profile.yaml` plus a readiness report.
 
