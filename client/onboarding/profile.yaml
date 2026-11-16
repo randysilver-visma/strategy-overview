@@ -146,12 +146,14 @@ information_sources:
       kind: work_tracker
       location: "Jira (project or board not yet named)"
       access_route: null          # no Jira connector in the interview environment; export or API to decide
-      owner_role: null            # not yet named: the consultant, Product Lead AX, or an engineering lead
+      owner_role: "Engineering Lead, Agentic Experience"   # assumed owner as the permission holder; to confirm
+      owner_name: "Paul"          # client copy only
       decision_stack_tier: work
       evidence_role: done
-      permission_status: pending
-      permission_granted_by_role: null
-      permission_note: "The consultant believes they can grant read access; otherwise the Product Lead, Agentic Experience or an AX engineering lead can (3.4)."
+      permission_status: pending  # waiting on the Engineering Lead
+      permission_granted_by_role: null   # set to "Engineering Lead, Agentic Experience" once Paul grants it
+      permission_to_ask_of: "Engineering Lead, Agentic Experience (Paul)"
+      permission_note: "Decided in 3.5 that the Engineering Lead grants Jira read access, not the consultant. Ask covers which project(s), which fields (titles, comments, assignees), and who may see them on the page."
       sensitivity: null
       redaction_needed: null
       scan_frequency: null
