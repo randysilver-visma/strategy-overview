@@ -27,10 +27,9 @@ Build: `python design/build.py`. For hosts that add their own page skeleton: `py
 
 | Skin | Look | Flock |
 | --- | --- | --- |
-| starling | Playful: grid paper, navy and yellow, sticky-note questions, journey stepper | Chevron birds |
 | modern | Neutral canvas in Out of Owls brand colours, large type, segmented progress, post-it questions, Out of Owls logo top right with a "Brought to you by" tag, gradient green-amber-red status colours, star-dotted wordmark with a tagline, soft tonal-wash background, North Star top right | Chevron birds, no trails |
 
-Two further skins (corporate, arcade) were tried and dropped.
+Three further skins (starling, corporate, arcade) were tried and dropped. The playful `starling` skin (grid paper, navy and yellow, sticky notes) was removed for e-conomic and can be recovered from git history.
 
 `config.json` options: `title_tag`, `wordmark` (star-dotted "i"), `tagline`, `broughtBy`, `logo` (true shows the Out of Owls logo from `design/assets`), `title`, `lead`, `starLabel`, `birds` (`chevron`, `dot`, `pixel`), `dotR`, `alpha`, `colorVar`, `palette`, `trails`, `trailFade`.
 
@@ -46,6 +45,5 @@ In the Modern skin the flight-path bars use a continuous green to amber to red g
 
 ## Notes
 
-- The `starling` skin was inspired by the feel of a playful retrospective tool (journey bar, sticky notes). It does not reuse that tool's artwork, layout or branding. The other three skins are independent of it.
 - Desktop only for now. No phone layout has been designed or tested.
 - Fonts load from Google Fonts. Offline, the page falls back to system fonts.

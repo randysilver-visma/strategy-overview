@@ -1,6 +1,5 @@
-# Client-specific material must never be committed to the generic package.
-# In a client's own private repo, delete this line so client/ is tracked.
-client/
+# This is a client's private repo, so client/ is tracked.
+# (The generic package ignores client/ to keep client material out of it.)
 .env
 *.secret
 
