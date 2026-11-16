@@ -195,8 +195,8 @@ information_sources:
     - id: S3
       name: "Strategy review meetings: slide decks, plus related notes in Slite"
       kind: other                 # review decks and meeting notes
-      location: "Slide decks (tool not yet confirmed) and Slite pages (not yet named)"
-      access_route: null
+      location: "Google Slides / Google Drive, and Slite (specific decks and pages not yet named)"
+      access_route: connector     # Google Drive and Slite connectors confirmed; Slides connector connected but untested
       owner_role: null
       decision_stack_tier: cross_cutting
       evidence_role: understood   # mixed: leadership slides state the strategy ("said"); team slides show how teams read it ("understood")
