@@ -87,12 +87,22 @@ data_store:
         - "Doc review states (Verified, Outdated, Verification requested) and comment threads (seen in the connector's tools)"
         - "Docs can hold links and uploaded files (seen in the connector's tools)"
       cons:
-        - "[UNVERIFIED] Links between rows of different collections (initiative <-> goal, many-to-many) not seen in the connector's tools"
-        - "[UNVERIFIED] Edit history for collection cells not seen in the connector's tools"
+        - "Links between collections work, including many-to-many, but read back only as a comma-separated string of titles, with no ids (tested 2026-11-16)"
+        - "No record of who changed a cell. Rows carry lastEditedAt but no editor; owner is the creator. No history of values (tested 2026-11-16)"
         - "[UNVERIFIED] Permissions appear to be per channel or doc, not per field"
         - "A static page cannot hold a Slite API key safely, so the page cannot read or write Slite live without a backend or a scheduled export"
-      verified: false
-      verification_note: "slite.com and developers.slite.com do not resolve from the interview environment (2026-11-16). Assessed from the Slite connector's tool list only; nothing was created or tested."
+      verified: partial
+      verification_note: "Docs unreachable from the interview environment (slite.com, developers.slite.com). Capability test run by the consultant in a claude.ai chat via the Slite connector on 2026-11-16: two test collections, notes-column links, number and select writes, read-back, archive. Results recorded under capabilities_needed."
+      test_results:
+        links_across_collections: "Yes. A notes column takes row ids, comma-separated, on write."
+        many_to_many: "Yes. One row linked to two rows."
+        link_read_back: "Partly. Returns titles only (\"Goal A, Goal B\"), no ids. Duplicate titles or titles with commas would be ambiguous. sliteml, md and html exports don't show the links."
+        number_and_select: "Yes. Values come back as strings (\"1.5\"). Writing a new select value creates the option."
+        empty_cells: "Unset cells are left out of fields entirely, not returned as false or null."
+        edit_history: "No per-cell history or editor. Rows have lastEditedAt only; the parent collection's lastEditedAt doesn't change on a row edit; list-recently-edited-notes returned nothing."
+        archive: "Archive hides rows and collections; they stay readable with includeArchivedRows. No delete tool."
+        not_tested: ["permanent deletion", "Slite app version history", "querying by link (needs reading every row)", "todo column writes", "concurrent edits", "field-level permissions", "size limits"]
+      cleanup_needed: "Six archived test docs (two collections, four rows) from 2026-11-16 to delete in the Slite UI if not wanted. Two older docs, \"[TEST] Strategy Mirror spike: Initiatives\" and \"... Objectives\" (2026-11-11), are in the consultant's personal channel; not created or touched by this interview."
   chosen:
     type: null                  # one of: google_sheets | excel_sharepoint | airtable | sql_database | other
     reason: null
@@ -103,14 +113,18 @@ data_store:
     credential_holder_role: null
     credential_storage: null    # where secrets live. Never record the secret itself.
   capabilities_needed:          # fill true/false once the chosen store is known; false = a gap
-    multi_user_writes: null           # [UNVERIFIED] Slite is a collaborative editor; collection editing not tested
-    record_history_audit_trail: null  # [UNVERIFIED] not exposed by the connector
-    relational_links: null      # initiative <-> objective is many-to-many. [UNVERIFIED] not exposed by the connector
+    multi_user_writes: null           # writes via the connector work; concurrent editing not tested
+    record_history_audit_trail: false # tested: no editor or value history per cell; lastEditedAt per row only
+    relational_links: true      # initiative <-> objective is many-to-many. Tested: works, but reads back titles only, not ids
     field_level_permissions: null     # [UNVERIFIED] likely false: channel/doc permissions only
     approval_workflow_support: null   # partial: doc-level review states and comments, not per-change approval
     attachments_or_source_links: true # links and file uploads exposed by the connector
     row_or_size_limits_ok: null       # [UNVERIFIED] limits unknown
-  workarounds_for_gaps: []      # how each false capability is handled
+  workarounds_for_gaps:         # how each false capability is handled (proposed; not yet agreed)
+    - gap: "Links read back as titles, not ids"
+      workaround: "Give every row a unique short id in its title (e.g. \"S1 Strategy 1\", \"I84 Initiative 84\") and forbid commas in titles; the build matches links on that id."
+    - gap: "No record of who changed what"
+      workaround: "Keep a separate Changes collection (who proposed, who approved, before, after, date) and only change records through it. Edits made directly in Slite would bypass it."
   backup_and_recovery: null
   assumptions: []
 
