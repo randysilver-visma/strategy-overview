@@ -277,7 +277,12 @@ work_tracking:
 people_and_roles:
   status: in_progress
   # One entry per tier or information area.
-  ownership: []
+  ownership:
+    - area: "AX team strategies"
+      owner_role: "Product Lead, Agentic Experience + Engineering Lead, Agentic Experience (joint)"
+      approver_role: null
+      decision_maker_role: null
+      confirmed_by: null
   # - area: null                # a tier, a metric set, or a source
   #   owner_role: null          # accountable for the content being right
   #   approver_role: null       # approves suggested changes
