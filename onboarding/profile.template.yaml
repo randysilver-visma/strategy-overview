@@ -4,8 +4,11 @@
 # One copy per client implementation, in the client's own repo (client/onboarding/profile.yaml).
 # The generic package holds only this blank template.
 #
-# Shape: a short `technical` section that people answer, then a list of `claims` that are
-# derived from the client's own material and confirmed or challenged by them.
+# Shape: a short `technical` section that people answer, then a list of `claims` imported
+# from the client's own material. Best guesses are shown as they are; anything unclear,
+# contradictory or low confidence is flagged for review by the role that can resolve it.
+# Starling is a mirror: nothing waits for approval before it appears, and every item can be
+# challenged by its owner.
 #
 # Conventions
 #   - null = not yet asked or answered. Never guess a value to fill a gap.
@@ -83,18 +86,21 @@ technical:
   assumptions: []               # { text, check_with_role }
 
 # ---------------------------------------------------------------------------
-# claims: everything else, derived from the client's material, then confirmed or challenged
+# claims: everything else, imported from the client's material, shown as a best guess, flagged if unsure
 # ---------------------------------------------------------------------------
 # Each claim:
 #   id: C001
 #   field: <one of the field paths below>
-#   value: ...                  # the proposed value; may be structured
+#   value: ...                  # the best-guess value; may be structured
 #   origin: derived | stated | inferred
 #   sources:                    # required when origin is derived; for inferred say what it was inferred from
 #     - { source_id: S1, locator: "page, slide, tab or section", quote: "under 25 words" }
 #   confidence: high | medium | low
-#   status: proposed | confirmed | edited | rejected | unresolved
-#   confirmed_by_role: null     # only the role-holder can confirm ownership claims
+#   flags: []                   # conflict | low_confidence | single_source | stale | no_owner | unclear
+#   alternatives: []            # other values from other sources: { value, source_id, locator, quote }
+#   status: unreviewed | reviewed_ok | edited | rejected
+#   reviewed_by_role: null      # set only when the person who knows the item says so
+#   reviewer_role: null         # who should review it, when flagged
 #   date: null
 #   note: null                  # why edited or rejected; both quotes when sources conflict
 #
@@ -127,23 +133,21 @@ claims: []
 coverage_gaps: []               # { tier, gap: no_source | said_only | no_done_evidence | no_understood_evidence | owner_unknown }
 
 # ---------------------------------------------------------------------------
-# open_items: rejected, unresolved and "ask someone else" items. These seed the page's
-# Open questions and Review tabs.
+# open_items: flagged claims nobody could resolve during onboarding, each with a reviewer role.
+# These seed the page's Review tab.
 # ---------------------------------------------------------------------------
-open_items: []                  # { claim_id, question, owner_role, needed_by }
+open_items: []                  # { claim_id, flags, question, reviewer_role, needed_by }
 
 # ---------------------------------------------------------------------------
 # readiness and hand-off
 # ---------------------------------------------------------------------------
 readiness:
-  claims_by_status:             # counted per section when onboarding finishes
-    confirmed: null
-    edited: null
-    rejected: null
-    unresolved: null
-    proposed: null
+  claims_imported: null         # per section when onboarding finishes
+  claims_flagged: null          # by flag reason: conflict, low_confidence, single_source, stale, no_owner, unclear
+  claims_reviewed: null         # reviewed_ok or edited, by an owner
   can_build_first_version: null # true only when hosting and data store are decided, the read grant exists,
-                                # one strategy source and one "done" source have been read, and no blocker is on the critical path
+                                # one strategy source and one "done" source have been imported, every flagged
+                                # claim has a reviewer role, and no blocker is on the critical path
   blockers: []                  # { item, owner_role, needed_by }
   first_version_scope: null
   deferred_to_later: []

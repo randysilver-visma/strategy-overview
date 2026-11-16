@@ -1,6 +1,6 @@
 # Starling
 
-A private, per-client tool that shows what a company's strategy documents say, what its work and data show, and what people understand the strategy to be, organised on Martin Eriksson's Decision Stack, with gaps, owners, open questions and a chat interface over the accumulated knowledge.
+A private, per-client mirror (not an oracle) that shows what a company's strategy documents say, what its work and data show, and what people understand the strategy to be, organised on Martin Eriksson's Decision Stack, with gaps, owners, open questions and a chat interface over the accumulated knowledge.
 
 It does not make decisions. It supports better discussion and faster decisions.
 

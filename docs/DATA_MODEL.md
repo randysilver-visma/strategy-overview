@@ -27,6 +27,18 @@ python design/build.py --data client/data.json  # a client's own data
 | `questions` | `[{id, cat, t, why, dm}]` | Open questions |
 | `changes`, `claimDocs`, `modelChecks`, `otherDecisions` | lists | Review and Decisions content |
 
+## Best guesses and review flags
+
+Starling is a mirror: it shows its best guess from the sources and does not wait for approval. Any strategy, goal, opportunity or initiative may carry:
+
+| Field | Shape | Meaning |
+| --- | --- | --- |
+| `conf` | `high`, `medium` or `low` | How well the sources support the value. `low` flags the item |
+| `flags` | list of `conflict`, `low_confidence`, `single_source`, `stale`, `no_owner`, `unclear` | Why an owner should look at it |
+| `alternatives` | `[{value, source}]` | Other values found in other sources, shown beside the best guess |
+
+Flagged items show a Review marker on the Strategy board, a "Best guess" panel in their record, and a line in the Review tab.
+
 ## Data checks
 
 The page validates the data on load and lists problems in the Review tab as "Data check" items: unknown strategies, goals or opportunities, an opportunity whose goal differs from the link's goal, duplicate IDs, a split that does not add up to 100%, and initiatives with no FTE in the quarters shown.

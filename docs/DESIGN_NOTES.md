@@ -32,6 +32,12 @@ Show, for one company, division or team: what the strategy documents say (said),
 
 - **Open (design):** the animation has only been checked in a headless browser, not on real screens. Tagline wording ("Enabling strategic alignment") is a placeholder; alternatives considered: "Fly the same way", "One flock, one star".
 
+## Principle: a mirror, not an oracle
+
+The page shows what the documents, work and data say, including where they disagree; it does not say what the strategy should be, and the first picture may be wrong. Everything imported is shown as a best guess. Anything conflicting, low confidence, single-source, stale or without an owner is flagged for review by the role that can resolve it, and anyone can challenge anything. The aim is a single source of truth over time. That depends on knowledgeable owners reviewing what is shown, which the tool cannot guarantee.
+
+Open: how to show reviewed items differently from unreviewed ones without marking everything on day one.
+
 ## Accessibility (current state)
 
 - Done: focus stays on the control you used when a view redraws; the drawer is a modal dialog (focus moves in, is trapped, returns to the opener, and the page behind it is inert); view changes are announced; roadmap bars and target diamonds have text labels; the flock has a Pause motion button and stays still when the system asks for reduced motion.

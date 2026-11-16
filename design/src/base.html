@@ -348,7 +348,17 @@ function validate(){
   return w;
 }
 const DATACHECKS=validate();
-const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+MODELCHECKS.length+DATACHECKS.length;
+/* Best guesses are shown as they are. Items the import could not be sure of carry conf ("high|medium|low"),
+   flags (conflict|low_confidence|single_source|stale|no_owner|unclear) and alternatives [{value,source}]. */
+const FLAG_LABEL={conflict:"Sources conflict",low_confidence:"Low confidence",single_source:"Single source",stale:"Source may be stale",no_owner:"No owner",unclear:"Unclear"};
+const flagsOf=x=>{const f=[...((x&&x.flags)||[])];if(x&&x.conf==="low"&&!f.includes("low_confidence"))f.push("low_confidence");return f};
+const reviewPill=x=>flagsOf(x).length?` <span class="pill amber" title="${esc(flagsOf(x).map(f=>FLAG_LABEL[f]||f).join(", "))}">Review</span>`:"";
+const FLAGGED=[["Strategy",x=>"s:"+x.id,STRATS],["Goal",x=>"g:"+x.strat+":"+x.id,GOALS],["Opportunity",x=>"p:"+x.id,OPPS],["Initiative",x=>"i:"+x.id,INITS]].flatMap(([k,rid,list])=>list.filter(x=>flagsOf(x).length).map(x=>({kind:k,rid:rid(x),x})));
+function provHtml(x){
+  if(!x)return "";const f=flagsOf(x),alt=x.alternatives||[];if(!f.length&&!x.conf&&!alt.length)return "";
+  return `<div class="callout" style="margin-top:12px"><b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${f.length?`<br>Flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}`:""}${alt.length?`<br>Other values found:<br>${alt.map(a=>`${esc(a.value)}${a.source?` <span class="muted">(${esc(a.source)})</span>`:""}`).join("<br>")}`:""}<br><span class="muted">Imported from the sources. An owner should review it.</span></div>`;
+}
+const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+MODELCHECKS.length+DATACHECKS.length+FLAGGED.length;
 const decisionCount=()=>1+OTHER_DECISIONS.length;
 const outcomeMeasures=g=>g.measures.filter(m=>m.kind==="outcome");
 function goalTarget(g){const ys=outcomeMeasures(g).map(m=>m.by).filter(Boolean).map(Number).filter(Number.isFinite);if(!ys.length||!QS.length)return null;const y=Math.min(...ys);if(y>QS[QS.length-1].year)return "later";let idx=0;QS.forEach((q,k)=>{if(q.year<=y)idx=k});return idx}
@@ -443,14 +453,14 @@ function stratCard(s){
   const open=!!state.open[s.id];
   const succ=s.success?measureLine(s.success):s.outputOnly?`<small class="amb">No outcome measure · ${plural(s.goals.filter(g=>g.measures.some(m=>m.kind==="output")).length,"output measure")} only</small>`:`<small>Success measured through its goals</small>`;
   return `<div class="box strat ${s.status}" data-node="${nid.s(s.id)}" tabindex="0">
-    <div class="strat-t"><button class="chev" type="button" data-toggle="${esc(s.id)}" aria-expanded="${open}" aria-label="${open?"Collapse":"Expand"} ${esc(s.name)}">${CHEV}</button><button class="lnk" type="button" data-rec="${nid.s(s.id)}">${esc(s.id)} ${esc(s.name)}</button></div>
+    <div class="strat-t"><button class="chev" type="button" data-toggle="${esc(s.id)}" aria-expanded="${open}" aria-label="${open?"Collapse":"Expand"} ${esc(s.name)}">${CHEV}</button><button class="lnk" type="button" data-rec="${nid.s(s.id)}">${esc(s.id)} ${esc(s.name)}</button>${reviewPill(s)}</div>
     <small style="margin:4px 0 2px">${ST_LABEL[s.status]} · ${plural(s.goals.length,"goal")}</small>${succ}</div>`;
 }
 function goalCard(s,g){
   if(!g){return `<div class="box goal nog" data-node="${nid.g(s.id,null)}" tabindex="0"><div class="goal-t">No goal yet</div><small>work linked straight to ${esc(s.id)}</small></div>`}
   const om=outcomeMeasures(g), out=g.measures.filter(m=>m.kind==="output");
   const ms=om.length?om.map(measureLine).join(""):`<small class="amb">No outcome measure${out.length?` · ${plural(out.length,"output measure")} only`:""}</small>`;
-  return `<div class="box goal" data-node="${nid.g(s.id,g.id)}" tabindex="0"><div class="goal-t"><span class="gdot ${g.measured?"m":""}" title="${g.measured?"Measured":"Not measured"}"></span><button class="lnk" type="button" data-rec="${nid.g(s.id,g.id)}">${esc(g.id)} ${esc(g.name)}</button></div>${ms}</div>`;
+  return `<div class="box goal" data-node="${nid.g(s.id,g.id)}" tabindex="0"><div class="goal-t"><span class="gdot ${g.measured?"m":""}" title="${g.measured?"Measured":"Not measured"}"></span><button class="lnk" type="button" data-rec="${nid.g(s.id,g.id)}">${esc(g.id)} ${esc(g.name)}</button>${reviewPill(g)}</div>${ms}</div>`;
 }
 function vStrategy(){
   const rel=related(state.sel);
@@ -470,7 +480,7 @@ function vStrategy(){
     rowsG.forEach(gid=>{
       const g=gid?GBY[gid]:null, ops=s.opps.filter(o=>o.goal===gid), grs=gs.filter(x=>x.goal===gid);
       rows+=`<div class="c-goal">${goalCard(s,g)}</div>
-       <div class="c-opp">${ops.map(o=>`<div class="box oppc${rel&&rel.has(nid.p(o.id))?" selc":""}" data-node="${nid.p(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.p(o.id)}">${esc(o.name)}</button></b><small>Proposed</small></div>`).join("")}</div>
+       <div class="c-opp">${ops.map(o=>`<div class="box oppc${rel&&rel.has(nid.p(o.id))?" selc":""}" data-node="${nid.p(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.p(o.id)}">${esc(o.name)}</button></b>${reviewPill(o)}<small>Proposed</small></div>`).join("")}</div>
        <div class="c-init">${grs.length?grs.map(x=>`<div class="box grp" data-node="${nid.q(s.id,gid,x.opp)}" tabindex="0"><b>${x.items.length}</b><small>${x.items.length===1?"initiative":"initiatives"}</small><button class="btn sm" type="button" data-list="${nid.q(s.id,gid,x.opp)}">List ›</button></div>`).join(""):`<div class="box grp zero" data-node="${nid.q(s.id,gid,null)}"><b>0</b><small>none yet</small></div>`}</div>`;
     });
   });
@@ -480,9 +490,9 @@ function vStrategy(){
      <div class="c-goal"><div class="sumc">no goal</div></div><div class="c-opp"><div class="sumc">no opportunity</div></div>
      <div class="c-init"><div class="box grp" data-node="${nid.q("none",null,null)}" tabindex="0"><b>${un.length}</b><small>unlinked</small><button class="btn sm" type="button" data-list="${nid.q("none",null,null)}">List ›</button></div></div>`}
   const unNote=un.length?`<div class="callout"><b>${plural(un.length,"initiative")} ${un.length===1?"is":"are"} not linked to any strategy</b> (${fmt(r1(un.reduce((a,i)=>a+avgH(i),0)))} FTE, ${esc(HZ.label)} average). They are shown at the bottom of the board. Each needs an owner to link it to a strategy or to confirm it should stand alone.</div>`:"";
-  const html=`<div class="wrap view"><h2>Strategy</h2><p class="lede">How each piece of ${esc(META.team)}’s work connects to the goals, strategies and Org objectives it serves.</p>
+  const html=`<div class="wrap view"><h2>Strategy</h2><p class="lede">How each piece of ${esc(META.team)}’s work connects to the goals, strategies and Org objectives it serves. Everything here is a best guess imported from the sources; items marked Review conflict, have low confidence or lack an owner.</p>
    ${unNote}<div class="nsbar"><span class="label">North Star · Org vision</span><button class="lnk" type="button" data-rec="vision">${esc(VISION)}</button></div>
-   <div class="legend"><span class="lg"><i class="sw on"></i>Strategy On Track</span><span class="lg"><i class="sw risk"></i>At Risk</span><span class="lg"><i class="sw na"></i>Not assessed</span><span class="lg"><i class="sw dot"></i>goal measured</span><span class="lg"><i class="sw opp"></i>Opportunity (proposed)</span><span class="lg"><i class="sw ng"></i>No goal yet</span><span class="lg"><span class="by">by ${esc(HZ.label||"year")}</span>success measure and when it’s due (outcomes only)</span><span class="sp"></span><button class="btn sm" type="button" id="expandAll">${STRATS.every(s=>state.open[s.id])?"Collapse all":"Expand all"}</button></div>
+   <div class="legend"><span class="lg"><i class="sw on"></i>Strategy On Track</span><span class="lg"><i class="sw risk"></i>At Risk</span><span class="lg"><i class="sw na"></i>Not assessed</span><span class="lg"><i class="sw dot"></i>goal measured</span><span class="lg"><i class="sw opp"></i>Opportunity (proposed)</span><span class="lg"><i class="sw ng"></i>No goal yet</span><span class="lg"><span class="by">by ${esc(HZ.label||"year")}</span>success measure and when it’s due (outcomes only)</span><span class="lg"><span class="pill amber">Review</span>flagged by the import</span><span class="sp"></span><button class="btn sm" type="button" id="expandAll">${STRATS.every(s=>state.open[s.id])?"Collapse all":"Expand all"}</button></div>
    <div class="boardwrap"><div class="board" id="board">
      <div class="ocol"><div class="colh"><b>Org objectives</b><small>why</small></div>${OBJECTIVES.map(o=>`<div class="box obj${cls(nid.o(o.id))}" data-node="${nid.o(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.o(o.id)}">${esc(o.name)}</button></b><small>${esc(o.id)}</small></div>`).join("")}</div>
      <div class="rows">${rows}</div>
@@ -653,9 +663,10 @@ function vQuestions(){
    <div style="margin-top:16px"><button class="btn" type="button" id="allQ">${state.allQ?"Show fewer":"Show all "+QUESTIONS.length+" questions"}</button></div></div>`;
 }
 function vReview(){
-  return `<div class="wrap view"><h2>Waiting for review</h2><p class="lede">Changes and source conflicts that need an owner to look at them before they count. Nothing changes the record until an owner accepts it.</p>
+  return `<div class="wrap view"><h2>Waiting for review</h2><p class="lede">Items the import flagged as conflicting, low confidence or without an owner, plus changes and data checks. The page shows its best guess for everything; an owner should review what is flagged.</p>
    ${CHANGES.map(c=>`<div class="qitem"><div><div class="m"><span class="pill amber"><i class="dot"></i>${esc(c.k)}</span><span class="mono">${c.d}</span><span>${c.rev?"Review "+c.rev:"Review owner not recorded"}</span></div><b>Change ${c.n}: an indicative update</b><div class="diff"><del>Indicative earlier state.</del> → <ins>Indicative new state.</ins></div></div></div>`).join("")}
    ${CLAIMDOCS.map(d=>`<div class="qitem"><div><div class="m"><span class="pill"><i class="dot"></i>Claims</span><span>${esc(d.kind)}</span></div><b>Source document ${esc(d.id)} (indicative)</b><div class="muted" style="font-size:12.5px">${d.n} claims Proposed${d.conflicts?`, <span class="red">${d.conflicts} conflict with the record</span>`:""}</div></div><button class="btn sm" type="button" data-claims="${esc(d.id)}">See claims</button></div>`).join("")}
+   ${FLAGGED.map(f=>`<div class="qitem"><div><div class="m"><span class="pill amber"><i class="dot"></i>${esc(f.kind)}</span><span>${f.x.conf?esc(f.x.conf)+" confidence":""}</span><span>${flagsOf(f.x).map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}</span></div><b>${esc(f.x.name)}</b>${(f.x.alternatives||[]).length?`<div class="muted" style="font-size:12.5px">Other values found: ${(f.x.alternatives||[]).map(a=>esc(a.value)+(a.source?" ("+esc(a.source)+")":"")).join("; ")}</div>`:""}</div><button class="btn sm" type="button" data-rec="${esc(f.rid)}">Open</button></div>`).join("")}
    ${DATACHECKS.map(m=>`<div class="qitem mc"><b>Data check</b><span>${esc(m)}</span><span></span><span class="muted" style="font-size:12.5px">Found by the page while reading the data. Fix it in the data store.</span></div>`).join("")}
    ${MODELCHECKS.map(m=>`<div class="qitem mc"><b>Model check</b><span>Model-health flag ${m.n}</span><span></span><span class="muted" style="font-size:12.5px">Indicative detail about a gap or inconsistency in the model.</span></div>`).join("")}</div>`;
 }
@@ -667,7 +678,7 @@ function openDrawer(kicker,title,sub,body,push){
   else if(!push)state.drawerStack=[];
   if($("#drawer").hidden)state.opener=document.activeElement;
   $("#drKicker").textContent=kicker;$("#drTitle").textContent=title;$("#drSub").innerHTML=sub||"";
-  $("#drBody").innerHTML=(state.drawerStack.length?`<button class="btn sm" type="button" id="drBack" style="margin-bottom:8px">‹ Back</button>`:"")+body;
+  $("#drBody").innerHTML=(state.drawerStack.length?`<button class="btn sm" type="button" id="drBack" style="margin-bottom:8px">‹ Back</button>`:"")+body+(state.prov||"");state.prov="";
   $("#drawer").hidden=false;$("#scrim").hidden=false;setModal(true);$("#drClose").focus();
 }
 function closeDrawer(){
@@ -690,6 +701,7 @@ function linksHtml(i){
   return i.links.map(l=>`${esc(l.strat+" "+((SBY[l.strat]||{}).name||""))} · ${l.goal?"goal "+esc(l.goal):"no goal yet"}${l.opp?" · opportunity "+esc(l.opp)+" (proposed)":""}`).join("<br>")+(ss.length>1?`<br><span class="muted">FTE split: ${ss.map(x=>esc(x)+" "+Math.round(100*sh(i,x))+"%").join(", ")}</span>`:"");
 }
 function openRec(id,push){
+  { const [k0,a0,b0]=id.split(":"); state.prov=provHtml(k0==="s"&&a0!=="none"?SBY[a0]:k0==="g"?GBY[b0]:k0==="p"?OBY[a0]:k0==="i"?INITS.find(x=>x.id===a0):null); }
   const [k,a,b]=id.split(":");
   if(id==="vision")return openDrawer("North Star · Org vision",VISION,"Owner: Org leadership · source: Org strategy (indicative)",`<p>The Org vision is the outcome the organisation exists to create. It is not yet measured, so the North Star level shows as not assessed.</p>`+recActions,push);
   if(k==="o"){const o=OBJECTIVES.find(x=>x.id===a),ss=STRATS.filter(s=>s.objs.includes(a));return openDrawer("Org objective · "+a,o.name,"Indicative description of this objective.",`<dl class="rec"><dt>Team strategies</dt><dd>${ss.map(s=>s.id+" "+s.name).join(", ")||"None"}</dd><dt>Status</dt><dd>Not assessed</dd></dl>`+recActions,push)}
@@ -763,7 +775,7 @@ document.addEventListener("click",e=>{
   const t=e.target;
   if(t.closest("#drClose")||t.closest("#scrim"))return closeDrawer();
   if(t.closest("#drBack")){const p=state.drawerStack.pop();$("#drKicker").textContent=p[0];$("#drTitle").textContent=p[1];$("#drSub").innerHTML=p[2];$("#drBody").innerHTML=p[3];return}
-  if(t.closest("#themeBtn")){const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=dark?"light":"dark";if(state.view==="strategy")drawWires();return}
+  if(t.closest("#themeBtn")){const r=document.documentElement;const dark=r.dataset.theme==="dark";r.dataset.theme=dark?"light":"dark";if(state.view==="strategy")drawWires();return}
   const rec=t.closest("[data-rec]"); if(rec){e.stopPropagation();return openRec(rec.dataset.rec,!!rec.dataset.push)}
   const ls=t.closest("[data-list]"); if(ls)return openList(ls.dataset.list);
   if(t.closest("[data-contrib]"))return toast("Prototype: nothing is saved. In a live build this goes to the owner for review.");
