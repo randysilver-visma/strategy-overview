@@ -199,7 +199,9 @@ information_sources:
       access_route: null
       owner_role: null
       decision_stack_tier: cross_cutting
-      evidence_role: understood   # how presenters and teams describe the strategy at reviews; to confirm (decks may also be "said")
+      evidence_role: understood   # mixed: leadership slides state the strategy ("said"); team slides show how teams read it ("understood")
+      prepared_by: "Teams and leadership, contributing at different levels (3.11)"
+      note: "When ingested, tag each slide or section by who prepared it, so leadership content counts as said and team content as understood."
       permission_status: null
       permission_granted_by_role: null
       sensitivity: null
