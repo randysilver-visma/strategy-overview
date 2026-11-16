@@ -256,6 +256,7 @@ schema_alignment:
 work_tracking:
   status: in_progress
   initiatives_live_in: jira     # one of: jira | linear | azure_boards | spreadsheet | slides | none | other. Also a roadmap/initiative list in Slite (source S2)
+  initiative_level_in_jira: null   # unknown (5.1): the consultant has not yet examined AX's Jira; ask the Engineering Lead, Agentic Experience
   team_list_source: null
   link_to_objectives:
     method: null                # one of: tag_or_field_in_tracker | parent_child | set_during_onboarding | edited_in_tool | not_possible_yet
