@@ -20,8 +20,10 @@ meta:
   interviewer: "consultant"     # role, e.g. "consultant"; Claude runs the interview with them
   client_sponsor_role: null     # who authorised the work
   overall_status: in_progress   # not_started | in_progress | ready_to_build | blocked
-  scope_unit: null              # one of: company | division | team
-  scope_description: null       # what part of the organisation this instance covers
+  scope_unit: team             # one of: company | division | team
+  scope_description: "The Agentic Experience (AX) team. Company-level goals may be needed as context above the team, but the first version focuses on AX."
+  scope_notes:
+    - "Org vision and Org objectives sit above AX as context (the North Star and Org objectives tiers). Whether they are in scope as content or only as links is to be settled in section 4."
   environment_check:            # what the interviewer's environment reached on 2026-11-16, by trying it
     confirmed:
       - "GitHub: push access to this repository"
