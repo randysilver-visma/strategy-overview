@@ -12,8 +12,8 @@ Early. Each implementation is built bespoke for a client. Only the onboarding st
 
 | Path | Purpose |
 | --- | --- |
-| `onboarding/ONBOARDING_PROMPT.md` | Prompt the client's Claude runs as a guided interview |
-| `onboarding/profile.template.yaml` | Blank, versioned profile the interview fills in |
+| `onboarding/ONBOARDING_PROMPT.md` | Prompt the client's Claude runs: asks about ten technical points, derives the rest from the client's own material, then asks the client to confirm or challenge it |
+| `onboarding/profile.template.yaml` | Blank, versioned profile: the technical answers plus a list of sourced claims |
 | `design/dist/*.html` | Built mockup of the modern skin with placeholder data (open in a browser) |
 | `design/src`, `design/skins`, `design/build.py` | Shared base, per-skin styles and the build script |
 | `docs/SKINS.md` | How skins work and how to add one |
@@ -28,7 +28,7 @@ Early. Each implementation is built bespoke for a client. Only the onboarding st
 ## Using it
 
 1. Create a private repo for the client and copy this package into it.
-2. Run the onboarding prompt. It writes `client/onboarding/profile.yaml` and `client/onboarding/readiness-report.md`.
+2. Run the onboarding prompt. It writes `client/onboarding/profile.yaml`, `client/onboarding/readiness-report.md` and a draft data file `client/data/draft.json` (shape in `docs/DATA_MODEL.md`).
 3. Everything specific to the client stays under `client/`. The generic package's `.gitignore` excludes `client/` so nothing client-specific is committed by accident; in the client's own private repo, remove that line.
 
 ## Credits

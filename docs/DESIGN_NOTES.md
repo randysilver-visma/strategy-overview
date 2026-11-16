@@ -24,10 +24,10 @@ Show, for one company, division or team: what the strategy documents say (said),
 
 ## Open items
 - The mockup is a static page with generated placeholder data. Contributions, challenges, review approvals, decision choices and folder scans all need a backend and a storage layer; nothing is saved yet.
-- The page names Airtable as the data source to match the later design; the real store is decided in onboarding.
+- The data store, issue tracker and other client terms come from the data file (`text` block); the real store is decided in onboarding.
 - A chat over the knowledge base is not in the current layout. Decide in onboarding whether it comes back.
 - Because the database varies by client, a storage adapter layer is likely needed. Not designed yet.
-- Onboarding prompt and profile template have not been run against a real client.
+- Onboarding asks only technical questions, derives the rest from the client's material with a source and quote for each item, and asks the client to confirm or challenge it. The rewritten prompt and template (0.2.0) have not been run against a real client.
 - No independent audit (Codex or other) has been run on the prompt, template or mockup.
 
 - **Open (design):** the animation has only been checked in a headless browser, not on real screens. Tagline wording ("Enabling strategic alignment") is a placeholder; alternatives considered: "Fly the same way", "One flock, one star".
