@@ -340,23 +340,49 @@ privacy_and_security:
 # 8. Updating the knowledge base: refresh, corrections, approvals
 # ---------------------------------------------------------------------------
 update_workflow:
-  status: in_progress
+  status: complete
   refresh_method: event_driven  # derived from 3.9 (on change); fallback to a scheduled scan if setup a is used
   scan_schedule: null
   correction_route: "Propose a change from the page; it becomes a pull request reviewed by the item's approver (derived from 2.2 and 5.4)"
   approval_sla: "none during the pilot; the page shows how long each change has waited (8.1)"
-  notification_channel: null    # email, chat tool, none
-  change_log_visible_to: null
+  notification_channel: "Slack: a private channel for the AX team, to be created by the consultant (8.2)"
+  change_log_visible_to: "everyone who can view the page (derived: pull request history plus the Review tab)"
 
 # ---------------------------------------------------------------------------
 # 9. Readiness and hand-off
 # ---------------------------------------------------------------------------
 readiness:
-  can_build_first_version: null          # true only when hosting, data_store and at least one
+  can_build_first_version: false         # true only when hosting, data_store and at least one
                                          # strategy source plus one "done" source are complete
-  blockers: []                           # { item, owner_role, needed_by }
-  first_version_scope: null              # what will be in the first build
-  deferred_to_later: []
+  reason: "Hosting and the data-store setup are provisional, and the only 'done' source (Jira) has no read permission yet."
+  blockers:                              # { item, owner_role, needed_by }
+    - item: "Code host and hosting: stay in the personal repo or move; GitHub Pages behind SSO; who keeps it running"
+      owner_role: "the consultant's tech contact"
+      needed_by: "before the first build"
+    - item: "Approvals before going live (security, privacy, architecture, AI use)"
+      owner_role: "the consultant's tech contact"
+      needed_by: "before the page is opened beyond the consultant"
+    - item: "Slite API key (and a Claude API key if the build calls Claude): who holds them, where they are stored"
+      owner_role: "the consultant's tech contact or e-conomic IT"
+      needed_by: "before the first build"
+    - item: "Jira read permission, project(s) and fields"
+      owner_role: "Engineering Lead, Agentic Experience"
+      needed_by: "before 'done' evidence can be shown"
+    - item: "List of the competing AX strategy documents, each with owner and permission"
+      owner_role: "consultant"
+      needed_by: "before the first build"
+  confirmations_outstanding:
+    - "Sponsor confirms the sponsorship, scope and audience (Product Lead, Agentic Experience)"
+    - "Every ownership entry in section 6 is confirmed by its role-holder"
+    - "Sensitivity 'general' for S1, S2, S3"
+    - "No level between Org objectives and AX; planning horizon and review cadence"
+    - "Governance team: name, members, meeting rhythm"
+  first_version_scope: "AX only. Sources: the Slite roadmap (S2) and published strategy review decks and notes (S3), plus the competing strategy docs once listed. Views as in the prototype, with real AX content replacing the placeholders. Changes proposed as pull requests."
+  deferred_to_later:
+    - "Jira 'done' evidence (until permission and examination)"
+    - "e-conomic/Visma branding"
+    - "Chat over the knowledge base"
+    - "Approval deadlines and escalation"
   next_review_date: null
 
 # ---------------------------------------------------------------------------
