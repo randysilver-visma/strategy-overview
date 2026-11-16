@@ -230,9 +230,9 @@ information_sources:
 # ---------------------------------------------------------------------------
 schema_alignment:
   status: in_progress
-  client_has_schema: null       # true | false
+  client_has_schema: false      # true | false  (OKRs in use, but no structured schema to align to)
   client_schema_location: null
-  framework_in_use: null        # e.g. OKRs, V2MOM, none
+  framework_in_use: "OKRs (consultant: \"could be stronger\")"
   decision_stack_mapping:       # map the client's own terms onto the stack tiers
     vision: null
     principles: null
@@ -240,7 +240,7 @@ schema_alignment:
     objectives: null
     division_level_needed: null # true if product-line or division strategy must sit between objectives and work
     division_units: []          # names of divisions or product lines
-  default_schema_used: null     # true if no client schema exists
+  default_schema_used: true     # Strategy Mirror model is the default (consultant, 4.1)
   planning_horizon: null        # e.g. "annual objectives, quarterly reviews"
   review_cadence: null
   decision_points_defined: null # do milestones and triggers exist anywhere in the source material?
