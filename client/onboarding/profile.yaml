@@ -137,7 +137,7 @@ data_store:
 # 3. Information sources: what gets ingested, from where, with what permission
 # ---------------------------------------------------------------------------
 information_sources:
-  status: not_started
+  status: in_progress
   ingestion_principles_confirmed: null   # true once sponsor agrees: nothing is read before permission is recorded
   sources: []
   # Each entry:
