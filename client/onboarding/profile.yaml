@@ -295,6 +295,12 @@ people_and_roles:
   #   approver_role: null       # approves suggested changes
   #   decision_maker_role: null # answers open questions
   #   confirmed_by: null        # null until the person themselves confirms
+  governance_team:
+    exists: true
+    name: null
+    member_roles: null
+    meeting_cadence: null
+    status: "details to check by the consultant (6.4)"
   admin_roles: []               # who manages users and permissions in the tool
   viewers: null                 # who may see the page
   editors: null                 # who may suggest changes or answer questions
