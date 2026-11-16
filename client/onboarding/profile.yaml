@@ -241,8 +241,8 @@ schema_alignment:
     division_level_needed: false # PROVISIONAL (consultant believes, 4.3): AX strategies serve Org objectives directly; confirm with the Product Lead, Agentic Experience
     division_units: []          # names of divisions or product lines
   default_schema_used: true     # Strategy Mirror model is the default (consultant, 4.1)
-  planning_horizon: null        # e.g. "annual objectives, quarterly reviews"
-  review_cadence: null
+  planning_horizon: null        # e.g. "annual objectives, quarterly reviews". Unknown (4.4); ask the Product Lead, Agentic Experience
+  review_cadence: null          # unknown (4.4); same owner. Strategy review meetings exist (source S3) but their rhythm is not recorded
   decision_points_defined: null # do milestones and triggers exist anywhere in the source material?
   terminology_differences:      # client term -> package term
     - client: "Objective / Key result (OKR)"
