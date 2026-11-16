@@ -79,7 +79,7 @@ hosting:
 # 2. Data store: the single source of truth for records and edits
 # ---------------------------------------------------------------------------
 data_store:
-  status: in_progress
+  status: complete              # answers recorded; setup choice provisional until hosting is settled
   candidates_in_use: ["slite"]  # 2.1: the consultant named Slite only, "if possible"
   options_considered:           # list of { type, why_considered, pros, cons, verified: true|false }
     - type: slite
@@ -129,7 +129,8 @@ data_store:
       workaround: "Give every row a unique short id in its title (e.g. \"S1 Strategy 1\", \"I84 Initiative 84\") and forbid commas in titles; the build matches links on that id."
     - gap: "No record of who changed what"
       workaround: "Keep a separate Changes collection (who proposed, who approved, before, after, date) and only change records through it. Edits made directly in Slite would bypass it."
-  backup_and_recovery: null
+  backup_and_recovery: "If hosted on GitHub: every snapshot or change is committed to the repo, which is the off-Slite copy. Otherwise: Slite's own version history and archive. The consultant judges the tool not business-critical for now."
+  criticality: "not business-critical (consultant, 2026-11-16)"
   assumptions: []
 
 # ---------------------------------------------------------------------------
