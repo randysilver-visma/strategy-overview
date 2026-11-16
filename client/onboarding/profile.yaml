@@ -280,8 +280,9 @@ people_and_roles:
   ownership:
     - area: "AX team strategies"
       owner_role: "Product Lead, Agentic Experience + Engineering Lead, Agentic Experience (joint)"
-      approver_role: null
-      decision_maker_role: null
+      approver_role: "the joint owners, split as for decisions"
+      decision_maker_role: "Product Lead decides what and why; Engineering Lead decides how and capacity; escalate to a governance team when needed (6.2)"
+      escalation_role: "governance team (not yet named)"
       confirmed_by: null
   # - area: null                # a tier, a metric set, or a source
   #   owner_role: null          # accountable for the content being right
