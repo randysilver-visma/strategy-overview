@@ -201,10 +201,13 @@ information_sources:
       decision_stack_tier: cross_cutting
       evidence_role: understood   # mixed: leadership slides state the strategy ("said"); team slides show how teams read it ("understood")
       prepared_by: "Teams and leadership, contributing at different levels (3.11)"
+      scope_rule: "Published decks and pages only; drafts and unpublished material are excluded"
       note: "When ingested, tag each slide or section by who prepared it, so leadership content counts as said and team content as understood."
-      permission_status: null
-      permission_granted_by_role: null
-      sensitivity: null
+      permission_status: granted
+      permission_granted_by_role: "consultant"
+      permission_granted_on: "2026-11-16"
+      permission_note: "Basis: published review decks and pages are open to employees by default (consultant, 3.12). Covers published material only."
+      sensitivity: general        # published = open by default; to confirm with the Product Lead
       redaction_needed: null
       scan_frequency: null
       retention: null
@@ -216,7 +219,11 @@ information_sources:
   assumptions:
     - item: "S1 (Jira) and S2 (Slite roadmap) are general: fine for any e-conomic/Visma employee."
       check_with: "Engineering Lead, Agentic Experience (S1); Product Lead, Agentic Experience (S2)"
-  gaps_in_coverage: []          # tiers with no source, or only "said" evidence and no "done" evidence
+  gaps_in_coverage:
+    - "Vision and Org objectives: no source named yet (expected among the competing strategy documents)"
+    - "Strategy and goals: only 'said' sources so far (competing docs, roadmap); Jira gives 'done' only at work level, and Jira permission is still pending"
+    - "No source of 'understood' evidence below leadership other than team slides in review decks"
+    - "The competing strategy documents are not yet listed, so no owner or permission is recorded for them"          # tiers with no source, or only "said" evidence and no "done" evidence
 
 # ---------------------------------------------------------------------------
 # 4. Schema and framework: how the client already structures strategy
