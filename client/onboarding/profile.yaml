@@ -260,8 +260,11 @@ work_tracking:
   team_list_source: null
   link_to_objectives:
     method: null                # one of: tag_or_field_in_tracker | parent_child | set_during_onboarding | edited_in_tool | not_possible_yet. Pending: depends on AX's Jira, not yet examined (5.2)
-    who_may_change_links_role: null
-    approval_required_for_changes: null
+    who_may_change_links_role: "initiative owner proposes; goal owner approves"
+    approval_required_for_changes: true
+    initial_links: "Set in one batch during setup by the consultant with initiative owners; signed off as a batch by the Product Lead, Agentic Experience"
+    change_route: "With b-on-GitHub: a pull request per change, reviewed by the goal owner (logs who and when)"
+    decided_by_role: "consultant, on Claude's recommendation (5.4)"
   effort_unit: fte              # default "fte"; alternatives: points | person_days | none. FTE per quarter until AX's documents or practice show otherwise (5.3)
   effort_source: null           # not yet known; Jira not yet examined
   confidence_scale: null        # default "low | medium | validated"; record client variants
