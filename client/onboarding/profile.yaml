@@ -229,7 +229,7 @@ information_sources:
 # 4. Schema and framework: how the client already structures strategy
 # ---------------------------------------------------------------------------
 schema_alignment:
-  status: in_progress
+  status: complete              # open items: OKR mapping per document, horizon and cadence, intermediate level (all with the Product Lead)
   client_has_schema: false      # true | false  (OKRs in use, but no structured schema to align to)
   client_schema_location: null
   framework_in_use: "OKRs (consultant: \"could be stronger\")"
@@ -243,7 +243,7 @@ schema_alignment:
   default_schema_used: true     # Strategy Mirror model is the default (consultant, 4.1)
   planning_horizon: null        # e.g. "annual objectives, quarterly reviews". Unknown (4.4); ask the Product Lead, Agentic Experience
   review_cadence: null          # unknown (4.4); same owner. Strategy review meetings exist (source S3) but their rhythm is not recorded
-  decision_points_defined: null # do milestones and triggers exist anywhere in the source material?
+  decision_points_defined: false # not done well yet (4.5). The tool is expected to help create them: a requirement for the Decisions view, not something to ingest
   terminology_differences:      # client term -> package term
     - client: "Objective / Key result (OKR)"
       package: "varies by document (4.2): sometimes team goal + outcome measure, sometimes team strategy + goals, sometimes Org objective"
