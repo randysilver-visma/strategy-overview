@@ -140,7 +140,37 @@ information_sources:
   status: in_progress
   ingestion_principles_confirmed: null   # true once sponsor agrees: nothing is read before permission is recorded
   landscape: "Much strategy documentation in Slite and in Google Docs/Slides. How well it agrees is unknown, which is part of what the tool should show. (consultant, 3.1)"
-  sources: []
+  sources:
+    - id: S1
+      name: "AX work in Jira (epics, issues)"
+      kind: work_tracker
+      location: "Jira (project or board not yet named)"
+      access_route: null          # no Jira connector in the interview environment; export or API to decide
+      owner_role: null
+      decision_stack_tier: work
+      evidence_role: done
+      permission_status: null
+      permission_granted_by_role: null
+      sensitivity: null
+      redaction_needed: null
+      scan_frequency: null
+      retention: null
+      known_quality_issues: null
+    - id: S2
+      name: "AX roadmap or initiative list in Slite"
+      kind: other                 # roadmap / initiative list
+      location: "Slite (doc or collection not yet named)"
+      access_route: connector     # Slite connector confirmed in the interview environment
+      owner_role: null
+      decision_stack_tier: work
+      evidence_role: said         # a plan states intent; "done" evidence comes from Jira. To confirm.
+      permission_status: null
+      permission_granted_by_role: null
+      sensitivity: null
+      redaction_needed: null
+      scan_frequency: null
+      retention: null
+      known_quality_issues: null
   # Each entry:
   # - id: S1
   #   name: null
