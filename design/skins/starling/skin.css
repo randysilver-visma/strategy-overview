@@ -1,4 +1,4 @@
-/* Starling skin: dusk-sky murmuration, North Star, sticky-note questions, journey stepper */
+/* starling skin: dusk-sky murmuration, North Star, sticky-note questions, journey stepper */
 body{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;font-size:15px}
 h1,h2,h3{font-family:var(--font-display);letter-spacing:-.005em;font-weight:600}
 .brand{flex-direction:row;align-items:center;gap:12px}

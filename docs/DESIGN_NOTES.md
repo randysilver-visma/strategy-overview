@@ -11,7 +11,7 @@ Show, for one company, division or team: what the strategy documents say (said),
 - **Roadmap view:** follows Itamar Gilad's outcome roadmap template: goal bars with a target diamond, then Research, Product Discovery, Product Delivery (ideas inside a dashed box, or "to be determined"), and Effect Delay. Source: itamargilad.com/outcome-roadmaps. A by-team view is an addition not in Gilad's template.
 - **Confidence:** each item carries a validated / partly validated / hypothesis marker.
 - **Alignment:** every initiative links to zero or more objectives. Work linked to none is shown as unaligned.
-- **Name:** Starling. The North Star is the company vision; the flock is the people and teams; tightness reflects alignment.
+- **Name:** Strategy Mirror (originally called Starling). The starling imagery is kept as the visual metaphor: the North Star is the company vision; the flock is the people and teams; tightness reflects alignment.
 - **Skins:** two looks (starling, modern) share one base. See `SKINS.md`.
 - **Target:** desktop only for now. No phone layout.
 - **Delivery:** bespoke per client. Prerequisites: somewhere to host code (GitHub by default) and a database (Sheets, Excel, Airtable or other, decided in onboarding). Everything stays on the client's internal infrastructure.

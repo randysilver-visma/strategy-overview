@@ -46,6 +46,6 @@ In the Modern skin the flight-path bars use a continuous green to amber to red g
 
 ## Notes
 
-- The Starling skin was inspired by the feel of a playful retrospective tool (journey bar, sticky notes). It does not reuse that tool's artwork, layout or branding. The other three skins are independent of it.
+- The `starling` skin was inspired by the feel of a playful retrospective tool (journey bar, sticky notes). It does not reuse that tool's artwork, layout or branding. The other three skins are independent of it.
 - Desktop only for now. No phone layout has been designed or tested.
 - Fonts load from Google Fonts. Offline, the page falls back to system fonts.

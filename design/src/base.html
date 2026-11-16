@@ -231,11 +231,11 @@ tr.unl td.cell.has{background:color-mix(in srgb,var(--warn) 28%,transparent)}
 </style>
 
 <header class="top"><div class="wrap top-row">
-  <div class="brand"><!--@LOGO@--><svg class="logo" viewBox="0 0 44 44" aria-hidden="true"><path d="M6 28c5-11 11-13 16-6 5-7 11-5 16 6-5-3-10-2-16 4-6-6-11-7-16-4z" fill="currentColor"/><path d="M34 6l1.7 3.5 3.8.5-2.8 2.7.7 3.8-3.4-1.8-3.4 1.8.7-3.8-2.8-2.7 3.8-.5z" fill="#ffd23f"/></svg><div class="bt"><h1><span class="wm" id="wm">Starling</span> <span class="sample">Synthetic sample data</span></h1><div class="tag" id="tagline" hidden></div><div class="sub">Meridian Freight (fictional) · Said vs Done vs Understood · scanned <span class="mono">10 Nov 2026</span> · 34 sources</div></div></div>
+  <div class="brand"><!--@LOGO@--><svg class="logo" viewBox="0 0 44 44" aria-hidden="true"><path d="M6 28c5-11 11-13 16-6 5-7 11-5 16 6-5-3-10-2-16 4-6-6-11-7-16-4z" fill="currentColor"/><path d="M34 6l1.7 3.5 3.8.5-2.8 2.7.7 3.8-3.4-1.8-3.4 1.8.7-3.8-2.8-2.7 3.8-.5z" fill="#ffd23f"/></svg><div class="bt"><h1><span class="wm" id="wm">Strategy Mirror</span> <span class="sample">Synthetic sample data</span></h1><div class="tag" id="tagline" hidden></div><div class="sub">Meridian Freight (fictional) · Said vs Done vs Understood · scanned <span class="mono">10 Nov 2026</span> · 34 sources</div></div></div>
   <nav class="nav" aria-label="Sections">
     <a href="#stack">Decision Stack</a><a href="#work">Work</a><a href="#questions">Open questions</a><a href="#queue">Pending changes <span class="mono" id="qcount"></span></a><a href="#sources">Sources</a>
   </nav>
-  <div class="hdr-actions"><button class="btn primary" id="askTop" type="button">Ask Starling</button><button class="btn" id="themeBtn" type="button">Theme</button></div>
+  <div class="hdr-actions"><button class="btn primary" id="askTop" type="button">Ask Strategy Mirror</button><button class="btn" id="themeBtn" type="button">Theme</button></div>
 </div></header>
 
 <main class="wrap">
@@ -298,9 +298,9 @@ tr.unl td.cell.has{background:color-mix(in srgb,var(--warn) 28%,transparent)}
 <footer class="credits"><div class="wrap">Built on the <a href="https://www.mindtheproduct.com/the-product-decision-stack-martin-eriksson/" target="_blank" rel="noopener">Decision Stack</a> by Martin Eriksson and the <a href="https://itamargilad.com/outcome-roadmaps/" target="_blank" rel="noopener">outcome roadmap</a> template by Itamar Gilad. Packaged by <a href="https://outofowls.com" target="_blank" rel="noopener">Out of Owls</a>.</div></footer>
 
 
-<button class="btn primary fab" id="fab" type="button" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-6l-5 4v-4H7a3 3 0 0 1-3-3z" fill="currentColor"/></svg>Ask Starling</button>
-<aside class="drawer" id="drawer" hidden aria-label="Ask Starling">
-  <div class="drawer-head"><div><strong>Ask Starling</strong><small>Answers cite sources and mark confidence</small></div><button class="btn sm" id="closeChat" type="button">Close</button></div>
+<button class="btn primary fab" id="fab" type="button" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-6l-5 4v-4H7a3 3 0 0 1-3-3z" fill="currentColor"/></svg>Ask Strategy Mirror</button>
+<aside class="drawer" id="drawer" hidden aria-label="Ask Strategy Mirror">
+  <div class="drawer-head"><div><strong>Ask Strategy Mirror</strong><small>Answers cite sources and mark confidence</small></div><button class="btn sm" id="closeChat" type="button">Close</button></div>
   <div class="msgs" id="msgs" aria-live="polite"></div>
   <div class="chips" id="chips"></div>
   <div class="notice">Sample: replies are scripted from the data on this page. A live build sends the question to a model hosted inside your network.</div>
@@ -563,7 +563,7 @@ function renderWork(){
   }
 }
 
-/* ---------- Starling hero: flight path and flock ---------- */
+/* ---------- Strategy Mirror hero: flight path and flock ---------- */
 const SEV={vision:.78,principles:.88,strategy:.5,objectives:.38,division:.82}; /* sample gap severity 0 (aligned) to 1 (severe) */
 function rag(x){const k=[[142,55,40],[43,95,52],[3,78,50]],u=Math.max(0,Math.min(1,x)),i=u<=.5?0:1,t=u<=.5?u/.5:(u-.5)/.5,a=k[i],b=k[i+1],m=j=>Math.round((a[j]+(b[j]-a[j])*t)*10)/10;return `hsl(${m(0)} ${m(1)}% ${m(2)}%)`}
 function workStatus(){const p=linkStats().unPct;return p>25?"conflict":p>10?"drift":"aligned"}
@@ -577,7 +577,7 @@ function stops(){return [
  {code:"1",label:"North Star",status:tStat("vision"),sev:SEV.vision,href:"#tier-vision",star:true}]}
 function flockScore(){const s=stops();return s.reduce((a,x)=>a+({aligned:1,drift:.5,conflict:0}[x.status]),0)/s.length}
 function renderHero(){
-  const SK=window.SKIN||{}; if(SK.wordmark){$("#wm").innerHTML='Starl<span class="wm-i">\u0131<svg class="wm-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg></span>ng';$("#wm").setAttribute("aria-label","Starling")} if(SK.tagline){const t=$("#tagline");t.textContent=SK.tagline;t.hidden=false} if(SK.title)$("#heroTitle").textContent=SK.title; if(SK.lead)$("#heroLead").textContent=SK.lead; if(SK.starLabel)$("#starLabel").textContent=SK.starLabel;
+  const SK=window.SKIN||{}; if(SK.wordmark){$("#wm").innerHTML='Strategy M<span class="wm-i">\u0131<svg class="wm-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg></span>rror';$("#wm").setAttribute("aria-label","Strategy Mirror")} if(SK.tagline){const t=$("#tagline");t.textContent=SK.tagline;t.hidden=false} if(SK.title)$("#heroTitle").textContent=SK.title; if(SK.lead)$("#heroLead").textContent=SK.lead; if(SK.starLabel)$("#starLabel").textContent=SK.starLabel;
   $("#starText").textContent=TIERS.find(t=>t.id==="vision").said.t;
   $("#flightEl").innerHTML=stops().map(s=>`<a class="stop ${s.status}${s.star?" star":""}" href="${s.href}" style="--rag:${rag(s.sev)}" title="${s.label}: gap severity ${Math.round(s.sev*100)}% (sample)"><span class="dot">${s.star?'<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6l13.2 27.2 29.8 4.3-21.6 21 5.1 29.7L50 74.1 23.5 88.2l5.1-29.7-21.6-21 29.8-4.3z" fill="#1b2559"/></svg>':s.code}</span><b>${s.label}</b><small>${statusLabel[s.status]}</small></a>`).join("");
   $("#flockCap").textContent=`Flock tightness ${Math.round(flockScore()*100)}% · drawn from the six levels below, illustrative`;
