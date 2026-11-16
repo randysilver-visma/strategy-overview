@@ -146,11 +146,12 @@ information_sources:
       kind: work_tracker
       location: "Jira (project or board not yet named)"
       access_route: null          # no Jira connector in the interview environment; export or API to decide
-      owner_role: null
+      owner_role: null            # not yet named: the consultant, Product Lead AX, or an engineering lead
       decision_stack_tier: work
       evidence_role: done
-      permission_status: null
+      permission_status: pending
       permission_granted_by_role: null
+      permission_note: "The consultant believes they can grant read access; otherwise the Product Lead, Agentic Experience or an AX engineering lead can (3.4)."
       sensitivity: null
       redaction_needed: null
       scan_frequency: null
