@@ -25,7 +25,8 @@ Show, for one company, division or team: what the strategy documents say (said),
 ## Open items
 - The mockup is a static page with generated placeholder data. Contributions, challenges, review approvals, decision choices and folder scans all need a backend and a storage layer; nothing is saved yet.
 - The data store, issue tracker and other client terms come from the data file (`text` block); the real store is decided in onboarding.
-- A chat over the knowledge base is not in the current layout. Decide in onboarding whether it comes back.
+- Ask Starling (chat overlay) is back as a side panel. The sample answers from page data; the live version needs a model inside the client's network and a decision on what it may read.
+- Review actions (mark reviewed, challenge, prefer a value) work in the page only. The storage adapter must implement `STARLING_HOOKS.onReview`.
 - Because the database varies by client, a storage adapter layer is likely needed. Not designed yet.
 - Onboarding asks only technical questions, derives the rest from the client's material with a source and quote for each item, and asks the client to confirm or challenge it. The rewritten prompt and template (0.2.0) have not been run against a real client.
 - No independent audit (Codex or other) has been run on the prompt, template or mockup.

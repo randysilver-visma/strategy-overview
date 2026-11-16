@@ -36,9 +36,18 @@ Starling is a mirror: it shows its best guess from the sources and does not wait
 | `conf` | `high`, `medium` or `low` | How well the sources support the value. `low` flags the item |
 | `flags` | list of `conflict`, `low_confidence`, `single_source`, `stale`, `no_owner`, `unclear` | Why an owner should look at it |
 | `alternatives` | `[{value, source}]` | Other values found in other sources, shown beside the best guess |
-| `reviewed` | `{by, on}` (role, date) | Set only when an owner has reviewed the item. Clears its Review marker |
+| `reviewed` | `{by, on, value?}` (role, date, preferred value) | Set only when an owner has reviewed the item. Clears its Review marker |
+| `challenges` | `[{by, on, note}]` | Set when a reader challenges the item. The item also gets the `challenged` flag and stays in the review list |
 
 Every item without `reviewed` shows a Review marker (Strategy board, Work tab, record). Flagged items show it in amber with the reasons and also get a line in the Review tab; unflagged ones show it dashed. The Review tab states how many items are not yet reviewed.
+
+## Reviewing and the database
+
+On the Review tab every row opens the item (or the related tab). In an item's record an owner can **Mark reviewed**, **Challenge** (with a note) or **Prefer** one of the other values found; each needs the person's role. In the sample page these actions change the page only. A live build reads reviews from, and writes them to, the client's database. The page calls `window.STARLING_HOOKS.onReview(event)` for every action, with `{rid, kind, id, action: "reviewed" | "challenge", by, on, note, value}`; the storage adapter implements that hook and puts `reviewed` / `challenges` back into the data on the next load.
+
+## Ask Starling (chat overlay)
+
+A side panel, opened from the header or the floating button. In the sample it answers from the page data (review and flags, conflicting sources, unlinked work, goals with no initiative, unfunded work, FTE coverage, owners, decisions, open questions), cites the records it used and says how much is unreviewed. A live build sends the question to a model hosted inside the client's network. Optional `chat` block: `{intro, chips: [..], answers: [{k: [keywords], a: text, cites: [record ids], act: [[label, "#view"]]}]}`; its answers are tried before the built-in ones.
 
 ## Data checks
 

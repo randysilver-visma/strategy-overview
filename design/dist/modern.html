@@ -260,6 +260,33 @@ table.ft tr.grp-r td:first-child{padding-left:8px}
 /* review */
 .qitem{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 14px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
 .qitem+.qitem{margin-top:8px}
+.qitem[hidden]{display:none}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.rvbox{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.rvbox label{display:block;font-size:12.5px;color:var(--muted);margin-top:8px}
+.rvbox input,.rvbox textarea,.rvtools input[type=search]{width:100%;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.rvbox .legend{margin-top:10px}
+.alt{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:6px}
+.rvmsg{color:var(--bad);font-size:12.5px;min-height:1em;margin-top:6px}
+.rvtools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:10px 0}
+.rvtools input[type=search]{width:260px;max-width:100%}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:20;box-shadow:0 4px 16px rgba(0,0,0,.25);border-radius:99px;padding:10px 18px}
+.chat{position:fixed;top:0;bottom:0;right:0;width:min(420px,100%);z-index:25;background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;box-shadow:-8px 0 24px rgba(0,0,0,.18)}
+.chat[hidden]{display:none}
+.chat-head{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chat-head small{display:block;color:var(--muted)}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:92%;padding:9px 12px;border-radius:10px;overflow-wrap:anywhere}
+.msg.u{align-self:flex-end;background:var(--accent);color:var(--accent-fg)}
+.msg.a{align-self:flex-start;background:var(--surface2)}
+.msg .cites{margin-top:6px;display:flex;gap:4px 10px;flex-wrap:wrap}
+.msg .basis{margin-top:6px;font-size:12px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 8px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:99px;padding:3px 10px;font-size:12px}
+.chip:hover{background:var(--surface2)}
+.composer{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line)}
+.composer input{flex:1;font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.chat .notice{font-size:12px;color:var(--muted);padding:8px 14px;border-top:1px solid var(--line);background:var(--warn-soft)}
 .qitem>div{min-width:0}
 .qitem .m{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted)}
 .qitem b{display:block;font-size:14.5px;margin:3px 0 2px}
@@ -333,7 +360,7 @@ html[data-theme="dark"] body{background-image:linear-gradient(135deg,rgba(255,25
       <h1><span class="wm" id="wm">Starling</span> <span class="proto">Prototype</span></h1>
       <div class="tag" id="tagline" hidden></div>
       <div class="sub" id="hdrSub"></div>
-      <div class="hdr-actions"><button class="btn" id="themeBtn" type="button">Theme</button></div>
+      <div class="hdr-actions"><button class="btn primary" id="askTop" type="button" aria-controls="chat" aria-expanded="false">Ask Starling</button><button class="btn" id="themeBtn" type="button">Theme</button></div>
     </div>
     <nav class="tabs" id="tabs" aria-label="Views"></nav>
   </div>
@@ -345,6 +372,14 @@ html[data-theme="dark"] body{background-image:linear-gradient(135deg,rgba(255,25
 
 <div class="scrim" id="scrim" hidden></div>
 <div class="sr" id="live" role="status" aria-live="polite"></div>
+<button class="btn primary fab" id="chatFab" type="button" aria-expanded="false" aria-controls="chat"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-6l-5 4v-4H7a3 3 0 0 1-3-3z" fill="currentColor"/></svg>Ask Starling</button>
+<aside class="chat" id="chat" hidden aria-label="Ask Starling">
+  <div class="chat-head"><div><strong>Ask Starling</strong><small>Answers cite records and say how much is unreviewed</small></div><button class="btn sm" id="chatClose" type="button">Close</button></div>
+  <div class="msgs" id="chatMsgs" aria-live="polite"></div>
+  <div class="chips" id="chatChips"></div>
+  <div class="notice">Sample: answers are worked out from the data on this page. A live build sends your question to a model hosted inside your network, with the same citations.</div>
+  <form class="composer" id="chatForm"><label for="chatIn" class="sr">Question</label><input type="text" id="chatIn" placeholder="Ask about gaps, owners, review, unlinked work…" autocomplete="off"><button class="btn primary" type="submit">Send</button></form>
+</aside>
 <aside class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="drTitle">
   <div class="dr-h"><div><div class="label" id="drKicker"></div><h3 id="drTitle"></h3><div class="sub" id="drSub"></div></div><button class="xbtn" id="drClose" type="button" aria-label="Close">×</button></div>
   <div class="dr-b" id="drBody"></div>
@@ -383,7 +418,7 @@ const PILOT=(D.pilot||[]).filter(id=>SBY[id]);
 const avgH=i=>{let t=0,n=0;for(let k=HZ.from;k<=HZ.to;k++){t+=i.q[k]||0;n++}return n?t/n:0};
 const r1=x=>Math.round(x*10)/10;
 const fmt=x=>(Math.round(x*10)/10).toString();
-const state={view:"overview",sel:null,open:{},allOpen:false,work:{view:"roadmap",level:"strategies",open:{},research:false},showNonDisc:false,allQ:false,choice:{},drawerStack:[]};
+const state={view:"overview",sel:null,open:{},allOpen:false,work:{view:"roadmap",level:"strategies",open:{},research:false},showNonDisc:false,allQ:false,choice:{},drawerStack:[],rv:{kind:"All",all:false,q:""},role:""};
 
 /* ---------- derived figures ---------- */
 const initsOf=s=>INITS.filter(i=>inStrat(i,s));
@@ -405,18 +440,36 @@ function validate(){
 const DATACHECKS=validate();
 /* Best guesses are shown as they are. Items the import could not be sure of carry conf ("high|medium|low"),
    flags (conflict|low_confidence|single_source|stale|no_owner|unclear) and alternatives [{value,source}]. */
-const FLAG_LABEL={conflict:"Sources conflict",low_confidence:"Low confidence",single_source:"Single source",stale:"Source may be stale",no_owner:"No owner",unclear:"Unclear"};
+const FLAG_LABEL={challenged:"Challenged by a reader",conflict:"Sources conflict",low_confidence:"Low confidence",single_source:"Single source",stale:"Source may be stale",no_owner:"No owner",unclear:"Unclear"};
 const flagsOf=x=>{const f=[...((x&&x.flags)||[])];if(x&&x.conf==="low"&&!f.includes("low_confidence"))f.push("low_confidence");return f};
 const reviewPill=x=>!x||x.reviewed?"":flagsOf(x).length?` <span class="pill amber" title="${esc(flagsOf(x).map(f=>FLAG_LABEL[f]||f).join(", "))}">Review</span>`:` <span class="pill dash" title="Imported best guess, not yet reviewed by an owner">Review</span>`;
-const ALLITEMS=[...STRATS,...STRATS.flatMap(s=>s.goals),...OPPS,...INITS];
-const UNREVIEWED=()=>ALLITEMS.filter(x=>!x.reviewed).length;
-const FLAGGED=[["Strategy",x=>"s:"+x.id,STRATS],["Goal",x=>"g:"+x.strat+":"+x.id,GOALS],["Opportunity",x=>"p:"+x.id,OPPS],["Initiative",x=>"i:"+x.id,INITS]].flatMap(([k,rid,list])=>list.filter(x=>flagsOf(x).length).map(x=>({kind:k,rid:rid(x),x})));
-function provHtml(x){
-  if(!x)return "";const f=flagsOf(x),alt=x.alternatives||[];if(x.reviewed&&!f.length&&!alt.length)return `<div class="callout" style="margin-top:12px"><b>Reviewed</b>${x.reviewed.by?` by ${esc(x.reviewed.by)}`:""}${x.reviewed.on?` on ${esc(x.reviewed.on)}`:""}</div>`;
-  if(!f.length&&!x.conf&&!alt.length)return `<div class="callout" style="margin-top:12px"><b>Best guess</b><br><span class="muted">Imported from the sources. Not yet reviewed by an owner.</span></div>`;
-  return `<div class="callout" style="margin-top:12px"><b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${f.length?`<br>Flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}`:""}${alt.length?`<br>Other values found:<br>${alt.map(a=>`${esc(a.value)}${a.source?` <span class="muted">(${esc(a.source)})</span>`:""}`).join("<br>")}`:""}<br><span class="muted">Imported from the sources. An owner should review it.</span></div>`;
+const ITEMS=[["Strategy",x=>"s:"+x.id,STRATS],["Goal",x=>"g:"+x.strat+":"+x.id,GOALS],["Opportunity",x=>"p:"+x.id,OPPS],["Initiative",x=>"i:"+x.id,INITS]].flatMap(([k,rid,list])=>list.map(x=>({kind:k,rid:rid(x),x})));
+const flaggedNow=()=>ITEMS.filter(r=>!r.x.reviewed&&flagsOf(r.x).length), unflaggedNow=()=>ITEMS.filter(r=>!r.x.reviewed&&!flagsOf(r.x).length);
+const UNREVIEWED=()=>ITEMS.filter(r=>!r.x.reviewed).length;
+const EVENTS=[];
+function recordReview(rid,act,role,note,value){
+  const r=ITEMS.find(z=>z.rid===rid); if(!r)return null;
+  const on=new Date().toISOString().slice(0,10), ev={rid,kind:r.kind,id:r.x.id,action:act,by:role,on,note:note||null,value:value||null};
+  if(act==="challenge"){r.x.flags=[...(r.x.flags||[]).filter(f=>f!=="challenged"),"challenged"];r.x.challenges=[...(r.x.challenges||[]),{by:role,on,note}];delete r.x.reviewed}
+  else r.x.reviewed=Object.assign({by:role,on},value?{value}:{});
+  EVENTS.push(ev); try{const h=window.STARLING_HOOKS;if(h&&h.onReview)h.onReview(ev)}catch(_){}
+  return r;
+}function provHtml(x,rid){
+  if(!x)return "";
+  const f=flagsOf(x),alt=x.alternatives||[],R=x.reviewed;
+  const why=f.length?`<br>Flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}`:"";
+  const ch=(x.challenges||[]).map(c=>`<br>Challenged by ${esc(c.by)} on ${esc(c.on)}: ${esc(c.note)}`).join("");
+  let h;
+  if(R){
+    h=`<b>Reviewed</b>${R.by?` by ${esc(R.by)}`:""}${R.on?` on ${esc(R.on)}`:""}${R.value?`<br>Preferred value: ${esc(R.value)}`:""}${f.length?`<br><span class="muted">Was flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}</span>`:""}`;
+  }else{
+    const alts=alt.length?`<br>Other values found:${alt.map((a,n)=>`<div class="alt"><span>${esc(a.value)}${a.source?` <span class="muted">(${esc(a.source)})</span>`:""}</span>${rid?`<button class="btn sm" type="button" data-rvact="prefer" data-rid="${esc(rid)}" data-val="${n}">Prefer this</button>`:""}</div>`).join("")}`:"";
+    h=`<b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${why}${ch}${alts}<br><span class="muted">Imported from the sources. Not yet reviewed by an owner.</span>`
+      +(rid?`<div class="rvbox"><b>Review this item</b><label for="rvRole">Your role</label><input id="rvRole" type="text" autocomplete="off" placeholder="e.g. Strategy lead" value="${esc(state.role||"")}"><label for="rvNote">Note (needed to challenge)</label><textarea id="rvNote" rows="2"></textarea><div class="rvmsg" id="rvMsg" role="alert"></div><div class="legend"><button class="btn sm" type="button" data-rvact="ok" data-rid="${esc(rid)}">Mark reviewed</button><button class="btn sm" type="button" data-rvact="challenge" data-rid="${esc(rid)}">Challenge</button></div><p class="hint" style="margin:8px 0 0">Sample: a review is kept in this page only. A live build writes it to your database.</p></div>`:"");
+  }
+  return `<div id="rvwrap" class="callout" tabindex="-1" style="margin-top:12px">${h}</div>`;
 }
-const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+MODELCHECKS.length+DATACHECKS.length+FLAGGED.length;
+const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+MODELCHECKS.length+DATACHECKS.length+flaggedNow().length;
 const decisionCount=()=>1+OTHER_DECISIONS.length;
 const outcomeMeasures=g=>g.measures.filter(m=>m.kind==="outcome");
 function goalTarget(g){const ys=outcomeMeasures(g).map(m=>m.by).filter(Boolean).map(Number).filter(Number.isFinite);if(!ys.length||!QS.length)return null;const y=Math.min(...ys);if(y>QS[QS.length-1].year)return "later";let idx=0;QS.forEach((q,k)=>{if(q.year<=y)idx=k});return idx}
@@ -483,7 +536,7 @@ function vOverview(){
     <a class="tile" href="#decisions" style="text-decoration:none"><b>${decisionCount()}</b><span>decisions waiting</span></a>
     <a class="tile" href="#questions" style="text-decoration:none"><b>${QUESTIONS.length}</b><span>open questions</span></a>
     <a class="tile" href="#review" style="text-decoration:none"><b>${reviewCount()}</b><span>items waiting for review</span></a>
-    <a class="tile" href="#review" style="text-decoration:none"><b>${UNREVIEWED()} of ${ALLITEMS.length}</b><span>strategies, goals, opportunities and initiatives not yet reviewed by an owner</span></a>
+    <a class="tile" href="#review" style="text-decoration:none"><b>${UNREVIEWED()} of ${ITEMS.length}</b><span>strategies, goals, opportunities and initiatives not yet reviewed by an owner</span></a>
   </div></div>`;
 }
 
@@ -721,17 +774,30 @@ function vQuestions(){
    <div class="notes">${qs.map(q=>`<article class="note"><div class="k"><span>${esc(q.id)}</span><span style="font-family:var(--font-body)">${esc(q.cat)}</span></div><h3>${esc(q.t)}</h3><p>${esc(q.why)}</p><small>Suggested decision maker <b>${esc(q.dm)}</b></small></article>`).join("")}</div>
    <div style="margin-top:16px"><button class="btn" type="button" id="allQ">${state.allQ?"Show fewer":"Show all "+QUESTIONS.length+" questions"}</button></div></div>`;
 }
+function rvRows(){
+  const rows=[], pill=k=>`<span class="pill amber"><i class="dot"></i>${esc(k)}</span>`;
+  CHANGES.forEach(c=>rows.push({k:"Change",s:`change ${c.n} ${c.k} indicative update`,h:`<div class="qitem"><div><div class="m">${pill(c.k)}<span class="mono">${c.d}</span><span>${c.rev?"Review "+c.rev:"Review owner not recorded"}</span></div><b>Change ${c.n}: an indicative update</b><div class="diff"><del>Indicative earlier state.</del> → <ins>Indicative new state.</ins></div></div><button class="btn sm" type="button" data-goto="decisions">See in Decisions</button></div>`}));
+  CLAIMDOCS.forEach(d=>rows.push({k:"Claims",s:`source document ${d.id} ${d.kind} claims`,h:`<div class="qitem"><div><div class="m"><span class="pill"><i class="dot"></i>Claims</span><span>${esc(d.kind)}</span></div><b>Source document ${esc(d.id)} (indicative)</b><div class="muted" style="font-size:12.5px">${d.n} claims Proposed${d.conflicts?`, <span class="red">${d.conflicts} conflict with the record</span>`:""}</div></div><button class="btn sm" type="button" data-claims="${esc(d.id)}">See claims</button></div>`}));
+  const item=(r,flagged)=>({k:r.kind,s:(r.x.name+" "+r.x.id+" "+r.kind+" "+flagsOf(r.x).map(f=>FLAG_LABEL[f]||f).join(" ")).toLowerCase(),h:`<div class="qitem"><div><div class="m">${flagged?`<span class="pill amber"><i class="dot"></i>${esc(r.kind)}</span>`:`<span class="pill dash">${esc(r.kind)}</span>`}<span>${r.x.conf?esc(r.x.conf)+" confidence":""}</span><span>${flagged?flagsOf(r.x).map(k=>esc(FLAG_LABEL[k]||k)).join(", "):"Not flagged by the import"}</span></div><b>${esc(r.x.name)}</b>${(r.x.alternatives||[]).length?`<div class="muted" style="font-size:12.5px">Other values found: ${(r.x.alternatives||[]).map(a=>esc(a.value)+(a.source?" ("+esc(a.source)+")":"")).join("; ")}</div>`:""}</div><button class="btn sm" type="button" data-rec="${esc(r.rid)}">Open and review</button></div>`});
+  flaggedNow().forEach(r=>rows.push(item(r,true)));
+  DATACHECKS.forEach(m=>{const mm=/^Initiative (.+?)(?::| is )/.exec(m),ini=mm&&INITS.find(i=>i.name==="Initiative "+mm[1]);rows.push({k:"Data check",s:"data check "+String(m).toLowerCase(),h:`<div class="qitem mc"><b>Data check</b><span>${esc(m)}</span><span>${ini?`<button class="btn sm" type="button" data-rec="i:${esc(ini.id)}">Open</button>`:""}</span><span class="muted" style="font-size:12.5px">Found by the page while reading the data. Fix it in the data store.</span></div>`})});
+  MODELCHECKS.forEach(m=>rows.push({k:"Model check",s:"model check "+m.n,h:`<div class="qitem mc"><b>Model check</b><span>Model-health flag ${m.n}</span><span></span><span class="muted" style="font-size:12.5px">Indicative detail about a gap or inconsistency in the model.</span></div>`}));
+  if(state.rv.all)unflaggedNow().forEach(r=>rows.push(item(r,false)));
+  return rows;
+}
 function vReview(){
-  return `<div class="wrap view"><h2>Waiting for review</h2><p class="lede">Items the import flagged as conflicting, low confidence or without an owner, plus changes and data checks. The page shows its best guess for everything; an owner should review what is flagged. <b>${UNREVIEWED()} of ${ALLITEMS.length}</b> strategies, goals, opportunities and initiatives have not yet been reviewed by an owner.</p>
-   ${CHANGES.map(c=>`<div class="qitem"><div><div class="m"><span class="pill amber"><i class="dot"></i>${esc(c.k)}</span><span class="mono">${c.d}</span><span>${c.rev?"Review "+c.rev:"Review owner not recorded"}</span></div><b>Change ${c.n}: an indicative update</b><div class="diff"><del>Indicative earlier state.</del> → <ins>Indicative new state.</ins></div></div></div>`).join("")}
-   ${CLAIMDOCS.map(d=>`<div class="qitem"><div><div class="m"><span class="pill"><i class="dot"></i>Claims</span><span>${esc(d.kind)}</span></div><b>Source document ${esc(d.id)} (indicative)</b><div class="muted" style="font-size:12.5px">${d.n} claims Proposed${d.conflicts?`, <span class="red">${d.conflicts} conflict with the record</span>`:""}</div></div><button class="btn sm" type="button" data-claims="${esc(d.id)}">See claims</button></div>`).join("")}
-   ${FLAGGED.map(f=>`<div class="qitem"><div><div class="m"><span class="pill amber"><i class="dot"></i>${esc(f.kind)}</span><span>${f.x.conf?esc(f.x.conf)+" confidence":""}</span><span>${flagsOf(f.x).map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}</span></div><b>${esc(f.x.name)}</b>${(f.x.alternatives||[]).length?`<div class="muted" style="font-size:12.5px">Other values found: ${(f.x.alternatives||[]).map(a=>esc(a.value)+(a.source?" ("+esc(a.source)+")":"")).join("; ")}</div>`:""}</div><button class="btn sm" type="button" data-rec="${esc(f.rid)}">Open</button></div>`).join("")}
-   ${DATACHECKS.map(m=>`<div class="qitem mc"><b>Data check</b><span>${esc(m)}</span><span></span><span class="muted" style="font-size:12.5px">Found by the page while reading the data. Fix it in the data store.</span></div>`).join("")}
-   ${MODELCHECKS.map(m=>`<div class="qitem mc"><b>Model check</b><span>Model-health flag ${m.n}</span><span></span><span class="muted" style="font-size:12.5px">Indicative detail about a gap or inconsistency in the model.</span></div>`).join("")}</div>`;
+  const rv=state.rv, rows=rvRows(), kinds=["Change","Claims","Strategy","Goal","Opportunity","Initiative","Data check","Model check"].filter(k=>rows.some(r=>r.k===k));
+  if(rv.kind!=="All"&&!kinds.includes(rv.kind))rv.kind="All";
+  const q=rv.q.trim().toLowerCase(), vis=r=>(rv.kind==="All"||r.k===rv.kind)&&(!q||r.s.includes(q)), n=rows.filter(vis).length;
+  const chips=["All",...kinds].map(k=>`<button class="btn sm" type="button" data-rvkind="${esc(k)}" aria-pressed="${rv.kind===k}">${esc(k)} ${k==="All"?rows.length:rows.filter(r=>r.k===k).length}</button>`).join(" ");
+  return `<div class="wrap view"><h2>Waiting for review</h2><p class="lede">Everything the page shows is a best guess from the sources. This list is what needs an owner first: items the import flagged, changes, source documents and data checks. Open an item to mark it reviewed, challenge it, or prefer another value. <b>${UNREVIEWED()} of ${ITEMS.length}</b> strategies, goals, opportunities and initiatives have not yet been reviewed by an owner.</p>
+   <div class="legend" role="group" aria-label="Filter by type">${chips}</div>
+   <div class="rvtools"><label class="sr" for="rvSearch">Search this list</label><input id="rvSearch" type="search" placeholder="Search by name, ID or reason" value="${esc(rv.q)}"><label><input type="checkbox" id="rvAll"${rv.all?" checked":""}> Also list unreviewed items the import did not flag (${unflaggedNow().length})</label><span class="muted" id="rvCount" role="status">${plural(n,"item")} shown</span></div>
+   ${rows.map(r=>r.h.replace(/^<div class="qitem/,`<div data-s="${esc(r.s)}" data-k="${esc(r.k)}"${vis(r)?"":" hidden"} class="qitem`)).join("")}</div>`;
 }
 
 /* ---------- drawer ---------- */
-function setModal(on){["#main","header.top",".credits"].forEach(q=>{const e=document.querySelector(q);if(e){if(on)e.setAttribute("inert","");else e.removeAttribute("inert")}})}
+function setModal(on){["#main","header.top",".credits","#chat","#chatFab"].forEach(q=>{const e=document.querySelector(q);if(e){if(on)e.setAttribute("inert","");else e.removeAttribute("inert")}})}
 function openDrawer(kicker,title,sub,body,push){
   if(push&&!$("#drawer").hidden)state.drawerStack.push([$("#drKicker").textContent,$("#drTitle").textContent,$("#drSub").innerHTML,$("#drBody").innerHTML]);
   else if(!push)state.drawerStack=[];
@@ -760,7 +826,7 @@ function linksHtml(i){
   return i.links.map(l=>`${esc(l.strat+" "+((SBY[l.strat]||{}).name||""))} · ${l.goal?"goal "+esc(l.goal):"no goal yet"}${l.opp?" · opportunity "+esc(l.opp)+" (proposed)":""}`).join("<br>")+(ss.length>1?`<br><span class="muted">FTE split: ${ss.map(x=>esc(x)+" "+Math.round(100*sh(i,x))+"%").join(", ")}</span>`:"");
 }
 function openRec(id,push){
-  { const [k0,a0,b0]=id.split(":"); state.prov=provHtml(k0==="s"&&a0!=="none"?SBY[a0]:k0==="g"?GBY[b0]:k0==="p"?OBY[a0]:k0==="i"?INITS.find(x=>x.id===a0):null); }
+  { const [k0,a0,b0]=id.split(":"); const xx=k0==="s"&&a0!=="none"?SBY[a0]:k0==="g"?GBY[b0]:k0==="p"?OBY[a0]:k0==="i"?INITS.find(x=>x.id===a0):null; state.prov=provHtml(xx,xx?id:null); }
   const [k,a,b]=id.split(":");
   if(id==="vision")return openDrawer("North Star · Org vision",VISION,"Owner: Org leadership · source: Org strategy (indicative)",`<p>The Org vision is the outcome the organisation exists to create. It is not yet measured, so the North Star level shows as not assessed.</p>`+recActions,push);
   if(k==="o"){const o=OBJECTIVES.find(x=>x.id===a),ss=STRATS.filter(s=>s.objs.includes(a));return openDrawer("Org objective · "+a,o.name,"Indicative description of this objective.",`<dl class="rec"><dt>Team strategies</dt><dd>${ss.map(s=>s.id+" "+s.name).join(", ")||"None"}</dd><dt>Status</dt><dd>Not assessed</dd></dl>`+recActions,push)}
@@ -806,11 +872,11 @@ function initFlock(){
 
 /* ---------- routing and events ---------- */
 const RENDER={overview:vOverview,strategy:vStrategy,work:vWork,decisions:vDecisions,questions:vQuestions,review:vReview};
-const FKEYS=["data-toggle","data-wopen","data-wview","data-wlevel","data-wgrp","data-choice","data-list","data-rec","data-node"];
+const FKEYS=["data-toggle","data-wopen","data-wview","data-wlevel","data-wgrp","data-choice","data-list","data-rec","data-node","data-rvkind"];
 function focusKey(el){
   if(!el||!el.closest||!el.closest("#main"))return null;
   for(const k of FKEYS){const h=el.closest("["+k+"]");if(h&&el.closest("#main"))return "["+k+'="'+String(h.getAttribute(k)).replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'"]'}
-  const id=el.closest("#resBtn,#ndBtn,#allQ,#expandAll,#resetCh");return id?"#"+id.id:null;
+  const id=el.closest("#resBtn,#ndBtn,#allQ,#expandAll,#resetCh,#rvAll");return id?"#"+id.id:null;
 }
 function annotate(){
   document.querySelectorAll(".board [data-node]").forEach(e=>{e.setAttribute("role","group");e.setAttribute("aria-label",e.textContent.replace(/\s+/g," ").trim().slice(0,140));if(e.dataset.node===state.sel)e.setAttribute("aria-current","true")});
@@ -835,6 +901,12 @@ document.addEventListener("click",e=>{
   if(t.closest("#drClose")||t.closest("#scrim"))return closeDrawer();
   if(t.closest("#drBack")){const p=state.drawerStack.pop();$("#drKicker").textContent=p[0];$("#drTitle").textContent=p[1];$("#drSub").innerHTML=p[2];$("#drBody").innerHTML=p[3];return}
   if(t.closest("#themeBtn")){const r=document.documentElement;const dark=r.dataset.theme==="dark";r.dataset.theme=dark?"light":"dark";if(state.view==="strategy")drawWires();return}
+  const ra=t.closest("[data-rvact]"); if(ra)return doReview(ra);
+  const rk=t.closest("[data-rvkind]"); if(rk){state.rv.kind=rk.dataset.rvkind;return render(true)}
+  const gt=t.closest("[data-goto]"); if(gt){location.hash=gt.dataset.goto;return}
+  if(t.closest("#askTop")||t.closest("#chatFab"))return openChat(true,t.closest("button"));
+  if(t.closest("#chatClose"))return openChat(false);
+  const cc=t.closest("#chatChips .chip"); if(cc)return ask(cc.textContent);
   const rec=t.closest("[data-rec]"); if(rec){e.stopPropagation();return openRec(rec.dataset.rec,!!rec.dataset.push)}
   const ls=t.closest("[data-list]"); if(ls)return openList(ls.dataset.list);
   if(t.closest("[data-contrib]"))return toast("Prototype: nothing is saved. In a live build this goes to the owner for review.");
@@ -854,10 +926,62 @@ document.addEventListener("click",e=>{
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&!$("#drawer").hidden)return closeDrawer();
-  if(e.key==="Tab"&&!$("#drawer").hidden){const f=[...$("#drawer").querySelectorAll("button,[href],select,input,[tabindex]:not([tabindex='-1'])")].filter(x=>!x.disabled&&!x.closest("[hidden]"));if(f.length){const first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}}
+  if(e.key==="Escape"&&!$("#chat").hidden)return openChat(false);
+  if(e.key==="Tab"&&!$("#drawer").hidden){const f=[...$("#drawer").querySelectorAll("button,[href],select,input,textarea,[tabindex]:not([tabindex='-1'])")].filter(x=>!x.disabled&&!x.closest("[hidden]"));if(f.length){const first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}}
   if((e.key==="Enter"||e.key===" ")&&e.target.matches(".board [data-node]")){e.preventDefault();e.target.click()}
 });
-document.addEventListener("change",e=>{const s=e.target.closest("[data-choice]");if(s){state.choice[s.dataset.choice]=s.value;render(true)}});
+document.addEventListener("input",e=>{if(e.target.id!=="rvSearch")return;state.rv.q=e.target.value;const q=state.rv.q.trim().toLowerCase();let n=0;document.querySelectorAll("#main [data-s]").forEach(r=>{const ok=(state.rv.kind==="All"||r.dataset.k===state.rv.kind)&&(!q||r.dataset.s.includes(q));r.hidden=!ok;if(ok)n++});const c=$("#rvCount");if(c)c.textContent=plural(n,"item")+" shown"});
+document.addEventListener("change",e=>{if(e.target.id==="rvAll"){state.rv.all=e.target.checked;return render(true)}const s=e.target.closest("[data-choice]");if(s){state.choice[s.dataset.choice]=s.value;render(true)}});
+function doReview(btn){
+  const rid=btn.dataset.rid, act=btn.dataset.rvact, role=(($("#rvRole")||{}).value||"").trim(), note=(($("#rvNote")||{}).value||"").trim(), msg=$("#rvMsg");
+  const r=ITEMS.find(z=>z.rid===rid); if(!r)return;
+  if(!role){msg.textContent="Add your role first, so the review can be traced to someone.";$("#rvRole").focus();return}
+  if(act==="challenge"&&!note){msg.textContent="Add a note saying what you would challenge.";$("#rvNote").focus();return}
+  state.role=role;
+  const val=act==="prefer"?((r.x.alternatives||[])[Number(btn.dataset.val)]||{}).value:null;
+  recordReview(rid,act==="ok"||act==="prefer"?"reviewed":"challenge",role,note,val);
+  const tmp=document.createElement("div");tmp.innerHTML=provHtml(r.x,rid);$("#rvwrap").replaceWith(tmp.firstElementChild);$("#rvwrap").focus();
+  toast(act==="challenge"?"Challenge recorded (sample: kept in this page only)":"Marked reviewed (sample: kept in this page only)");
+  render(true);
+}
+
+/* ---------- Ask Starling (chat overlay) ---------- */
+const CHATCFG=D.chat||{};
+function chatItems(arr){return arr.map(r=>`<button class="lnk" type="button" data-rec="${esc(r.rid)}">${esc(r.x.name)}</button>`).join("")}
+function chatIntents(){
+  const top=(arr,n)=>arr.slice(0,n);
+  return [
+   {k:["conflict","disagree","contradict","differ"],f:()=>{const c=ITEMS.filter(r=>!r.x.reviewed&&(flagsOf(r.x).includes("conflict")||(r.x.alternatives||[]).length));return{t:c.length?`${plural(c.length,"item")} ${c.length===1?"has":"have"} sources that disagree. ${top(c,3).map(r=>`${r.x.name}: ${(r.x.alternatives||[]).map(a=>a.value+(a.source?" ("+a.source+")":"")).join(" vs ")||"see record"}`).join(". ")}.`:"No unreviewed item currently has conflicting sources.",cites:top(c,5),act:[["Open the review list","#review"]]}}},
+   {k:["unlinked","not linked","no strategy","orphan","unaligned","align"],f:()=>{const its=initsOf(null),fte=r1(its.reduce((a,i)=>a+avgH(i),0));return{t:its.length?`${plural(its.length,"initiative")} ${its.length===1?"is":"are"} not linked to a strategy, about ${fmt(fte)} FTE on average in ${HZ.label||"the period"}. Largest: ${top([...its].sort((a,b)=>b.fte-a.fte),3).map(i=>i.name+" ("+fmt(i.fte)+" FTE)").join(", ")}.`:"Every initiative is linked to a strategy.",cites:top([...its].sort((a,b)=>b.fte-a.fte),3).map(i=>ITEMS.find(r=>r.rid==="i:"+i.id)).filter(Boolean),act:[["See it on the Strategy tab","#strategy"]]}}},
+   {k:["no initiative","no work","uncovered","without work","goals"],f:()=>{const g=goalsNoInit();return{t:g.length?`${g.length} of ${GOALS.length} goals have no initiative: ${top(g,8).map(x=>x.id).join(", ")}${g.length>8?", …":""}.`:"Every goal has at least one initiative.",cites:top(g,5).map(x=>ITEMS.find(r=>r.rid==="g:"+x.strat+":"+x.id)).filter(Boolean),act:[["See the Work tab","#work"]]}}},
+   {k:["unfunded"],f:()=>{const u=unfunded();return{t:u.length?`${plural(u.length,"initiative")} ${u.length===1?"is":"are"} unfunded: ${top(u,5).map(i=>i.name).join(", ")}${u.length>5?", …":""}.`:"No initiative is unfunded.",cites:top(u,5).map(i=>ITEMS.find(r=>r.rid==="i:"+i.id)).filter(Boolean),act:[["See the Work tab","#work"]]}}},
+   {k:["fte","coverage","stated","capacity","headcount"],f:()=>{const c=coverage();return{t:`${c.inRec} of ${c.stated} stated strategy FTE${c.pct===null?"":` (${c.pct}%)`} is in recorded, funded initiatives linked to a strategy.`,cites:[],act:[["See the Work tab","#work"]]}}},
+   {k:["owner","who owns","no owner","accountable"],f:()=>{const c=ITEMS.filter(r=>!r.x.reviewed&&flagsOf(r.x).includes("no_owner"));return{t:c.length?`${plural(c.length,"item")} ${c.length===1?"has":"have"} no owner: ${top(c,4).map(r=>r.x.name).join(", ")}${c.length>4?", …":""}.`:"No unreviewed item is flagged as having no owner.",cites:top(c,5),act:[["Open the review list","#review"]]}}},
+   {k:["decision","decide"],f:()=>({t:`${plural(decisionCount(),"decision")} ${decisionCount()===1?"is":"are"} waiting.`,cites:[],act:[["See Decisions","#decisions"]]})},
+   {k:["question","open"],f:()=>({t:`${plural(QUESTIONS.length,"question")} ${QUESTIONS.length===1?"is":"are"} open. ${top(QUESTIONS,3).map(q=>q.t+" (suggested decision maker "+q.dm+")").join(". ")}.`,cites:[],act:[["See open questions","#questions"]]})},
+   {k:["review","flag","unreviewed","trust","confiden","uncertain","check","wrong"],f:()=>{const fl=flaggedNow();return{t:`${fl.length} items are flagged by the import, and ${UNREVIEWED()} of ${ITEMS.length} have not yet been reviewed by an owner.${fl.length?` Flagged: ${top(fl,4).map(r=>r.x.name).join(", ")}${fl.length>4?", …":""}.`:""}`,cites:top(fl,5),act:[["Open the review list","#review"]]}}}
+  ];
+}
+function chatAnswer(q){
+  const l=q.toLowerCase(), has=k=>new RegExp("\\b"+k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).test(l);
+  const own=(CHATCFG.answers||[]).find(c=>(c.k||[]).some(has));
+  let t,cites=[],act=[],basis=true;
+  if(own){t=own.a;cites=(own.cites||[]).map(id=>ITEMS.find(r=>r.rid===id)).filter(Boolean);act=own.act||[]}
+  else{const hit=chatIntents().find(c=>c.k.some(has));
+    if(hit){const r=hit.f();t=r.t;cites=r.cites||[];act=r.act||[]}
+    else{t="I can’t find that in the data on this page. In this sample I can answer about review and flags, conflicting sources, unlinked work, goals with no initiative, unfunded work, FTE coverage, owners, decisions and open questions.";basis=false}}
+  return `${esc(t)}${cites.length?`<div class="cites">${chatItems(cites)}</div>`:""}${act.length?`<div class="cites">${act.map(a=>`<a href="${esc(a[1])}" data-closechat>${esc(a[0])}</a>`).join("")}</div>`:""}${basis?`<div class="basis">Based on best guesses: ${UNREVIEWED()} of ${ITEMS.length} items are not yet reviewed.</div>`:""}`;
+}
+function chatMsg(cls,html){const d=document.createElement("div");d.className="msg "+cls;d.innerHTML=html;$("#chatMsgs").appendChild(d);$("#chatMsgs").scrollTop=$("#chatMsgs").scrollHeight}
+function ask(q){chatMsg("u",esc(q));setTimeout(()=>chatMsg("a",chatAnswer(q)),200)}
+function openChat(o,from){
+  $("#chat").hidden=!o;$("#chatFab").hidden=o;$("#chatFab").setAttribute("aria-expanded",o);$("#askTop").setAttribute("aria-expanded",o);
+  if(o){state.chatOpener=from||document.activeElement;$("#chatIn").focus()}else{const f=state.chatOpener;state.chatOpener=null;const el=f&&f.isConnected&&!f.hidden?f:$("#askTop");if(el)el.focus()}
+}
+document.addEventListener("click",e=>{const c=e.target.closest("[data-closechat]");if(c)openChat(false)});
+$("#chatForm").onsubmit=e=>{e.preventDefault();const v=$("#chatIn").value.trim();if(!v)return;$("#chatIn").value="";ask(v)};
+chatMsg("a",esc(CHATCFG.intro||"Ask what needs review, where sources disagree, what work is unlinked, or what decision is next. I answer from the data on this page and say how much of it is unreviewed."));
+$("#chatChips").innerHTML=(CHATCFG.chips||["What needs review?","Where do sources disagree?","What work is unlinked?","Which goals have no initiative?","What is open?"]).map(c=>`<button class="chip" type="button">${esc(c)}</button>`).join("");
 route();
 </script>
 
