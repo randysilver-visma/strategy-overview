@@ -51,6 +51,10 @@ hosting:
     asked_of: "the consultant's tech contact (role not yet recorded)"
     asked_on: "2026-11-16"
     current_state: "Code is in randysilver-visma/strategy-overview on GitHub"
+  approvals_pending:
+    question: "Does going live need a security or privacy review, an architecture or change board, or sign-off for AI use on internal documents? Who runs each?"
+    asked_of: "the consultant's tech contact (role not yet recorded)"
+    status: "to ask"
   code_host_default_used: null  # true if GitHub chosen because no alternative exists
   repo_location: null           # org/repo path once created
   repo_visibility: null         # one of: private | internal
