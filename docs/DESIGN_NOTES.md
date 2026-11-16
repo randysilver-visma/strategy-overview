@@ -31,3 +31,9 @@ Show, for one company, division or team: what the strategy documents say (said),
 - No independent audit (Codex or other) has been run on the prompt, template or mockup.
 
 - **Open (design):** the animation has only been checked in a headless browser, not on real screens. Tagline wording ("Enabling strategic alignment") is a placeholder; alternatives considered: "Fly the same way", "One flock, one star".
+
+## Accessibility (current state)
+
+- Done: focus stays on the control you used when a view redraws; the drawer is a modal dialog (focus moves in, is trapped, returns to the opener, and the page behind it is inert); view changes are announced; roadmap bars and target diamonds have text labels; the flock has a Pause motion button and stays still when the system asks for reduced motion.
+- Board boxes are focusable groups with a text label and `aria-current` when selected. Tracing a box with the keyboard works (Enter or Space), but a screen-reader-first alternative to the wires, such as a list of linked items in the drawer, is still to do.
+- Not yet checked with a real screen reader or in a browser's accessibility tools; testing so far used a scripted DOM only.
