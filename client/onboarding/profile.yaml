@@ -262,8 +262,8 @@ work_tracking:
     method: null                # one of: tag_or_field_in_tracker | parent_child | set_during_onboarding | edited_in_tool | not_possible_yet. Pending: depends on AX's Jira, not yet examined (5.2)
     who_may_change_links_role: null
     approval_required_for_changes: null
-  effort_unit: null             # default "fte"; alternatives: points | person_days | none
-  effort_source: null
+  effort_unit: fte              # default "fte"; alternatives: points | person_days | none. FTE per quarter until AX's documents or practice show otherwise (5.3)
+  effort_source: null           # not yet known; Jira not yet examined
   confidence_scale: null        # default "low | medium | validated"; record client variants
   jira_rule: "Every Jira-specific fact is 'not yet examined' until the consultant or the Engineering Lead has looked and Jira read permission is granted (consultant, 5.2). No Jira connector in the interview environment."
   assumptions: []
