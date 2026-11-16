@@ -44,7 +44,7 @@ meta:
 # 1. Hosting: where the code and the running page live
 # ---------------------------------------------------------------------------
 hosting:
-  status: not_started
+  status: in_progress
   code_host: null               # one of: github | gitlab | azure_devops | bitbucket | other
   code_host_default_used: null  # true if GitHub chosen because no alternative exists
   repo_location: null           # org/repo path once created
