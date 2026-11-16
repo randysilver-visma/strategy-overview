@@ -246,7 +246,7 @@ schema_alignment:
   decision_points_defined: false # not done well yet (4.5). The tool is expected to help create them: a requirement for the Decisions view, not something to ingest
   terminology_differences:      # client term -> package term
     - client: "Objective / Key result (OKR)"
-      package: "varies by document (4.2): sometimes team goal + outcome measure, sometimes team strategy + goals, sometimes Org objective"
+      package: "largely unknown; may vary by document (4.2, corrected in the section 4 read-back)"
       action: "Map per document when the competing strategy docs are listed; flag documents that use OKR levels inconsistently as a finding"
   assumptions: []
 
@@ -254,8 +254,8 @@ schema_alignment:
 # 5. Work tracking: initiatives, teams, links to objectives, effort
 # ---------------------------------------------------------------------------
 work_tracking:
-  status: not_started
-  initiatives_live_in: null     # one of: jira | linear | azure_boards | spreadsheet | slides | none | other
+  status: in_progress
+  initiatives_live_in: jira     # one of: jira | linear | azure_boards | spreadsheet | slides | none | other. Also a roadmap/initiative list in Slite (source S2)
   team_list_source: null
   link_to_objectives:
     method: null                # one of: tag_or_field_in_tracker | parent_child | set_during_onboarding | edited_in_tool | not_possible_yet
