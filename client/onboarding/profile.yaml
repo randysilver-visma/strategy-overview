@@ -162,7 +162,7 @@ information_sources:
     - id: S2
       name: "AX roadmap or initiative list in Slite"
       kind: other                 # roadmap / initiative list
-      location: "Slite (doc or collection not yet named)"
+      location: "https://e-conomic.slite.com/app/docs/t7Se-7EoMUOlmM"   # more Slite pages to be added later
       access_route: connector     # Slite connector confirmed in the interview environment
       owner_role: "Product Lead, Agentic Experience"
       decision_stack_tier: work
@@ -170,7 +170,7 @@ information_sources:
       permission_status: granted
       permission_granted_by_role: "consultant"
       permission_granted_on: "2026-11-16"
-      permission_note: "Granted by the consultant in 3.6; the owner is the Product Lead. Not read yet: the doc is not yet identified."
+      permission_note: "Granted by the consultant in 3.6 for this doc; the owner is the Product Lead. Further pages need their own permission entry. Not opened during onboarding."
       sensitivity: null
       redaction_needed: null
       scan_frequency: null
