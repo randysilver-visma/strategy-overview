@@ -284,6 +284,12 @@ people_and_roles:
       decision_maker_role: "Product Lead decides what and why; Engineering Lead decides how and capacity; escalate to a governance team when needed (6.2)"
       escalation_role: "governance team (not yet named)"
       confirmed_by: null
+    - area: "AX team goals and their measures"
+      owner_role: "Product Lead, Agentic Experience"
+      approver_role: "governance team (not yet named)"   # changes to goals need governance approval (6.3)
+      decision_maker_role: "Product Lead, Agentic Experience"
+      confirmed_by: null
+      note: "Combined with 5.4 (goal owner approves link changes), the Product Lead approves every initiative-to-goal link change. Possible bottleneck; revisit in section 8."
   # - area: null                # a tier, a metric set, or a source
   #   owner_role: null          # accountable for the content being right
   #   approver_role: null       # approves suggested changes
