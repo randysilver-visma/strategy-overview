@@ -244,7 +244,10 @@ schema_alignment:
   planning_horizon: null        # e.g. "annual objectives, quarterly reviews"
   review_cadence: null
   decision_points_defined: null # do milestones and triggers exist anywhere in the source material?
-  terminology_differences: []   # client term -> package term
+  terminology_differences:      # client term -> package term
+    - client: "Objective / Key result (OKR)"
+      package: "varies by document (4.2): sometimes team goal + outcome measure, sometimes team strategy + goals, sometimes Org objective"
+      action: "Map per document when the competing strategy docs are listed; flag documents that use OKR levels inconsistently as a finding"
   assumptions: []
 
 # ---------------------------------------------------------------------------
