@@ -154,7 +154,7 @@ information_sources:
       permission_granted_by_role: null   # set to "Engineering Lead, Agentic Experience" once Paul grants it
       permission_to_ask_of: "Engineering Lead, Agentic Experience (Paul)"
       permission_note: "Decided in 3.5 that the Engineering Lead grants Jira read access, not the consultant. Ask covers which project(s), which fields (titles, comments, assignees), and who may see them on the page."
-      sensitivity: null
+      sensitivity: general        # PROVISIONAL: consultant believes general; to confirm with the owner
       redaction_needed: null
       scan_frequency: null
       retention: null
@@ -171,7 +171,7 @@ information_sources:
       permission_granted_by_role: "consultant"
       permission_granted_on: "2026-11-16"
       permission_note: "Granted by the consultant in 3.6 for this doc; the owner is the Product Lead. Further pages need their own permission entry. Not opened during onboarding."
-      sensitivity: null
+      sensitivity: general        # PROVISIONAL: consultant believes general; to confirm with the owner
       redaction_needed: null
       scan_frequency: null
       retention: null
@@ -196,6 +196,9 @@ information_sources:
     - what: "Several competing AX strategy documents (Slite and Google Docs/Slides); no single one is current"
       evidence_role: said
       status: "to be listed later by the consultant"
+  assumptions:
+    - item: "S1 (Jira) and S2 (Slite roadmap) are general: fine for any e-conomic/Visma employee."
+      check_with: "Engineering Lead, Agentic Experience (S1); Product Lead, Agentic Experience (S2)"
   gaps_in_coverage: []          # tiers with no source, or only "said" evidence and no "done" evidence
 
 # ---------------------------------------------------------------------------
