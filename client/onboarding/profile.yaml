@@ -70,7 +70,7 @@ hosting:
       check_with: "Product Lead, Agentic Experience; the consultant's tech contact"
     - item: "[UNVERIFIED] Hosting on GitHub Pages behind company SSO likely needs GitHub Enterprise Cloud with private Pages publishing. Could not check docs.github.com from this environment."
       check_with: "the consultant's tech contact"
-    - item: "b-on-GitHub needs every contributor and approver to have a GitHub account with repo access; viewers would not."
+    - item: "b-on-GitHub needs every contributor and approver to have a GitHub account with repo access; viewers would not. The consultant believes everyone who might make a change already has GitHub access."
       check_with: "Product Lead, Agentic Experience; the consultant's tech contact"
     - item: "[UNVERIFIED] GitHub Pages serves static files only. Saving edits, approvals and decisions would then need the data store (section 2) to accept writes directly from the page, or a separate small backend."
       check_with: "the consultant's tech contact"
@@ -113,9 +113,9 @@ data_store:
     decision_status: provisional   # depends on hosting (section 1) and the tech contact
     decision_date: "2026-11-16"
   access:
-    method: null                # one of: api | export_import | manual
-    credential_holder_role: null
-    credential_storage: null    # where secrets live. Never record the secret itself.
+    method: api                 # one of: api | export_import | manual
+    credential_holder_role: "the consultant's tech contact or e-conomic IT (role to be named)"
+    credential_storage: null    # where secrets live. Never record the secret itself. To decide with the credential holder (e.g. a GitHub repo secret for b-on-GitHub).
   capabilities_needed:          # fill true/false once the chosen store is known; false = a gap
     multi_user_writes: null           # writes via the connector work; concurrent editing not tested
     record_history_audit_trail: false # tested: no editor or value history per cell; lastEditedAt per row only
