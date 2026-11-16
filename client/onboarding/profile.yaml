@@ -296,6 +296,12 @@ people_and_roles:
       decision_maker_role: null
       confirmed_by: null
       note: "Owner field location not yet examined (Jira) or read (Slite roadmap). Initiatives with no recorded owner will be flagged."
+    - area: "Org vision and Org objectives (context above AX)"
+      owner_role: "CPO"
+      approver_role: "CPO"
+      decision_maker_role: "CPO"
+      route_from_ax: "via the Product Lead, Agentic Experience"
+      confirmed_by: null
   # - area: null                # a tier, a metric set, or a source
   #   owner_role: null          # accountable for the content being right
   #   approver_role: null       # approves suggested changes
