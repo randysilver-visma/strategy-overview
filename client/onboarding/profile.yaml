@@ -70,6 +70,8 @@ hosting:
       check_with: "Product Lead, Agentic Experience; the consultant's tech contact"
     - item: "[UNVERIFIED] Hosting on GitHub Pages behind company SSO likely needs GitHub Enterprise Cloud with private Pages publishing. Could not check docs.github.com from this environment."
       check_with: "the consultant's tech contact"
+    - item: "b-on-GitHub needs every contributor and approver to have a GitHub account with repo access; viewers would not."
+      check_with: "Product Lead, Agentic Experience; the consultant's tech contact"
     - item: "[UNVERIFIED] GitHub Pages serves static files only. Saving edits, approvals and decisions would then need the data store (section 2) to accept writes directly from the page, or a separate small backend."
       check_with: "the consultant's tech contact"
 
@@ -104,10 +106,12 @@ data_store:
         not_tested: ["permanent deletion", "Slite app version history", "querying by link (needs reading every row)", "todo column writes", "concurrent edits", "field-level permissions", "size limits"]
       cleanup_needed: "Six archived test docs (two collections, four rows) from 2026-11-16 to delete in the Slite UI if not wanted. Two older docs, \"[TEST] Strategy Mirror spike: Initiatives\" and \"... Objectives\" (2026-11-11), are in the consultant's personal channel; not created or touched by this interview."
   chosen:
-    type: null                  # one of: google_sheets | excel_sharepoint | airtable | sql_database | other
-    reason: null
-    decided_by_role: null
-    decision_date: null
+    type: other                 # one of: google_sheets | excel_sharepoint | airtable | sql_database | other  -> Slite
+    reason: "Slite is already used at e-conomic and was tested. Preferred setup: Slite plus a small backend that writes a Changes log (option b), because Slite keeps no record of who changed a cell. Fallback: Slite plus a scheduled snapshot (option a) with a team rule that records change only through a Changes collection."
+    setup_preference: ["b: Slite + hosted backend writing a Changes log", "b-on-GitHub: changes as pull requests, approved by merge, a GitHub Action writes to Slite", "a: Slite + scheduled snapshot + Changes-collection rule"]
+    decided_by_role: "consultant"
+    decision_status: provisional   # depends on hosting (section 1) and the tech contact
+    decision_date: "2026-11-16"
   access:
     method: null                # one of: api | export_import | manual
     credential_holder_role: null
