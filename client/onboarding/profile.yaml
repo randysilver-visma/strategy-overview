@@ -275,7 +275,7 @@ work_tracking:
 # 6. People and roles: owners, approvers, decision makers
 # ---------------------------------------------------------------------------
 people_and_roles:
-  status: not_started
+  status: in_progress
   # One entry per tier or information area.
   ownership: []
   # - area: null                # a tier, a metric set, or a source
