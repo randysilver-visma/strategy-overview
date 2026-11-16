@@ -322,10 +322,10 @@ people_and_roles:
 # 7. Privacy, security and the language model
 # ---------------------------------------------------------------------------
 privacy_and_security:
-  status: not_started
+  status: in_progress
   data_must_stay_on_network: null
-  model_provider_allowed: null  # which providers the client has approved
-  model_hosting: null           # one of: vendor_api | private_cloud_endpoint | self_hosted | none_allowed
+  model_provider_allowed: "Anthropic Claude, through the company's Claude account (7.1)"
+  model_hosting: vendor_api     # one of: vendor_api | private_cloud_endpoint | self_hosted | none_allowed. A backend or GitHub Action calling Claude needs an API key under the company's Anthropic organisation; check it is covered by the same approval (tech contact)
   data_residency: null
   personal_data_in_sources: null
   transcript_consent_confirmed: null
