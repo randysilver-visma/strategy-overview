@@ -344,7 +344,7 @@ update_workflow:
   refresh_method: event_driven  # derived from 3.9 (on change); fallback to a scheduled scan if setup a is used
   scan_schedule: null
   correction_route: "Propose a change from the page; it becomes a pull request reviewed by the item's approver (derived from 2.2 and 5.4)"
-  approval_sla: null            # how long approvers have before a change is escalated
+  approval_sla: "none during the pilot; the page shows how long each change has waited (8.1)"
   notification_channel: null    # email, chat tool, none
   change_log_visible_to: null
 
