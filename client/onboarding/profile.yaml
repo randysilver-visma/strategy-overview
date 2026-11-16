@@ -139,6 +139,7 @@ data_store:
 information_sources:
   status: in_progress
   ingestion_principles_confirmed: null   # true once sponsor agrees: nothing is read before permission is recorded
+  landscape: "Much strategy documentation in Slite and in Google Docs/Slides. How well it agrees is unknown, which is part of what the tool should show. (consultant, 3.1)"
   sources: []
   # Each entry:
   # - id: S1
