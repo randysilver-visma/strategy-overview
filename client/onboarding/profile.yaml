@@ -157,6 +157,10 @@ information_sources:
   #   scan_frequency: null        # one of: manual | daily | weekly | monthly | on_change
   #   retention: null
   #   known_quality_issues: null
+  pending_sources:
+    - what: "Several competing AX strategy documents (Slite and Google Docs/Slides); no single one is current"
+      evidence_role: said
+      status: "to be listed later by the consultant"
   gaps_in_coverage: []          # tiers with no source, or only "said" evidence and no "done" evidence
 
 # ---------------------------------------------------------------------------
