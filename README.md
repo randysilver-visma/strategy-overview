@@ -14,7 +14,7 @@ Early. Each implementation is built bespoke for a client. Only the onboarding st
 | --- | --- |
 | `onboarding/ONBOARDING_PROMPT.md` | Prompt the client's Claude runs as a guided interview |
 | `onboarding/profile.template.yaml` | Blank, versioned profile the interview fills in |
-| `design/dist/*.html` | Built desktop mockup of the modern skin on a fictional company (open in a browser) |
+| `design/dist/*.html` | Built mockup of the modern skin with placeholder data (open in a browser) |
 | `design/src`, `design/skins`, `design/build.py` | Shared base, per-skin styles and the build script |
 | `docs/SKINS.md` | How skins work and how to add one |
 | `docs/DESIGN_NOTES.md` | Design decisions, assumptions and open items |
