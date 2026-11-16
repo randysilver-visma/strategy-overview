@@ -77,7 +77,7 @@ hosting:
 # 2. Data store: the single source of truth for records and edits
 # ---------------------------------------------------------------------------
 data_store:
-  status: not_started
+  status: in_progress
   options_considered: []        # list of { type, why_considered, pros, cons, verified: true|false }
   chosen:
     type: null                  # one of: google_sheets | excel_sharepoint | airtable | sql_database | other
