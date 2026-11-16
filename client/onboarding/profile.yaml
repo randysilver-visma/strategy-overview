@@ -290,6 +290,12 @@ people_and_roles:
       decision_maker_role: "Product Lead, Agentic Experience"
       confirmed_by: null
       note: "Combined with 5.4 (goal owner approves link changes), the Product Lead approves every initiative-to-goal link change. Possible bottleneck; revisit in section 8."
+    - area: "AX initiatives (the work)"
+      owner_role: "a named owner per initiative (team lead or product manager), recorded in Jira or the Slite roadmap"
+      approver_role: null
+      decision_maker_role: null
+      confirmed_by: null
+      note: "Owner field location not yet examined (Jira) or read (Slite roadmap). Initiatives with no recorded owner will be flagged."
   # - area: null                # a tier, a metric set, or a source
   #   owner_role: null          # accountable for the content being right
   #   approver_role: null       # approves suggested changes
