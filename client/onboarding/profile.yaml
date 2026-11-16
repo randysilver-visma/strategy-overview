@@ -156,7 +156,7 @@ information_sources:
       permission_note: "Decided in 3.5 that the Engineering Lead grants Jira read access, not the consultant. Ask covers which project(s), which fields (titles, comments, assignees), and who may see them on the page."
       sensitivity: general        # PROVISIONAL: consultant believes general; to confirm with the owner
       redaction_needed: null
-      scan_frequency: null
+      scan_frequency: on_change   # ideal (3.9). Needs a backend or webhook; if setup a (snapshot) is used, a fallback frequency is still to agree
       retention: null
       known_quality_issues: null
     - id: S2
@@ -173,7 +173,7 @@ information_sources:
       permission_note: "Granted by the consultant in 3.6 for this doc; the owner is the Product Lead. Further pages need their own permission entry. Not opened during onboarding."
       sensitivity: general        # PROVISIONAL: consultant believes general; to confirm with the owner
       redaction_needed: null
-      scan_frequency: null
+      scan_frequency: on_change   # ideal (3.9). Needs a backend or webhook; if setup a (snapshot) is used, a fallback frequency is still to agree
       retention: null
       known_quality_issues: null
   # Each entry:
