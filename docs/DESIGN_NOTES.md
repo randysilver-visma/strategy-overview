@@ -11,9 +11,10 @@ Show, for one company, division or team: what the strategy documents say (said),
 - **Roadmap view:** follows Itamar Gilad's outcome roadmap template: goal bars with a target diamond, then Research, Product Discovery, Product Delivery (ideas inside a dashed box, or "to be determined"), and Effect Delay. Source: itamargilad.com/outcome-roadmaps. A by-team view is an addition not in Gilad's template.
 - **Confidence:** each item carries a validated / partly validated / hypothesis marker.
 - **Alignment:** every initiative links to zero or more objectives. Work linked to none is shown as unaligned.
-- **Name:** Starling. The North Star is the company vision; the flock is the people and teams; tightness reflects alignment.
-- **Skins:** two looks (starling, modern) share one base. See `SKINS.md`.
-- **Target:** desktop only for now. No phone layout.
+- **Name:** Strategy Mirror (originally called Starling). The starling imagery is kept as the visual metaphor: the North Star is the company vision; the flock is the people and teams; tightness reflects alignment.
+- **Layout:** six tabbed views (Overview, Strategy, Work, Decisions, Open questions, Review), rebuilt from screenshots of the later design. The earlier single-page layout and its scripted chat were retired; the "Classic view" toggle from the later design was left out for now.
+- **Skins:** one look (modern) on a shared base; more can be added. See `SKINS.md`.
+- **Target:** desktop first. Phone width stacks and scrolls wide boards inside their own box.
 - **Delivery:** bespoke per client. Prerequisites: somewhere to host code (GitHub by default) and a database (Sheets, Excel, Airtable or other, decided in onboarding). Everything stays on the client's internal infrastructure.
 
 ## Assumptions (not yet confirmed)
@@ -22,7 +23,9 @@ Show, for one company, division or team: what the strategy documents say (said),
 - Effect-delay lengths and research/discovery windows in the mockup are invented sample values.
 
 ## Open items
-- The mockup is a static page. Writing answers back, the approval queue, folder scans and the chat all need a backend and a storage layer; not designed yet.
+- The mockup is a static page with generated placeholder data. Contributions, challenges, review approvals, decision choices and folder scans all need a backend and a storage layer; nothing is saved yet.
+- The page names Airtable as the data source to match the later design; the real store is decided in onboarding.
+- A chat over the knowledge base is not in the current layout. Decide in onboarding whether it comes back.
 - Because the database varies by client, a storage adapter layer is likely needed. Not designed yet.
 - Onboarding prompt and profile template have not been run against a real client.
 - No independent audit (Codex or other) has been run on the prompt, template or mockup.
