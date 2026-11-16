@@ -428,6 +428,7 @@ function vOverview(){
     <a class="tile" href="#decisions" style="text-decoration:none"><b>${decisionCount()}</b><span>decisions waiting</span></a>
     <a class="tile" href="#questions" style="text-decoration:none"><b>${QUESTIONS.length}</b><span>open questions</span></a>
     <a class="tile" href="#review" style="text-decoration:none"><b>${reviewCount()}</b><span>items waiting for review</span></a>
+    <a class="tile" href="#review" style="text-decoration:none"><b>${UNREVIEWED()} of ${ALLITEMS.length}</b><span>strategies, goals, opportunities and initiatives not yet reviewed by an owner</span></a>
   </div></div>`;
 }
 
