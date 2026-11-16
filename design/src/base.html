@@ -391,12 +391,29 @@ const reviewPill=x=>!x||x.reviewed?"":flagsOf(x).length?` <span class="pill ambe
 const ITEMS=[["Strategy",x=>"s:"+x.id,STRATS],["Goal",x=>"g:"+x.strat+":"+x.id,GOALS],["Opportunity",x=>"p:"+x.id,OPPS],["Initiative",x=>"i:"+x.id,INITS]].flatMap(([k,rid,list])=>list.map(x=>({kind:k,rid:rid(x),x})));
 const flaggedNow=()=>ITEMS.filter(r=>!r.x.reviewed&&flagsOf(r.x).length), unflaggedNow=()=>ITEMS.filter(r=>!r.x.reviewed&&!flagsOf(r.x).length);
 const UNREVIEWED=()=>ITEMS.filter(r=>!r.x.reviewed).length;
+const PARENT=r=>{const x=r.x;if(r.kind==="Goal")return"s:"+x.strat;if(r.kind==="Opportunity")return x.goal?"g:"+x.strat+":"+x.goal:"s:"+x.strat;if(r.kind==="Initiative")return x.opp?"p:"+x.opp:x.goal&&x.strat?"g:"+x.strat+":"+x.goal:x.strat?"s:"+x.strat:null;return null};
+function ownerOf(rid){let cur=rid;for(let n=0;cur&&n<6;n++){const r=ITEMS.find(z=>z.rid===cur);if(!r)return null;if(r.x.owner)return{owner:r.x.owner,via:cur===rid?null:r.x.name};cur=PARENT(r)}return null}
+function modelRules(){
+  const I=(k,x)=>ITEMS.find(r=>r.kind===k&&r.x===x), it=l=>l.map(x=>I("Initiative",x)).filter(Boolean), gl=l=>l.map(x=>I("Goal",x)).filter(Boolean), op=l=>l.map(x=>I("Opportunity",x)).filter(Boolean), st=l=>l.map(x=>I("Strategy",x)).filter(Boolean);
+  const obj=OBJECTIVES.filter(o=>!STRATS.some(s=>(s.objs||[]).includes(o.id))).map(o=>({rid:"o:"+o.id,x:{name:o.id+" "+o.name}}));
+  return [
+   ["work that is not linked to any strategy",it(INITS.filter(i=>!(i.links||[]).length))],
+   ["work linked to a strategy but to no goal or opportunity",it(INITS.filter(i=>(i.links||[]).length&&i.links.every(l=>!l.goal&&!l.opp)))],
+   ["goals with no initiative",gl(goalsNoInit())],
+   ["goals with no outcome measure",gl(GOALS.filter(g=>!outcomeMeasures(g).length))],
+   ["opportunities not under a goal",op(OPPS.filter(o=>!o.goal))],
+   ["strategies with no goals",st(STRATS.filter(s=>!(s.goals||[]).length))],
+   ["strategies that serve no Org objective",st(STRATS.filter(s=>!(s.objs||[]).length))],
+   ["Org objectives that no strategy serves",obj]
+  ].filter(r=>r[1].length).map(([t,items],n)=>({n,t,items}));
+}
 const EVENTS=[];
 function recordReview(rid,act,role,note,value){
   const r=ITEMS.find(z=>z.rid===rid); if(!r)return null;
   const on=new Date().toISOString().slice(0,10), ev={rid,kind:r.kind,id:r.x.id,action:act,by:role,on,note:note||null,value:value||null};
   if(act==="challenge"){r.x.flags=[...(r.x.flags||[]).filter(f=>f!=="challenged"),"challenged"];r.x.challenges=[...(r.x.challenges||[]),{by:role,on,note}];delete r.x.reviewed}
   else r.x.reviewed=Object.assign({by:role,on},value?{value}:{});
+  if(act==="challenge"){const o=ownerOf(rid);ev.notify=o?o.owner:null;ev.notifyVia=o&&o.via||null}
   EVENTS.push(ev); try{const h=window.STARLING_HOOKS;if(h&&h.onReview)h.onReview(ev)}catch(_){}
   return r;
 }function provHtml(x,rid){
@@ -409,12 +426,12 @@ function recordReview(rid,act,role,note,value){
     h=`<b>Reviewed</b>${R.by?` by ${esc(R.by)}`:""}${R.on?` on ${esc(R.on)}`:""}${R.value?`<br>Preferred value: ${esc(R.value)}`:""}${f.length?`<br><span class="muted">Was flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}</span>`:""}`;
   }else{
     const alts=alt.length?`<br>Other values found:${alt.map((a,n)=>`<div class="alt"><span>${esc(a.value)}${a.source?` <span class="muted">(${esc(a.source)})</span>`:""}</span>${rid?`<button class="btn sm" type="button" data-rvact="prefer" data-rid="${esc(rid)}" data-val="${n}">Prefer this</button>`:""}</div>`).join("")}`:"";
-    h=`<b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${why}${ch}${alts}<br><span class="muted">Imported from the sources. Not yet reviewed by an owner.</span>`
+    h=`<b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${why}${ch}${alts}<br><span class="muted">${(()=>{const o=rid&&ownerOf(rid);return o?`Owner: ${esc(o.owner)}${o.via?" (via "+esc(o.via)+")":""}. `:"No owner recorded up the chain. "})()}Imported from the sources. Not yet reviewed by an owner.</span>`
       +(rid?`<div class="rvbox"><b>Review this item</b><label for="rvRole">Your role</label><input id="rvRole" type="text" autocomplete="off" placeholder="e.g. Strategy lead" value="${esc(state.role||"")}"><label for="rvNote">Note (needed to challenge)</label><textarea id="rvNote" rows="2"></textarea><div class="rvmsg" id="rvMsg" role="alert"></div><div class="legend"><button class="btn sm" type="button" data-rvact="ok" data-rid="${esc(rid)}">Mark reviewed</button><button class="btn sm" type="button" data-rvact="challenge" data-rid="${esc(rid)}">Challenge</button></div><p class="hint" style="margin:8px 0 0">Sample: a review is kept in this page only. A live build writes it to your database.</p></div>`:"");
   }
   return `<div id="rvwrap" class="callout" tabindex="-1" style="margin-top:12px">${h}</div>`;
 }
-const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+MODELCHECKS.length+DATACHECKS.length+flaggedNow().length;
+const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+modelRules().length+MODELCHECKS.length+DATACHECKS.length+flaggedNow().length;
 const decisionCount=()=>1+OTHER_DECISIONS.length;
 const outcomeMeasures=g=>g.measures.filter(m=>m.kind==="outcome");
 function goalTarget(g){const ys=outcomeMeasures(g).map(m=>m.by).filter(Boolean).map(Number).filter(Number.isFinite);if(!ys.length||!QS.length)return null;const y=Math.min(...ys);if(y>QS[QS.length-1].year)return "later";let idx=0;QS.forEach((q,k)=>{if(q.year<=y)idx=k});return idx}
@@ -726,7 +743,8 @@ function rvRows(){
   const item=(r,flagged)=>({k:r.kind,s:(r.x.name+" "+r.x.id+" "+r.kind+" "+flagsOf(r.x).map(f=>FLAG_LABEL[f]||f).join(" ")).toLowerCase(),h:`<div class="qitem"><div><div class="m">${flagged?`<span class="pill amber"><i class="dot"></i>${esc(r.kind)}</span>`:`<span class="pill dash">${esc(r.kind)}</span>`}<span>${r.x.conf?esc(r.x.conf)+" confidence":""}</span><span>${flagged?flagsOf(r.x).map(k=>esc(FLAG_LABEL[k]||k)).join(", "):"Not flagged by the import"}</span></div><b>${esc(r.x.name)}</b>${(r.x.alternatives||[]).length?`<div class="muted" style="font-size:12.5px">Other values found: ${(r.x.alternatives||[]).map(a=>esc(a.value)+(a.source?" ("+esc(a.source)+")":"")).join("; ")}</div>`:""}</div><button class="btn sm" type="button" data-rec="${esc(r.rid)}">Open and review</button></div>`});
   flaggedNow().forEach(r=>rows.push(item(r,true)));
   DATACHECKS.forEach(m=>{const mm=/^Initiative (.+?)(?::| is )/.exec(m),ini=mm&&INITS.find(i=>i.name==="Initiative "+mm[1]);rows.push({k:"Data check",s:"data check "+String(m).toLowerCase(),h:`<div class="qitem mc"><b>Data check</b><span>${esc(m)}</span><span>${ini?`<button class="btn sm" type="button" data-rec="i:${esc(ini.id)}">Open</button>`:""}</span><span class="muted" style="font-size:12.5px">Found by the page while reading the data. Fix it in the data store.</span></div>`})});
-  MODELCHECKS.forEach(m=>rows.push({k:"Model check",s:"model check "+m.n,h:`<div class="qitem mc"><b>Model check</b><span>Model-health flag ${m.n}</span><span></span><span class="muted" style="font-size:12.5px">Indicative detail about a gap or inconsistency in the model.</span></div>`}));
+  modelRules().forEach(r=>rows.push({k:"Model check",s:"model check should not occur "+r.t,h:`<div class="qitem mc"><b>Model check</b><span>${r.items.length} ${esc(r.t)}</span><span><button class="btn sm" type="button" data-mcheck="${r.n}">See ${r.items.length}</button></span><span class="muted" style="font-size:12.5px">This should not occur. Link each one, or remove it, in the data store.</span></div>`}));
+  MODELCHECKS.forEach(m=>rows.push({k:"Model check",s:"model check "+(m.title||m.n),h:`<div class="qitem mc"><b>Model check</b><span>${esc(m.title||"Model check "+m.n)}</span><span></span><span class="muted" style="font-size:12.5px">${esc(m.detail||"Supplied with the data.")}</span></div>`}));
   if(state.rv.all)unflaggedNow().forEach(r=>rows.push(item(r,false)));
   return rows;
 }
@@ -848,6 +866,7 @@ document.addEventListener("click",e=>{
   if(t.closest("#themeBtn")){const r=document.documentElement;const dark=r.dataset.theme==="dark";r.dataset.theme=dark?"light":"dark";if(state.view==="strategy")drawWires();return}
   const ra=t.closest("[data-rvact]"); if(ra)return doReview(ra);
   const rk=t.closest("[data-rvkind]"); if(rk){state.rv.kind=rk.dataset.rvkind;return render(true)}
+  const mc=t.closest("[data-mcheck]"); if(mc){const r=modelRules().find(z=>z.n===Number(mc.dataset.mcheck));if(r)openDrawer("Model check",`${r.items.length} ${r.t}`,"These should not occur. Fix them in the data store, then reload.",r.items.map(i=>`<div class="li"><button class="lnk" type="button" data-rec="${esc(i.rid)}" data-push="1">${esc(i.x.name)}</button>${i.kind?`<small>${esc(i.kind)}</small>`:""}</div>`).join(""));return}
   const gt=t.closest("[data-goto]"); if(gt){location.hash=gt.dataset.goto;return}
   if(t.closest("#askTop")||t.closest("#chatFab"))return openChat(true,t.closest("button"));
   if(t.closest("#chatClose"))return openChat(false);
@@ -886,7 +905,8 @@ function doReview(btn){
   const val=act==="prefer"?((r.x.alternatives||[])[Number(btn.dataset.val)]||{}).value:null;
   recordReview(rid,act==="ok"||act==="prefer"?"reviewed":"challenge",role,note,val);
   const tmp=document.createElement("div");tmp.innerHTML=provHtml(r.x,rid);$("#rvwrap").replaceWith(tmp.firstElementChild);$("#rvwrap").focus();
-  toast(act==="challenge"?"Challenge recorded (sample: kept in this page only)":"Marked reviewed (sample: kept in this page only)");
+  const ev=EVENTS[EVENTS.length-1];
+  toast(act==="challenge"?(ev.notify?`Challenge recorded. A live build would notify ${ev.notify}${ev.notifyVia?" (owner of "+ev.notifyVia+")":""}. Sample: nothing is sent.`:"Challenge recorded. No owner found up the chain, so it stays in the review list only."):"Marked reviewed (sample: kept in this page only)");
   render(true);
 }
 
