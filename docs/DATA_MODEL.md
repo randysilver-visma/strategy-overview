@@ -36,8 +36,9 @@ Starling is a mirror: it shows its best guess from the sources and does not wait
 | `conf` | `high`, `medium` or `low` | How well the sources support the value. `low` flags the item |
 | `flags` | list of `conflict`, `low_confidence`, `single_source`, `stale`, `no_owner`, `unclear` | Why an owner should look at it |
 | `alternatives` | `[{value, source}]` | Other values found in other sources, shown beside the best guess |
+| `reviewed` | `{by, on}` (role, date) | Set only when an owner has reviewed the item. Clears its Review marker |
 
-Flagged items show a Review marker on the Strategy board, a "Best guess" panel in their record, and a line in the Review tab.
+Every item without `reviewed` shows a Review marker (Strategy board, Work tab, record). Flagged items show it in amber with the reasons and also get a line in the Review tab; unflagged ones show it dashed. The Review tab states how many items are not yet reviewed.
 
 ## Data checks
 
