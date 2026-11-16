@@ -259,12 +259,13 @@ work_tracking:
   initiative_level_in_jira: null   # unknown (5.1): the consultant has not yet examined AX's Jira; ask the Engineering Lead, Agentic Experience
   team_list_source: null
   link_to_objectives:
-    method: null                # one of: tag_or_field_in_tracker | parent_child | set_during_onboarding | edited_in_tool | not_possible_yet
+    method: null                # one of: tag_or_field_in_tracker | parent_child | set_during_onboarding | edited_in_tool | not_possible_yet. Pending: depends on AX's Jira, not yet examined (5.2)
     who_may_change_links_role: null
     approval_required_for_changes: null
   effort_unit: null             # default "fte"; alternatives: points | person_days | none
   effort_source: null
   confidence_scale: null        # default "low | medium | validated"; record client variants
+  jira_rule: "Every Jira-specific fact is 'not yet examined' until the consultant or the Engineering Lead has looked and Jira read permission is granted (consultant, 5.2). No Jira connector in the interview environment."
   assumptions: []
 
 # ---------------------------------------------------------------------------
