@@ -309,6 +309,16 @@ const SBY=Object.fromEntries(STRATS.map(s=>[s.id,s]));
 const GOALS=STRATS.flatMap(s=>s.goals), GBY=Object.fromEntries(GOALS.map(g=>[g.id,g]));
 const OPPS=STRATS.flatMap(s=>s.opps), OBY=Object.fromEntries(OPPS.map(o=>[o.id,o]));
 const BENEF=[...new Set(INITS.map(i=>i.benef).filter(Boolean))].sort();
+/* An initiative can serve several strategies: links:[{strat,goal,opp}]. Legacy strat/goal/opp become one link.
+   i.strat/goal/opp stay as the first link (the primary). Optional split:{strategyId:share} divides FTE; default is equal. */
+INITS.forEach(i=>{if(!Array.isArray(i.links))i.links=i.strat?[{strat:i.strat,goal:i.goal||null,opp:i.opp||null}]:[];
+  i.links=i.links.filter(l=>l&&l.strat).map(l=>({strat:l.strat,goal:l.goal||null,opp:l.opp||null}));
+  const f=i.links[0]||{};i.strat=f.strat||null;i.goal=f.goal||null;i.opp=f.opp||null});
+const strOf=i=>[...new Set(i.links.map(l=>l.strat))];
+const linksIn=(i,sid)=>i.links.filter(l=>l.strat===sid);
+const inStrat=(i,sid)=>sid==null?!i.links.length:i.links.some(l=>l.strat===sid);
+const sh=(i,sid)=>{if(sid==null)return 1;const ss=strOf(i);if(!ss.includes(sid))return 0;if(i.split&&i.split[sid]!=null)return Number(i.split[sid])||0;return 1/ss.length};
+const avgS=(i,sid)=>avgH(i)*sh(i,sid);
 const QUESTIONS=D.questions||[], CHANGES=D.changes||[], CLAIMDOCS=D.claimDocs||[], MODELCHECKS=D.modelChecks||[], OTHER_DECISIONS=D.otherDecisions||[];
 const PILOT=(D.pilot||[]).filter(id=>SBY[id]);
 const avgH=i=>{let t=0,n=0;for(let k=HZ.from;k<=HZ.to;k++){t+=i.q[k]||0;n++}return n?t/n:0};
@@ -317,12 +327,24 @@ const fmt=x=>(Math.round(x*10)/10).toString();
 const state={view:"overview",sel:null,open:{},allOpen:false,work:{view:"roadmap",level:"strategies",open:{},research:false},showNonDisc:false,allQ:false,choice:{},drawerStack:[]};
 
 /* ---------- derived figures ---------- */
-const initsOf=s=>INITS.filter(i=>i.strat===s);
+const initsOf=s=>INITS.filter(i=>inStrat(i,s));
 function coverage(){const stated=STRATS.reduce((a,s)=>a+(Number(s.stated)||0),0);const inRec=INITS.filter(i=>i.strat&&i.funded).reduce((a,i)=>a+avgH(i),0);return{stated,inRec:Math.round(inRec),pct:stated?Math.round(100*inRec/stated):null}}
-const goalsNoInit=()=>GOALS.filter(g=>!INITS.some(i=>i.goal===g.id));
+const goalsNoInit=()=>GOALS.filter(g=>!INITS.some(i=>i.links.some(l=>l.goal===g.id)));
 const unfunded=()=>INITS.filter(i=>!i.funded&&i.strat);
 const assessed=()=>STRATS.filter(s=>s.status!=="na");
-const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+MODELCHECKS.length;
+function validate(){
+  const w=[], seen=new Set(), ids=[...OBJECTIVES.map(o=>o.id),...STRATS.map(s=>s.id),...GOALS.map(g=>g.id),...OPPS.map(o=>o.id),...INITS.map(i=>i.id)];
+  ids.forEach(id=>{const x=String(id);if(/[:|]/.test(x)||x==="none")w.push(`The ID “${x}” contains “:” or “|” or is “none”. These are used to trace links, so rename it.`);if(seen.has(x))w.push(`The ID “${x}” is used more than once.`);seen.add(x)});
+  INITS.forEach(i=>{i.links.forEach(l=>{const s=SBY[l.strat];
+    if(!s){w.push(`${i.name} is linked to an unknown strategy “${l.strat}”.`);return}
+    if(l.goal&&!s.goals.some(g=>g.id===l.goal))w.push(`${i.name}: goal “${l.goal}” is not a goal of ${l.strat}.`);
+    if(l.opp){const o=s.opps.find(x=>x.id===l.opp);if(!o)w.push(`${i.name}: opportunity “${l.opp}” is not an opportunity of ${l.strat}.`);else if((o.goal||null)!==(l.goal||null))w.push(`${i.name}: it links goal ${l.goal||"(none)"} but its opportunity ${l.opp} sits under goal ${o.goal||"(none)"}.`)}});
+    if(i.split){const t=strOf(i).reduce((a,x)=>a+(Number(i.split[x])||0),0);if(Math.abs(t-1)>.01)w.push(`${i.name}: its FTE split adds up to ${Math.round(t*100)}%, not 100%.`)}
+    if(i.links.length&&!i.q.some(x=>x>0))w.push(`${i.name} has no FTE in the quarters shown.`)});
+  return w;
+}
+const DATACHECKS=validate();
+const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+MODELCHECKS.length+DATACHECKS.length;
 const decisionCount=()=>1+OTHER_DECISIONS.length;
 const outcomeMeasures=g=>g.measures.filter(m=>m.kind==="outcome");
 function goalTarget(g){const ys=outcomeMeasures(g).map(m=>m.by).filter(Boolean).map(Number).filter(Number.isFinite);if(!ys.length||!QS.length)return null;const y=Math.min(...ys);if(y>QS[QS.length-1].year)return "later";let idx=0;QS.forEach((q,k)=>{if(q.year<=y)idx=k});return idx}
@@ -393,7 +415,7 @@ function vOverview(){
 
 /* ---------- strategy board ---------- */
 const nid={o:id=>"o:"+id,s:id=>"s:"+id,g:(s,g)=>"g:"+s+":"+(g||"none"),p:id=>"p:"+id,q:(s,g,o)=>"q:"+s+":"+(g||"none")+":"+(o||"none")};
-function groupsOf(s){const m=new Map();initsOf(s.id).forEach(i=>{const k=(i.goal||"none")+"|"+(i.opp||"none");if(!m.has(k))m.set(k,{goal:i.goal,opp:i.opp,items:[]});m.get(k).items.push(i)});return [...m.values()]}
+function groupsOf(s){const m=new Map();INITS.forEach(i=>linksIn(i,s.id).forEach(l=>{const k=(l.goal||"none")+"|"+(l.opp||"none");if(!m.has(k))m.set(k,{goal:l.goal,opp:l.opp,items:[]});const it=m.get(k).items;if(!it.includes(i))it.push(i)}));return [...m.values()]}
 function edgesFor(s){
   const E=[];s.objs.forEach(o=>E.push([nid.o(o),nid.s(s.id)]));
   if(!state.open[s.id])return E;
@@ -435,7 +457,7 @@ function vStrategy(){
       rows+=`<div class="c-strat sblock">${stratCard(s)}</div>
        <div class="c-goal"><div class="sumc"><b>${plural(s.goals.length,"goal")}</b>, <b>${s.goals.filter(g=>g.measured).length}</b> measured</div></div>
        <div class="c-opp"><div class="sumc">${s.opps.length?`<b>${s.opps.length}</b> proposed opportunities`:"none proposed"}</div></div>
-       <div class="c-init"><div class="sumc"><b>${its.length}</b> in all<br><b class="amb">${its.filter(i=>!i.goal).length}</b> with no goal</div></div>`;
+       <div class="c-init"><div class="sumc"><b>${its.length}</b> in all<br><b class="amb">${its.filter(i=>!linksIn(i,s.id).some(l=>l.goal)).length}</b> with no goal</div></div>`;
       return;
     }
     const rowsG=[...s.goals.map(g=>g.id)]; if(gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
@@ -493,7 +515,7 @@ function vWork(){
   const seg=(id,opts,cur,sm)=>`<div class="seg${sm?" sm":""}" role="group" aria-label="${id}">${opts.map(([v,l])=>`<button type="button" data-${id}="${v}" aria-pressed="${cur===v}">${l}</button>`).join("")}</div>`;
   let body="";
   if(W.view==="roadmap") body=roadmap();
-  else body=fteTable(W.view==="strategy"?STRATS.map(s=>[`${esc(s.id)} ${esc(s.name)}`,initsOf(s.id)]).concat([["Not linked to a strategy",initsOf(null)]]):BENEF.map(b=>[b,INITS.filter(i=>i.benef===b)]));
+  else body=fteTable(W.view==="strategy"?STRATS.map(s=>[`${esc(s.id)} ${esc(s.name)}`,initsOf(s.id),s.id]).concat([["Not linked to a strategy",initsOf(null),null]]):BENEF.map(b=>[b,INITS.filter(i=>i.benef===b)]));
   return `<div class="wrap view"><h2>Work</h2><p class="lede">Work starts from outcomes: the outcome roadmap (Itamar Gilad’s template) shows each goal with its target. Every initiative should serve at least one goal. Headcount is shown, but it’s what the work costs, not what it’s worth. The other views group initiatives by strategy or beneficiary with their FTE per quarter.</p>
    <div class="ctrls">${seg("wview",[["roadmap","Outcome roadmap"],["strategy","By strategy"],["beneficiary","By beneficiary"]],W.view)}
    ${W.view==="roadmap"?seg("wlevel",[["strategies","Strategies"],["goals","Goals"],["deliveries","Deliveries"]],W.level,true)+`<button class="btn sm" type="button" id="resBtn" aria-pressed="${W.research}">Show research, discovery and delay</button>`:""}
@@ -510,14 +532,14 @@ function roadmap(){
    <div class="lgrow"><span><i class="k" style="border:1px solid var(--line)"></i>Collapsed strategy: number of initiatives active in the quarter, not headcount (<span class="vio">+n violet</span> = unfunded)</span><span><i class="k" style="background:var(--bar-dark)"></i>Product delivery: funded initiative</span><span><i class="k" style="background:var(--violet-soft);border:1.5px solid var(--violet)"></i>Unfunded (violet outline)</span><span><i class="k" style="border:1.5px dashed var(--muted)"></i>Not recorded (dashed)</span>${W.research?`<span><i class="k" style="background:var(--g-res)"></i>Research</span><span><i class="k" style="background:var(--g-disc)"></i>Discovery</span><span><i class="k" style="background:var(--g-delay)"></i>Effect delay</span>`:""}</div>`;
   let h=`<div class="rr hd"><div>Goal and work</div>${Q.map(q=>`<div>${q}</div>`).join("")}</div>`;
   STRATS.forEach(s=>{
-    const its=initsOf(s.id), open=W.level!=="strategies"||W.open[s.id], fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avgH(i),0));
-    const tq=s.goals.map(goalTarget), later=tq.filter(t=>t==="later").length, gni=s.goals.filter(g=>!its.some(i=>i.goal===g.id)).length, nunf=its.filter(i=>!i.funded).length;
+    const its=initsOf(s.id), open=W.level!=="strategies"||W.open[s.id], fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avgS(i,s.id),0));
+    const tq=s.goals.map(goalTarget), later=tq.filter(t=>t==="later").length, gni=s.goals.filter(g=>!its.some(i=>linksIn(i,s.id).some(l=>l.goal===g.id))).length, nunf=its.filter(i=>!i.funded).length;
     h+=`<div class="rr srow"><div class="rl"><div class="t"><button class="chev" type="button" data-wopen="${esc(s.id)}" aria-expanded="${!!open}" aria-label="${open?"Collapse":"Expand"} ${esc(s.name)}">${CHEV}</button><b>${esc(s.id)} ${esc(s.name)}</b></div>${plural(s.goals.length,"goal")} · ${T.review} ${ST_LABEL[s.status]} · ${plural(its.length,"initiative")} · ${fmt(fte)} FTE${nunf?` · ${nunf} unfunded`:""}<br>${s.goals.filter(g=>g.measured).length} of ${plural(s.goals.length,"goal")} measured${gni?` · ${gni} with no initiative`:""}</div>
      ${Q.map((_,k)=>{const f=activeIn(its,k,true),u=activeIn(its,k,false),d=tq.includes(k);return `<div class="qc"><b>${f}${u?` <span class="vio">+${u}</span>`:""}${d?' <i class="dia" title="Goal target this quarter"></i>':""}</b><span>${u?"initiatives · unfunded":"initiatives"}</span>${k===Q.length-1&&later?`<span class="later">${later} later →</span>`:""}</div>`}).join("")}</div>`;
     if(!open)return;
-    const gl=[...s.goals,...(its.some(i=>!i.goal)?[null]:[])];
+    const gl=[...s.goals,...(its.some(i=>linksIn(i,s.id).some(l=>!l.goal))?[null]:[])];
     gl.forEach(g=>{
-      const gi=its.filter(i=>i.goal===(g?g.id:null));
+      const gi=its.filter(i=>linksIn(i,s.id).some(l=>l.goal===(g?g.id:null)));
       if(g){const t=goalTarget(g), end=t===null||t==="later"?Q.length-1:t;
         h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">${esc(g.id)} ${esc(g.name)}</b><br>${outcomeMeasures(g).length?esc(outcomeMeasures(g)[0].m)+(outcomeMeasures(g)[0].by?" · by "+outcomeMeasures(g)[0].by:" · no date"):'<span class="amb">No outcome measure</span>'}</div>
          <div class="bars"><div class="gb" style="grid-column:1/${end+2}"><span>${esc(g.id)}</span>${typeof t==="number"?'<i class="dia"></i>':""}</div>
@@ -539,14 +561,14 @@ function roadmap(){
   return lg+`<div class="scroll"><div class="rg">${h}</div></div>`;
 }
 function fteTable(groups){
-  const sum=(its,k,f)=>r1(its.filter(i=>i.funded===f).reduce((a,i)=>a+i.q[k],0));
+  const sum=(its,k,f,sid)=>r1(its.filter(i=>i.funded===f).reduce((a,i)=>a+i.q[k]*(sid===undefined?1:sh(i,sid)),0));
   let h=`<div class="card scroll"><table class="ft"><thead><tr><th>Group and initiative</th>${Q.map(q=>`<th class="n">${q}</th>`).join("")}<th class="n">Initiatives</th></tr></thead><tbody>`;
-  groups.forEach(([name,its],gi)=>{
+  groups.forEach(([name,its,gsid],gi)=>{
     const open=state.work.open["g"+gi];
-    h+=`<tr class="grp-r"><td><button class="lnk" type="button" data-wgrp="${gi}" aria-expanded="${!!open}">${open?"▾":"▸"} ${esc(name)}</button></td>${Q.map((_,k)=>{const u=sum(its,k,false);return `<td class="n">${fmt(sum(its,k,true))}${u?` <span class="vio">+${fmt(u)}</span>`:""}</td>`}).join("")}<td class="n">${its.length}</td></tr>`;
-    if(open)its.forEach(i=>h+=`<tr><td style="padding-left:22px"><button class="lnk" type="button" data-rec="i:${esc(i.id)}">${esc(i.name)}</button> <span class="muted">· ${i.funded?"Funded":'<span class="vio">Unfunded</span>'}</span></td>${i.q.map(x=>`<td class="n${i.funded?"":" vio"}">${x?fmt(x):"·"}</td>`).join("")}<td></td></tr>`);
+    h+=`<tr class="grp-r"><td><button class="lnk" type="button" data-wgrp="${gi}" aria-expanded="${!!open}">${open?"▾":"▸"} ${esc(name)}</button></td>${Q.map((_,k)=>{const u=sum(its,k,false,gsid);return `<td class="n">${fmt(sum(its,k,true,gsid))}${u?` <span class="vio">+${fmt(u)}</span>`:""}</td>`}).join("")}<td class="n">${its.length}</td></tr>`;
+    if(open)its.forEach(i=>h+=`<tr><td style="padding-left:22px"><button class="lnk" type="button" data-rec="i:${esc(i.id)}">${esc(i.name)}</button> <span class="muted">· ${i.funded?"Funded":'<span class="vio">Unfunded</span>'}${gsid!==undefined&&gsid!==null&&sh(i,gsid)<1?` · ${Math.round(100*sh(i,gsid))}% of its FTE counted here`:""}</span></td>${i.q.map(x=>{const v=x*(gsid===undefined?1:sh(i,gsid));return `<td class="n${i.funded?"":" vio"}">${v?fmt(v):"·"}</td>`}).join("")}<td></td></tr>`);
   });
-  return h+`</tbody></table><p class="hint">FTE per quarter in funded initiatives; <span class="vio">+n</span> is unfunded FTE on top. Click a group to list its initiatives.</p></div>`;
+  return h+`</tbody></table><p class="hint">FTE per quarter in funded initiatives; <span class="vio">+n</span> is unfunded FTE on top. Click a group to list its initiatives. An initiative that serves several strategies splits its FTE between them (equally unless the data says otherwise), so totals are not double counted.</p></div>`;
 }
 
 /* ---------- decisions ---------- */
@@ -554,7 +576,7 @@ const CHOICES=[["continue","Continue",1],["reduce","Reduce by half",.5],["pause"
 const chf=i=>CHOICES.find(c=>c[0]===(state.choice[i.id]||"continue"))[2];
 function vDecisions(){
   if(!PILOT.length)return `<div class="wrap view"><h2>Decisions</h2><p class="lede">No decision pilot is configured. Name one or more strategies in the data file’s <span class="mono">pilot</span> list to open a decision here.</p></div>`;
-  const pil=INITS.filter(i=>PILOT.includes(i.strat));
+  const pil=INITS.filter(i=>i.links.some(l=>PILOT.includes(l.strat)));
   const openEp=pil.reduce((a,i)=>a+(i.jira?i.jira.open:0),0), linked=pil.filter(i=>i.jira).length, opps=PILOT.reduce((a,s)=>a+SBY[s].opps.length,0);
   const pn=PILOT.map(id=>SBY[id].name), pj=pn.join(" and "), pid=PILOT.join("/"), tr=T.tracker;
   const gaps=[
@@ -566,7 +588,7 @@ function vDecisions(){
    ["Discretion isn’t set by any owner","What is truly movable?","Discretionary or non-discretionary per initiative, with the reason","Initiative owners; the Team decision audience challenges them","Low"]];
   const fund=INITS.filter(i=>i.funded), disc=fund.filter(i=>i.disc), nd=fund.filter(i=>!i.disc);
   const rowsP=[...STRATS.map(s=>[s.id+" "+s.name,s.id]),["Not linked to a strategy",null]];
-  const val=(arr,sid)=>r1(arr.filter(i=>i.strat===sid).reduce((a,i)=>a+avgH(i),0));
+  const val=(arr,sid)=>r1(arr.filter(i=>inStrat(i,sid)).reduce((a,i)=>a+avgS(i,sid),0));
   const mx=Math.max(1e-9,...rowsP.map(r=>val(disc,r[1])));
   const port=rowsP.map(([l,sid])=>{const v=val(disc,sid);return `<div class="pbar${PILOT.includes(sid)?" hl":""}"><span>${PILOT.includes(sid)?`<b>${esc(l)}</b>`:esc(l)}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`}).join("");
   const ndList=state.showNonDisc?`<div style="margin-top:8px">${rowsP.map(([l,sid])=>{const v=val(nd,sid);return v?`<div class="pbar"><span>${esc(l)}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`:""}).join("")}</div>`:"";
@@ -589,8 +611,8 @@ function vDecisions(){
   </div>`;
 }
 function stratDepth(sid){
-  const s=SBY[sid], its=initsOf(sid), fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avgH(i),0));
-  const grp=[...s.opps.map(o=>[o,its.filter(i=>i.opp===o.id)]),[null,its.filter(i=>!i.opp)]];
+  const s=SBY[sid], its=initsOf(sid), fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avgS(i,sid),0));
+  const grp=[...s.opps.map(o=>[o,its.filter(i=>linksIn(i,sid).some(l=>l.opp===o.id))]),[null,its.filter(i=>!linksIn(i,sid).some(l=>l.opp))]];
   return `<div class="scol"><div class="label">${sid}</div><h4>${esc(s.name)}</h4><small class="muted">${T.review} ${ST_LABEL[s.status]} · stated ${s.stated} FTE · in initiatives ${fmt(fte)} · ${plural(s.goals.length,"goal")} · ${s.opps.length} opportunities (proposed)</small>
    <div class="proxy">${(s.proxies||[]).map(p=>`<div><span class="pill soft">Proxy · ${esc(p[0])}</span> <b>${esc(p[1])}:</b> ${esc(p[2])}${p[3]?`<small>${esc(p[3])}</small>`:""}<small>Indicative</small></div>`).join("")}</div>
    ${grp.map(([o,list])=>`<div class="ogh">${o?`<div class="label">Opportunity ${esc(o.id)} <span class="pill soft">Proposed</span> <span style="text-transform:none;letter-spacing:0;font-weight:400">${o.goal?"under goal "+o.goal:"under the strategy (no goal yet)"}</span></div><b>${esc(o.name)}</b><small class="muted">Indicative description of this item.</small>`:`<div class="label">Linked straight to the strategy</div><b>Work with no opportunity yet</b>`}</div>
@@ -606,10 +628,10 @@ function iniRow(i){
    ${i.com||i.capSens?`<div class="ln">${i.com?`${plural(i.com,"commitment")}${i.comRisk?` <span class="amb">at risk</span>`:""}`:""}${i.capSens?` <span class="pill soft">Proxy · Low</span> Capacity-sensitive: Indicative`:""}</div>`:""}</div>`;
 }
 function impactHtml(){
-  const ch=INITS.filter(i=>PILOT.includes(i.strat)&&(state.choice[i.id]||"continue")!=="continue");
+  const ch=INITS.filter(i=>i.links.some(l=>PILOT.includes(l.strat))&&(state.choice[i.id]||"continue")!=="continue");
   const head=`<div class="card-h"><span class="num">3</span><h3>What your choices change</h3></div>`;
   if(!ch.length)return head+`<p class="card-sub">Set Reduce, Pause or Stop on any initiative above to see what moves. Nothing is saved.</p>`;
-  const freed=sid=>r1(ch.filter(i=>i.strat===sid&&i.funded).reduce((a,i)=>a+avgH(i)*(1-chf(i)),0));
+  const freed=sid=>r1(ch.filter(i=>inStrat(i,sid)&&i.funded).reduce((a,i)=>a+avgS(i,sid)*(1-chf(i)),0));
   const risk=ch.reduce((a,i)=>a+i.com,0), nd=ch.filter(i=>!i.disc), miss=ch.filter(i=>!i.jira||i.jira.unsized).length;
   return head+`<p class="card-sub">${plural(ch.length,"initiative")} changed. Nothing is saved. <button class="btn sm" type="button" id="resetCh">Reset</button></p>
    <div class="impact">${PILOT.map(sid=>`<div class="tile"><b>${fmt(freed(sid))} FTE</b><span>released from ${SBY[sid].name} (${esc(HZ.label)} average). ${SBY[sid].name} states ${SBY[sid].stated} FTE.</span></div>`).join("")}
@@ -629,6 +651,7 @@ function vReview(){
   return `<div class="wrap view"><h2>Waiting for review</h2><p class="lede">Changes and source conflicts that need an owner to look at them before they count. Nothing changes the record until an owner accepts it.</p>
    ${CHANGES.map(c=>`<div class="qitem"><div><div class="m"><span class="pill amber"><i class="dot"></i>${esc(c.k)}</span><span class="mono">${c.d}</span><span>${c.rev?"Review "+c.rev:"Review owner not recorded"}</span></div><b>Change ${c.n}: an indicative update</b><div class="diff"><del>Indicative earlier state.</del> → <ins>Indicative new state.</ins></div></div></div>`).join("")}
    ${CLAIMDOCS.map(d=>`<div class="qitem"><div><div class="m"><span class="pill"><i class="dot"></i>Claims</span><span>${esc(d.kind)}</span></div><b>Source document ${esc(d.id)} (indicative)</b><div class="muted" style="font-size:12.5px">${d.n} claims Proposed${d.conflicts?`, <span class="red">${d.conflicts} conflict with the record</span>`:""}</div></div><button class="btn sm" type="button" data-claims="${esc(d.id)}">See claims</button></div>`).join("")}
+   ${DATACHECKS.map(m=>`<div class="qitem mc"><b>Data check</b><span>${esc(m)}</span><span></span><span class="muted" style="font-size:12.5px">Found by the page while reading the data. Fix it in the data store.</span></div>`).join("")}
    ${MODELCHECKS.map(m=>`<div class="qitem mc"><b>Model check</b><span>Model-health flag ${m.n}</span><span></span><span class="muted" style="font-size:12.5px">Indicative detail about a gap or inconsistency in the model.</span></div>`).join("")}</div>`;
 }
 
@@ -645,20 +668,25 @@ const recActions=`<div class="legend" style="margin-top:14px"><button class="btn
 function openList(q){
   const [,sid,g,o]=q.split(":");
   if(sid==="none"){const its=initsOf(null);return openDrawer(`Initiatives · ${its.length}`,"Not linked to a strategy",`No strategy, goal or opportunity · ${fmt(r1(its.reduce((a,i)=>a+avgH(i),0)))} FTE average in ${esc(HZ.label)}`,[...its].sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`)}
-  const s=SBY[sid], its=INITS.filter(i=>i.strat===sid&&(i.goal||"none")===g&&(i.opp||"none")===o);
+  const s=SBY[sid], its=INITS.filter(i=>linksIn(i,sid).some(l=>(l.goal||"none")===g&&(l.opp||"none")===o));
   const title=g==="none"&&o==="none"?`${sid}: work with no goal`:o!=="none"?`Opportunity ${o}`:`Goal ${g}`;
-  const sub=`${g==="none"&&o==="none"?`Linked straight to ${sid} ${esc(s.name)}`:o!=="none"?`Via proposed opportunity ${o}${g!=="none"?" under goal "+g:""}`:`Under goal ${g}`} · ${fmt(r1(its.reduce((a,i)=>a+avgH(i),0)))} FTE average in ${esc(HZ.label)}`;
+  const sub=`${g==="none"&&o==="none"?`Linked straight to ${sid} ${esc(s.name)}`:o!=="none"?`Via proposed opportunity ${o}${g!=="none"?" under goal "+g:""}`:`Under goal ${g}`} · ${fmt(r1(its.reduce((a,i)=>a+avgS(i,sid),0)))} FTE average in ${esc(HZ.label)}`;
   openDrawer(`Initiatives · ${its.length}`,title,sub,its.sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`);
+}
+function linksHtml(i){
+  if(!i.links.length)return "Not linked to a strategy";
+  const ss=strOf(i);
+  return i.links.map(l=>`${esc(l.strat+" "+((SBY[l.strat]||{}).name||""))} · ${l.goal?"goal "+esc(l.goal):"no goal yet"}${l.opp?" · opportunity "+esc(l.opp)+" (proposed)":""}`).join("<br>")+(ss.length>1?`<br><span class="muted">FTE split: ${ss.map(x=>esc(x)+" "+Math.round(100*sh(i,x))+"%").join(", ")}</span>`:"");
 }
 function openRec(id,push){
   const [k,a,b]=id.split(":");
   if(id==="vision")return openDrawer("North Star · Org vision",VISION,"Owner: Org leadership · source: Org strategy (indicative)",`<p>The Org vision is the outcome the organisation exists to create. It is not yet measured, so the North Star level shows as not assessed.</p>`+recActions,push);
   if(k==="o"){const o=OBJECTIVES.find(x=>x.id===a),ss=STRATS.filter(s=>s.objs.includes(a));return openDrawer("Org objective · "+a,o.name,"Indicative description of this objective.",`<dl class="rec"><dt>Team strategies</dt><dd>${ss.map(s=>s.id+" "+s.name).join(", ")||"None"}</dd><dt>Status</dt><dd>Not assessed</dd></dl>`+recActions,push)}
   if(k==="s"&&a==="none"){const its=initsOf(null);return openDrawer("Unlinked work","Not linked to a strategy","Initiatives with no strategy",`<p>${plural(its.length,"initiative")} ${its.length===1?"has":"have"} no strategy, so ${its.length===1?"it does":"they do"} not trace to a goal or an Org objective. An owner should link each one to a strategy, or confirm it stands alone and say why.</p><dl class="rec"><dt>FTE (${esc(HZ.label)} average)</dt><dd>${fmt(r1(its.reduce((x,i)=>x+avgH(i),0)))}</dd><dt>Unfunded</dt><dd>${its.filter(i=>!i.funded).length}</dd></dl>`+recActions,push)}
-  if(k==="s"){const s=SBY[a],its=initsOf(a);return openDrawer("Team strategy · "+a,s.name,`${T.review}: ${ST_LABEL[s.status]}`,`<dl class="rec"><dt>Serves</dt><dd>${s.objs.join(", ")}</dd><dt>Stated FTE</dt><dd>${s.stated}</dd><dt>FTE in initiatives</dt><dd>${fmt(r1(its.filter(i=>i.funded).reduce((x,i)=>x+avgH(i),0)))} (${esc(HZ.label)} average, funded)</dd><dt>Goals</dt><dd>${s.goals.map(g=>g.id).join(", ")}</dd><dt>Success measure</dt><dd>${s.success?esc(s.success.m)+(s.success.by?" · by "+s.success.by:" · no date"):"Through its goals"}</dd><dt>Initiatives</dt><dd>${its.length} (${its.filter(i=>!i.goal).length} with no goal)</dd></dl>`+recActions,push)}
-  if(k==="g"){const g=GBY[b];return openDrawer("Team goal · "+b,g.name,`Under ${a} ${SBY[a].name}`,`<dl class="rec"><dt>Measured</dt><dd>${g.measured?"Yes, a metric has a current value":"No current value"}</dd><dt>Measures</dt><dd>${g.measures.length?g.measures.map(m=>`${esc(m.m)} (${esc(m.kind)}${m.by?", by "+m.by:", no date"})`).join("<br>"):"None recorded"}</dd><dt>Initiatives</dt><dd>${INITS.filter(i=>i.goal===b).length}</dd></dl>`+recActions,push)}
+  if(k==="s"){const s=SBY[a],its=initsOf(a);return openDrawer("Team strategy · "+a,s.name,`${T.review}: ${ST_LABEL[s.status]}`,`<dl class="rec"><dt>Serves</dt><dd>${s.objs.join(", ")}</dd><dt>Stated FTE</dt><dd>${s.stated}</dd><dt>FTE in initiatives</dt><dd>${fmt(r1(its.filter(i=>i.funded).reduce((x,i)=>x+avgS(i,a),0)))} (${esc(HZ.label)} average, funded)</dd><dt>Goals</dt><dd>${s.goals.map(g=>g.id).join(", ")}</dd><dt>Success measure</dt><dd>${s.success?esc(s.success.m)+(s.success.by?" · by "+s.success.by:" · no date"):"Through its goals"}</dd><dt>Initiatives</dt><dd>${its.length} (${its.filter(i=>!i.goal).length} with no goal)</dd></dl>`+recActions,push)}
+  if(k==="g"){const g=GBY[b];return openDrawer("Team goal · "+b,g.name,`Under ${a} ${SBY[a].name}`,`<dl class="rec"><dt>Measured</dt><dd>${g.measured?"Yes, a metric has a current value":"No current value"}</dd><dt>Measures</dt><dd>${g.measures.length?g.measures.map(m=>`${esc(m.m)} (${esc(m.kind)}${m.by?", by "+m.by:", no date"})`).join("<br>"):"None recorded"}</dd><dt>Initiatives</dt><dd>${INITS.filter(i=>i.links.some(l=>l.goal===b)).length}</dd></dl>`+recActions,push)}
   if(k==="p"){const o=OBY[a];return openDrawer("Opportunity · Proposed",o.name,`${o.goal?"Under goal "+o.goal:"Under "+o.strat+" (no goal yet)"}`,`<p>Indicative description of this item. Opportunities are proposed until an owner accepts, rewords or rejects them.</p>`+recActions,push)}
-  if(k==="i"){const i=INITS.find(x=>x.id===a);return openDrawer("Initiative",i.name,`${i.funded?"Funded":"Unfunded"} · ${esc(T.workstream)} ${i.ws}`,`<dl class="rec"><dt>Strategy</dt><dd>${i.strat?esc(i.strat+" "+SBY[i.strat].name):"Not linked"}</dd><dt>Goal</dt><dd>${esc(i.goal||"No goal yet")}</dd><dt>Opportunity</dt><dd>${i.opp?esc(i.opp)+" (proposed)":"None"}</dd><dt>FTE by quarter</dt><dd class="mono">${Q.map((q,n)=>q+" "+fmt(i.q[n])).join(" · ")}</dd><dt>Beneficiary</dt><dd>${esc(i.benef)}</dd><dt>Discretion</dt><dd>${i.disc?"Discretionary":"Non-discretionary"} (suggested by rule)</dd><dt>${esc(T.tracker)}</dt><dd>${i.jira?`${i.jira.open} open epics, ${i.jira.unsized} unsized`:"No epic linked"}</dd><dt>Commitments</dt><dd>${i.com?i.com+(i.comRisk?" (at risk)":""):"None recorded"}</dd></dl>`+recActions,push)}
+  if(k==="i"){const i=INITS.find(x=>x.id===a);return openDrawer("Initiative",i.name,`${i.funded?"Funded":"Unfunded"} · ${esc(T.workstream)} ${i.ws}`,`<dl class="rec"><dt>Serves</dt><dd>${linksHtml(i)}</dd><dt>FTE by quarter</dt><dd class="mono">${Q.map((q,n)=>q+" "+fmt(i.q[n])).join(" · ")}</dd><dt>Beneficiary</dt><dd>${esc(i.benef)}</dd><dt>Discretion</dt><dd>${i.disc?"Discretionary":"Non-discretionary"} (suggested by rule)</dd><dt>${esc(T.tracker)}</dt><dd>${i.jira?`${i.jira.open} open epics, ${i.jira.unsized} unsized`:"No epic linked"}</dd><dt>Commitments</dt><dd>${i.com?i.com+(i.comRisk?" (at risk)":""):"None recorded"}</dd></dl>`+recActions,push)}
 }
 function openClaims(d){
   const doc=CLAIMDOCS.find(x=>x.id===d);

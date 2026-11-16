@@ -22,12 +22,15 @@ python design/build.py --data client/data.json  # a client's own data
 | `strategies` | `[{id, name, status, stated, objs, success, outputOnly?, proxies?, goals, opps}]` | `status`: `on`, `risk` or `na`; `stated` is the strategy's stated FTE; `objs` are objective IDs |
 | `strategies[].goals` | `[{id, name, measured, measures: [{m, by, kind}]}]` | `kind`: `outcome` or `output`; `by` is the target year or `null` |
 | `strategies[].opps` | `[{id, name, goal}]` | Proposed opportunities; `goal` is a goal ID or `null` |
-| `initiatives` | `[{id, name, strat, goal, opp, fte, q, funded, ws, disc, benef, jira, com, comRisk, capSens}]` | `q` is FTE per quarter (same length as `quarters`); `strat`, `goal` and `opp` are IDs or `null`; `jira` is `{open, unsized, past}` or `null` |
+| `initiatives` | `[{id, name, links, split?, fte, q, funded, ws, disc, benef, jira, com, comRisk, capSens}]` | `links` is `[{strat, goal, opp}]` (an initiative can serve several strategies; an empty list means unlinked). `strat`, `goal` and `opp` on their own still work as a single link. `split` is `{strategyId: share}`; without it the FTE is split equally across the strategies. `q` is FTE per quarter (same length as `quarters`); `jira` is `{open, unsized, past}` or `null` |
 | `pilot` | `[strategy ids]` | Strategies opened in the Decisions view. Empty hides the content with a prompt |
 | `questions` | `[{id, cat, t, why, dm}]` | Open questions |
 | `changes`, `claimDocs`, `modelChecks`, `otherDecisions` | lists | Review and Decisions content |
 
-## Known limits (to be fixed)
+## Data checks
 
-- An initiative links to one strategy, goal and opportunity (many-to-many is planned).
-- IDs must not contain `:` or `|`; they are used as delimiters when tracing links.
+The page validates the data on load and lists problems in the Review tab as "Data check" items: unknown strategies, goals or opportunities, an opportunity whose goal differs from the link's goal, duplicate IDs, a split that does not add up to 100%, and initiatives with no FTE in the quarters shown.
+
+## Limits
+
+- IDs must not contain `:` or `|`, and must not be `none`; they are used as delimiters when tracing links. The data check flags them.
