@@ -192,6 +192,21 @@ information_sources:
   #   scan_frequency: null        # one of: manual | daily | weekly | monthly | on_change
   #   retention: null
   #   known_quality_issues: null
+    - id: S3
+      name: "Strategy review meetings: slide decks, plus related notes in Slite"
+      kind: other                 # review decks and meeting notes
+      location: "Slide decks (tool not yet confirmed) and Slite pages (not yet named)"
+      access_route: null
+      owner_role: null
+      decision_stack_tier: cross_cutting
+      evidence_role: understood   # how presenters and teams describe the strategy at reviews; to confirm (decks may also be "said")
+      permission_status: null
+      permission_granted_by_role: null
+      sensitivity: null
+      redaction_needed: null
+      scan_frequency: null
+      retention: null
+      known_quality_issues: null
   pending_sources:
     - what: "Several competing AX strategy documents (Slite and Google Docs/Slides); no single one is current"
       evidence_role: said
