@@ -46,6 +46,11 @@ meta:
 hosting:
   status: in_progress
   code_host: null               # one of: github | gitlab | azure_devops | bitbucket | other
+  code_host_pending:
+    question: "Stay in randysilver-visma/strategy-overview (personal account) or move to an e-conomic/Visma organisation or another host?"
+    asked_of: "the consultant's tech contact (role not yet recorded)"
+    asked_on: "2026-11-16"
+    current_state: "Code is in randysilver-visma/strategy-overview on GitHub"
   code_host_default_used: null  # true if GitHub chosen because no alternative exists
   repo_location: null           # org/repo path once created
   repo_visibility: null         # one of: private | internal
