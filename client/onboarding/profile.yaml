@@ -275,7 +275,7 @@ work_tracking:
 # 6. People and roles: owners, approvers, decision makers
 # ---------------------------------------------------------------------------
 people_and_roles:
-  status: in_progress
+  status: complete              # nothing confirmed by role-holders yet; governance team details to check
   # One entry per tier or information area.
   ownership:
     - area: "AX team strategies"
@@ -313,9 +313,9 @@ people_and_roles:
     member_roles: null
     meeting_cadence: null
     status: "details to check by the consultant (6.4)"
-  admin_roles: []               # who manages users and permissions in the tool
-  viewers: null                 # who may see the page
-  editors: null                 # who may suggest changes or answer questions
+  admin_roles: ["consultant (pilot); hand over to AX later"]   # who manages users and permissions in the tool (6.7)
+  viewers: "any e-conomic/Visma employee via SSO; may narrow to AX and stakeholders (derived from 1.2, provisional)"
+  editors: "people with GitHub access to the repo, proposing changes as pull requests (derived from 2.2 and 5.4, provisional)"
   unresolved_ownership: []      # areas where nobody will accept ownership
 
 # ---------------------------------------------------------------------------
@@ -369,4 +369,6 @@ template_feedback:
   confusing_fields:
     - "work_tracking.confidence_scale: the template default (low | medium | validated) differs from the prototype's scale (hypothesis | partly validated | validated)"
   fields_never_used: []
+  process_feedback:
+    - "Consultant, 2026-11-16 (during section 6): much of the interview (sources, schema, owners, roles) can and should be derived from the client's documentation and proposed for confirmation, not asked question by question. Tech setup (hosting, data store, access, credentials, security) is what really needs the interview. Revise the onboarding approach after this interview."
   client_specific_items_to_exclude_from_generic: []
