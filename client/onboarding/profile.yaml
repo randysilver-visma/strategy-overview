@@ -254,7 +254,7 @@ schema_alignment:
 # 5. Work tracking: initiatives, teams, links to objectives, effort
 # ---------------------------------------------------------------------------
 work_tracking:
-  status: in_progress
+  status: complete              # Jira facts (initiative level, link field, effort source, team list) pending examination
   initiatives_live_in: jira     # one of: jira | linear | azure_boards | spreadsheet | slides | none | other. Also a roadmap/initiative list in Slite (source S2)
   initiative_level_in_jira: null   # unknown (5.1): the consultant has not yet examined AX's Jira; ask the Engineering Lead, Agentic Experience
   team_list_source: null
@@ -267,7 +267,7 @@ work_tracking:
     decided_by_role: "consultant, on Claude's recommendation (5.4)"
   effort_unit: fte              # default "fte"; alternatives: points | person_days | none. FTE per quarter until AX's documents or practice show otherwise (5.3)
   effort_source: null           # not yet known; Jira not yet examined
-  confidence_scale: null        # default "low | medium | validated"; record client variants
+  confidence_scale: "hypothesis | partly validated | validated"   # as in the prototype (5.5)
   jira_rule: "Every Jira-specific fact is 'not yet examined' until the consultant or the Engineering Lead has looked and Jira read permission is granted (consultant, 5.2). No Jira connector in the interview environment."
   assumptions: []
 
@@ -336,6 +336,7 @@ template_feedback:
   missing_fields:
     - "meta.environment_check: a place to record which tools the interviewer could reach"
     - "meta: no field for the day-to-day contact, which section 0 of the prompt asks for"
-  confusing_fields: []
+  confusing_fields:
+    - "work_tracking.confidence_scale: the template default (low | medium | validated) differs from the prototype's scale (hypothesis | partly validated | validated)"
   fields_never_used: []
   client_specific_items_to_exclude_from_generic: []
