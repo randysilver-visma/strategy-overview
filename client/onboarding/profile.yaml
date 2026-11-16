@@ -56,12 +56,14 @@ hosting:
   repo_visibility: null         # one of: private | internal
   who_can_create_repos_role: null
   runtime_target: null          # one of: internal_server | private_cloud | vpn_only_vm | desktop_only | other
-  network_boundary: null        # e.g. "reachable only on corporate network or VPN"
-  authentication: null          # one of: sso | basic_auth | network_only | other
+  network_boundary: "Reachable from anywhere for any e-conomic/Visma employee who signs in with company SSO (consultant's belief; may narrow to a named group)"
+  authentication: sso           # one of: sso | basic_auth | network_only | other
   deployment_method: null       # e.g. "CI pipeline", "manual copy"
   admin_role: null              # who keeps it running
   constraints: []               # free text, e.g. "no external CDNs", "change board approval needed"
-  assumptions: []
+  assumptions:
+    - item: "Audience is all e-conomic/Visma employees via SSO. May change to a named group (AX and its stakeholders) behind SSO."
+      check_with: "Product Lead, Agentic Experience; the consultant's tech contact"
 
 # ---------------------------------------------------------------------------
 # 2. Data store: the single source of truth for records and edits
