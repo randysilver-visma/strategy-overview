@@ -383,7 +383,8 @@ readiness:
     - "e-conomic/Visma branding"
     - "Chat over the knowledge base"
     - "Approval deadlines and escalation"
-  next_review_date: null
+  next_review_date: "2026-11-17"         # tech questions with the consultant's tech contact
+  tech_questions_doc: "https://docs.google.com/document/d/1s5hP45qgyAerAsfk6HH1LvR8Bvx0lS3Fh9Q3R2eLCX4/edit"
 
 # ---------------------------------------------------------------------------
 # 10. Template feedback: what this client needed that the template lacked
