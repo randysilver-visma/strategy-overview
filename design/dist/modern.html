@@ -162,6 +162,7 @@ button.tile:hover{background:var(--surface2)}
 .obj b{display:block;font-weight:500;font-size:13px}
 .obj small{color:var(--muted);font-size:11px}
 .strat{width:100%;border-width:2px}
+.strat.unl{border-style:dashed;border-color:var(--warn-line);background:var(--warn-soft)}
 .strat.on{border-color:var(--ok)} .strat.risk{border-color:var(--warn-line)} .strat.na{border-style:dashed;border-color:var(--muted)}
 .strat-t{display:flex;align-items:center;gap:8px;font-weight:500}
 .chev{width:24px;height:24px;border:1px solid var(--line);border-radius:6px;background:var(--surface);display:grid;place-items:center;flex:none;padding:0}
@@ -381,7 +382,7 @@ const state={view:"overview",sel:null,open:{},allOpen:false,work:{view:"roadmap"
 
 /* ---------- derived figures ---------- */
 const initsOf=s=>INITS.filter(i=>i.strat===s);
-function coverage(){const stated=STRATS.reduce((a,s)=>a+s.stated,0);const inRec=INITS.filter(i=>i.strat&&i.funded).reduce((a,i)=>a+avgH(i),0);return{stated,inRec:Math.round(inRec),pct:Math.round(100*inRec/stated)}}
+function coverage(){const stated=STRATS.reduce((a,s)=>a+(Number(s.stated)||0),0);const inRec=INITS.filter(i=>i.strat&&i.funded).reduce((a,i)=>a+avgH(i),0);return{stated,inRec:Math.round(inRec),pct:stated?Math.round(100*inRec/stated):null}}
 const goalsNoInit=()=>GOALS.filter(g=>!INITS.some(i=>i.goal===g.id));
 const unfunded=()=>INITS.filter(i=>!i.funded&&i.strat);
 const assessed=()=>STRATS.filter(s=>s.status!=="na");
@@ -393,14 +394,15 @@ function rag(x){const k=[[142,55,40],[43,95,52],[3,78,50]],u=Math.max(0,Math.min
 function levels(){
   const c=coverage(), gm=GOALS.filter(g=>g.measured).length, on=assessed().filter(s=>s.status==="on").length, as=assessed().length;
   const st=r=>r>=.8?"aligned":r>=.4?"drift":"conflict";
+  const none={status:null,note:"No measure yet"};
   return [
-   {k:"Work",href:"#work",status:st(c.pct/100),sev:1-c.pct/100,note:`${c.pct}% of stated strategy FTE is in recorded initiatives`},
-   {k:"Team goals",href:"#strategy",status:st(gm/GOALS.length),sev:1-gm/GOALS.length+.1,note:`${gm} of ${GOALS.length} goals have a metric with a current value`},
-   {k:"Team strategies",href:"#strategy",status:st(on/as),sev:1-on/as,note:`${on} of ${as} assessed strategies On Track (${T.review})`},
+   {k:"Work",href:"#work",...(c.pct===null?none:{status:st(c.pct/100),sev:1-c.pct/100,note:`${c.pct}% of stated strategy FTE is in recorded initiatives`})},
+   {k:"Team goals",href:"#strategy",...(!GOALS.length?none:{status:st(gm/GOALS.length),sev:Math.min(1,1-gm/GOALS.length+.1),note:`${gm} of ${GOALS.length} goals have a metric with a current value`})},
+   {k:"Team strategies",href:"#strategy",...(!as?none:{status:st(on/as),sev:1-on/as,note:`${on} of ${as} assessed strategies On Track (${T.review})`})},
    {k:"Team role",status:null,note:"No measure yet"},{k:"Org objectives",status:null,note:"No measure yet"},{k:"North Star",star:true,status:null,note:"No measure yet"}];
 }
 const SLAB={aligned:"Aligned",drift:"Drifting",conflict:"Conflict"};
-function flockScore(){const L=levels().filter(l=>l.status);return L.reduce((a,l)=>a+({aligned:1,drift:.5,conflict:0}[l.status]),0)/L.length}
+function flockScore(){const L=levels().filter(l=>l.status);if(!L.length)return .5;return L.reduce((a,l)=>a+({aligned:1,drift:.5,conflict:0}[l.status]),0)/L.length}
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -445,7 +447,7 @@ function vOverview(){
   </section>
   <div class="tiles">
     <a class="tile att" href="#strategy" style="text-decoration:none"><b>${risk} of ${assessed().length}</b><span>assessed strategies At Risk (${T.review})</span></a>
-    <a class="tile att" href="#work" style="text-decoration:none"><b>${c.pct}%</b><span>of stated FTE in funded initiatives linked to a strategy (${c.inRec} of ${c.stated})</span></a>
+    <a class="tile att" href="#work" style="text-decoration:none"><b>${c.pct===null?"n/a":c.pct+"%"}</b><span>of stated FTE in funded initiatives linked to a strategy (${c.inRec} of ${c.stated})</span></a>
     <a class="tile att" href="#work" style="text-decoration:none"><b>${gni}</b><span>goals with no initiative</span></a>
     <a class="tile" href="#decisions" style="text-decoration:none"><b>${decisionCount()}</b><span>decisions waiting</span></a>
     <a class="tile" href="#questions" style="text-decoration:none"><b>${QUESTIONS.length}</b><span>open questions</span></a>
@@ -470,7 +472,7 @@ function related(sel){
   if(!sel)return null; const E=allEdges(), set=new Set([sel]);
   const up=n=>E.filter(e=>e[1]===n).forEach(e=>{if(!set.has(e[0])){set.add(e[0]);up(e[0])}});
   const down=n=>E.filter(e=>e[0]===n).forEach(e=>{if(!set.has(e[1])){set.add(e[1]);down(e[1])}});
-  if(sel.startsWith("o:")){down(sel);[...set].filter(n=>n.startsWith("s:")).forEach(n=>{const s=SBY[n.slice(2)];s.objs.forEach(o=>set.add(nid.o(o)))})}
+  if(sel.startsWith("o:")){down(sel)}
   else{up(sel);down(sel)}
   return set;
 }
@@ -478,14 +480,14 @@ function stratCard(s){
   const open=!!state.open[s.id];
   const succ=s.success?measureLine(s.success):s.outputOnly?`<small class="amb">No outcome measure · ${plural(s.goals.filter(g=>g.measures.some(m=>m.kind==="output")).length,"output measure")} only</small>`:`<small>Success measured through its goals</small>`;
   return `<div class="box strat ${s.status}" data-node="${nid.s(s.id)}" tabindex="0">
-    <div class="strat-t"><button class="chev" type="button" data-toggle="${s.id}" aria-expanded="${open}" aria-label="${open?"Collapse":"Expand"} ${s.name}">${CHEV}</button><button class="lnk" type="button" data-rec="${nid.s(s.id)}">${s.id} ${s.name}</button></div>
+    <div class="strat-t"><button class="chev" type="button" data-toggle="${esc(s.id)}" aria-expanded="${open}" aria-label="${open?"Collapse":"Expand"} ${esc(s.name)}">${CHEV}</button><button class="lnk" type="button" data-rec="${nid.s(s.id)}">${esc(s.id)} ${esc(s.name)}</button></div>
     <small style="margin:4px 0 2px">${ST_LABEL[s.status]} · ${plural(s.goals.length,"goal")}</small>${succ}</div>`;
 }
 function goalCard(s,g){
-  if(!g){return `<div class="box goal nog" data-node="${nid.g(s.id,null)}" tabindex="0"><div class="goal-t">No goal yet</div><small>work linked straight to ${s.id}</small></div>`}
+  if(!g){return `<div class="box goal nog" data-node="${nid.g(s.id,null)}" tabindex="0"><div class="goal-t">No goal yet</div><small>work linked straight to ${esc(s.id)}</small></div>`}
   const om=outcomeMeasures(g), out=g.measures.filter(m=>m.kind==="output");
   const ms=om.length?om.map(measureLine).join(""):`<small class="amb">No outcome measure${out.length?` · ${plural(out.length,"output measure")} only`:""}</small>`;
-  return `<div class="box goal" data-node="${nid.g(s.id,g.id)}" tabindex="0"><div class="goal-t"><span class="gdot ${g.measured?"m":""}" title="${g.measured?"Measured":"Not measured"}"></span><button class="lnk" type="button" data-rec="${nid.g(s.id,g.id)}">${g.id} ${esc(g.name)}</button></div>${ms}</div>`;
+  return `<div class="box goal" data-node="${nid.g(s.id,g.id)}" tabindex="0"><div class="goal-t"><span class="gdot ${g.measured?"m":""}" title="${g.measured?"Measured":"Not measured"}"></span><button class="lnk" type="button" data-rec="${nid.g(s.id,g.id)}">${esc(g.id)} ${esc(g.name)}</button></div>${ms}</div>`;
 }
 function vStrategy(){
   const rel=related(state.sel);
@@ -509,11 +511,17 @@ function vStrategy(){
        <div class="c-init">${grs.length?grs.map(x=>`<div class="box grp" data-node="${nid.q(s.id,gid,x.opp)}" tabindex="0"><b>${x.items.length}</b><small>${x.items.length===1?"initiative":"initiatives"}</small><button class="btn sm" type="button" data-list="${nid.q(s.id,gid,x.opp)}">List ›</button></div>`).join(""):`<div class="box grp zero" data-node="${nid.q(s.id,gid,null)}"><b>0</b><small>none yet</small></div>`}</div>`;
     });
   });
+  const un=initsOf(null);
+  if(un.length){const ufte=r1(un.filter(i=>i.funded).reduce((a,i)=>a+avgH(i),0)), un0=un.filter(i=>!i.funded).length;
+    rows+=`<div class="c-strat sblock"><div class="box strat unl" data-node="${nid.s("none")}" tabindex="0"><div class="strat-t"><button class="lnk" type="button" data-rec="${nid.s("none")}">Not linked to a strategy</button></div><small style="margin:4px 0 2px" class="amb">Unlinked work</small><small>${plural(un.length,"initiative")} · ${fmt(ufte)} FTE (${esc(HZ.label)} average, funded)${un0?` · ${un0} unfunded`:""}</small></div></div>
+     <div class="c-goal"><div class="sumc">no goal</div></div><div class="c-opp"><div class="sumc">no opportunity</div></div>
+     <div class="c-init"><div class="box grp" data-node="${nid.q("none",null,null)}" tabindex="0"><b>${un.length}</b><small>unlinked</small><button class="btn sm" type="button" data-list="${nid.q("none",null,null)}">List ›</button></div></div>`}
+  const unNote=un.length?`<div class="callout"><b>${plural(un.length,"initiative")} ${un.length===1?"is":"are"} not linked to any strategy</b> (${fmt(r1(un.reduce((a,i)=>a+avgH(i),0)))} FTE, ${esc(HZ.label)} average). They are shown at the bottom of the board. Each needs an owner to link it to a strategy or to confirm it should stand alone.</div>`:"";
   const html=`<div class="wrap view"><h2>Strategy</h2><p class="lede">How each piece of ${esc(META.team)}’s work connects to the goals, strategies and Org objectives it serves.</p>
-   <div class="nsbar"><span class="label">North Star · Org vision</span><button class="lnk" type="button" data-rec="vision">${esc(VISION)}</button></div>
+   ${unNote}<div class="nsbar"><span class="label">North Star · Org vision</span><button class="lnk" type="button" data-rec="vision">${esc(VISION)}</button></div>
    <div class="legend"><span class="lg"><i class="sw on"></i>Strategy On Track</span><span class="lg"><i class="sw risk"></i>At Risk</span><span class="lg"><i class="sw na"></i>Not assessed</span><span class="lg"><i class="sw dot"></i>goal measured</span><span class="lg"><i class="sw opp"></i>Opportunity (proposed)</span><span class="lg"><i class="sw ng"></i>No goal yet</span><span class="lg"><span class="by">by ${esc(HZ.label||"year")}</span>success measure and when it’s due (outcomes only)</span><span class="sp"></span><button class="btn sm" type="button" id="expandAll">${STRATS.every(s=>state.open[s.id])?"Collapse all":"Expand all"}</button></div>
    <div class="boardwrap"><div class="board" id="board">
-     <div class="ocol"><div class="colh"><b>Org objectives</b><small>why</small></div>${OBJECTIVES.map(o=>`<div class="box obj${cls(nid.o(o.id))}" data-node="${nid.o(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.o(o.id)}">${o.name}</button></b><small>${o.id}</small></div>`).join("")}</div>
+     <div class="ocol"><div class="colh"><b>Org objectives</b><small>why</small></div>${OBJECTIVES.map(o=>`<div class="box obj${cls(nid.o(o.id))}" data-node="${nid.o(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.o(o.id)}">${esc(o.name)}</button></b><small>${esc(o.id)}</small></div>`).join("")}</div>
      <div class="rows">${rows}</div>
      <svg class="wires" id="wires" aria-hidden="true"></svg>
    </div></div>
@@ -543,18 +551,22 @@ function drawWires(){
 function activeIn(its,k,f){return its.filter(i=>i.q[k]>0&&(f===undefined||i.funded===f)).length}
 function vWork(){
   const W=state.work, c=coverage(), gni=goalsNoInit(), unf=unfunded();
-  const findings=`<div class="findings"><div class="finding bad"><b>Coverage</b><span>Only ${c.inRec} of ${c.stated} stated strategy FTE (${c.pct}%) is in recorded initiatives, so most capacity can’t be traced to work yet.</span></div>
+  const findings=`<div class="findings"><div class="finding bad"><b>Coverage</b><span>Only ${c.inRec} of ${c.stated} stated strategy FTE${c.pct===null?"":` (${c.pct}%)`} is in recorded initiatives, so most capacity can’t be traced to work yet.</span></div>
     <div class="finding"><b>Check</b><span>${gni.length} of ${GOALS.length} goals have no initiative: ${gni.map(g=>g.id).join(", ")}.</span></div>
     <div class="finding"><b>Check</b><span>${unf.length} initiatives are unfunded: ${unf.map(i=>i.name).join("; ")}.</span></div></div>`;
   const seg=(id,opts,cur,sm)=>`<div class="seg${sm?" sm":""}" role="group" aria-label="${id}">${opts.map(([v,l])=>`<button type="button" data-${id}="${v}" aria-pressed="${cur===v}">${l}</button>`).join("")}</div>`;
   let body="";
   if(W.view==="roadmap") body=roadmap();
-  else body=fteTable(W.view==="strategy"?STRATS.map(s=>[`${s.id} ${s.name}`,initsOf(s.id)]).concat([["Not linked to a strategy",initsOf(null)]]):BENEF.map(b=>[b,INITS.filter(i=>i.benef===b)]));
+  else body=fteTable(W.view==="strategy"?STRATS.map(s=>[`${esc(s.id)} ${esc(s.name)}`,initsOf(s.id)]).concat([["Not linked to a strategy",initsOf(null)]]):BENEF.map(b=>[b,INITS.filter(i=>i.benef===b)]));
   return `<div class="wrap view"><h2>Work</h2><p class="lede">Work starts from outcomes: the outcome roadmap (Itamar Gilad’s template) shows each goal with its target. Every initiative should serve at least one goal. Headcount is shown, but it’s what the work costs, not what it’s worth. The other views group initiatives by strategy or beneficiary with their FTE per quarter.</p>
    <div class="ctrls">${seg("wview",[["roadmap","Outcome roadmap"],["strategy","By strategy"],["beneficiary","By beneficiary"]],W.view)}
    ${W.view==="roadmap"?seg("wlevel",[["strategies","Strategies"],["goals","Goals"],["deliveries","Deliveries"]],W.level,true)+`<button class="btn sm" type="button" id="resBtn" aria-pressed="${W.research}">Show research, discovery and delay</button>`:""}
    <span class="meta">FTE from ${esc(T.source)} initiatives, ${esc(Q[0]||"")} to ${esc(Q[Q.length-1]||"")}</span></div>
    ${findings}${body}</div>`;
+}
+function irow(i){
+  const act=i.q.map((x,k)=>x>0?k:-1).filter(k=>k>=0), s0=act.length?act[0]:-1, e0=act.length?act[act.length-1]:-1;
+  return `<div class="rr irow"><div class="rl"><button class="lnk" type="button" data-rec="i:${esc(i.id)}"><b>${esc(i.name)}</b></button><br>${i.funded?"Funded":'<span class="vio">Unfunded</span>'} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</div><div class="bars">${s0<0?`<span class="muted" style="grid-column:1/${Q.length+1};font-size:12px">No FTE in this window</span>`:`<div class="ib${i.funded?"":" unf"}" style="grid-column:${s0+1}/${e0+2}" title="${esc(i.name)}: ${esc(Q[s0])} to ${esc(Q[e0])}"></div>`}</div></div>`;
 }
 function roadmap(){
   const W=state.work;
@@ -564,24 +576,30 @@ function roadmap(){
   STRATS.forEach(s=>{
     const its=initsOf(s.id), open=W.level!=="strategies"||W.open[s.id], fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avgH(i),0));
     const tq=s.goals.map(goalTarget), later=tq.filter(t=>t==="later").length, gni=s.goals.filter(g=>!its.some(i=>i.goal===g.id)).length, nunf=its.filter(i=>!i.funded).length;
-    h+=`<div class="rr srow"><div class="rl"><div class="t"><button class="chev" type="button" data-wopen="${s.id}" aria-expanded="${!!open}" aria-label="${open?"Collapse":"Expand"} ${s.name}">${CHEV}</button><b>${s.id} ${s.name}</b></div>${plural(s.goals.length,"goal")} · ${T.review} ${ST_LABEL[s.status]} · ${plural(its.length,"initiative")} · ${fmt(fte)} FTE${nunf?` · ${nunf} unfunded`:""}<br>${s.goals.filter(g=>g.measured).length} of ${plural(s.goals.length,"goal")} measured${gni?` · ${gni} with no initiative`:""}</div>
+    h+=`<div class="rr srow"><div class="rl"><div class="t"><button class="chev" type="button" data-wopen="${esc(s.id)}" aria-expanded="${!!open}" aria-label="${open?"Collapse":"Expand"} ${esc(s.name)}">${CHEV}</button><b>${esc(s.id)} ${esc(s.name)}</b></div>${plural(s.goals.length,"goal")} · ${T.review} ${ST_LABEL[s.status]} · ${plural(its.length,"initiative")} · ${fmt(fte)} FTE${nunf?` · ${nunf} unfunded`:""}<br>${s.goals.filter(g=>g.measured).length} of ${plural(s.goals.length,"goal")} measured${gni?` · ${gni} with no initiative`:""}</div>
      ${Q.map((_,k)=>{const f=activeIn(its,k,true),u=activeIn(its,k,false),d=tq.includes(k);return `<div class="qc"><b>${f}${u?` <span class="vio">+${u}</span>`:""}${d?' <i class="dia" title="Goal target this quarter"></i>':""}</b><span>${u?"initiatives · unfunded":"initiatives"}</span>${k===Q.length-1&&later?`<span class="later">${later} later →</span>`:""}</div>`}).join("")}</div>`;
     if(!open)return;
     const gl=[...s.goals,...(its.some(i=>!i.goal)?[null]:[])];
     gl.forEach(g=>{
       const gi=its.filter(i=>i.goal===(g?g.id:null));
       if(g){const t=goalTarget(g), end=t===null||t==="later"?Q.length-1:t;
-        h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">${g.id} ${esc(g.name)}</b><br>${outcomeMeasures(g).length?esc(outcomeMeasures(g)[0].m)+(outcomeMeasures(g)[0].by?" · by "+outcomeMeasures(g)[0].by:" · no date"):'<span class="amb">No outcome measure</span>'}</div>
-         <div class="bars"><div class="gb" style="grid-column:1/${end+2}"><span>${g.id}</span>${typeof t==="number"?'<i class="dia"></i>':""}</div>
+        h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">${esc(g.id)} ${esc(g.name)}</b><br>${outcomeMeasures(g).length?esc(outcomeMeasures(g)[0].m)+(outcomeMeasures(g)[0].by?" · by "+outcomeMeasures(g)[0].by:" · no date"):'<span class="amb">No outcome measure</span>'}</div>
+         <div class="bars"><div class="gb" style="grid-column:1/${end+2}"><span>${esc(g.id)}</span>${typeof t==="number"?'<i class="dia"></i>':""}</div>
          ${W.research?`<div class="mini r" style="grid-column:1/2;grid-row:2" title="Research"></div><div class="mini d" style="grid-column:1/3;grid-row:3" title="Discovery"></div>${gi.length?`<div class="mini e" style="grid-column:${Math.min(Q.length,Math.max(...gi.map(i=>i.q.reduce((l,x,k)=>x>0?k:l,-1)))+1)}/${Q.length+1};grid-row:4" title="Effect delay"></div>`:""}`:""}</div></div>`;}
-      else h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">No goal yet</b><br>work linked straight to ${s.id}</div><div class="bars"></div></div>`;
+      else h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">No goal yet</b><br>work linked straight to ${esc(s.id)}</div><div class="bars"></div></div>`;
       if(W.level==="deliveries"||W.open[s.id]){
         if(!gi.length&&g) h+=`<div class="rr irow"><div class="rl"><b>Not recorded</b><br>no initiative serves this goal</div><div class="bars"><div class="ib nr" style="grid-column:1/${Q.length+1}"></div></div></div>`;
-        gi.forEach(i=>{const s0=i.q.findIndex(x=>x>0),e0=i.q.length-1-[...i.q].reverse().findIndex(x=>x>0);
-          h+=`<div class="rr irow"><div class="rl"><button class="lnk" type="button" data-rec="i:${i.id}"><b>${esc(i.name)}</b></button><br>${i.funded?"Funded":'<span class="vio">Unfunded</span>'} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</div><div class="bars"><div class="ib${i.funded?"":" unf"}" style="grid-column:${s0+1}/${e0+2}" title="${esc(i.name)}: ${Q[s0]} to ${Q[e0]}"></div></div></div>`});
+        gi.forEach(i=>{h+=irow(i)});
       }
     });
   });
+  const un=initsOf(null);
+  if(un.length){
+    const open=W.level==="deliveries"||W.open.none, fte=r1(un.filter(i=>i.funded).reduce((a,i)=>a+avgH(i),0)), nunf=un.filter(i=>!i.funded).length;
+    h+=`<div class="rr srow"><div class="rl"><div class="t"><button class="chev" type="button" data-wopen="none" aria-expanded="${!!open}" aria-label="${open?"Collapse":"Expand"} unlinked work">${CHEV}</button><b>Not linked to a strategy</b></div><span class="amb">No strategy, goal or target</span> · ${plural(un.length,"initiative")} · ${fmt(fte)} FTE${nunf?` · ${nunf} unfunded`:""}</div>
+     ${Q.map((_,k)=>{const f=activeIn(un,k,true),u=activeIn(un,k,false);return `<div class="qc"><b>${f}${u?` <span class="vio">+${u}</span>`:""}</b><span>${u?"initiatives · unfunded":"initiatives"}</span></div>`}).join("")}</div>`;
+    if(open)un.forEach(i=>{h+=irow(i)});
+  }
   return lg+`<div class="scroll"><div class="rg">${h}</div></div>`;
 }
 function fteTable(groups){
@@ -590,7 +608,7 @@ function fteTable(groups){
   groups.forEach(([name,its],gi)=>{
     const open=state.work.open["g"+gi];
     h+=`<tr class="grp-r"><td><button class="lnk" type="button" data-wgrp="${gi}" aria-expanded="${!!open}">${open?"▾":"▸"} ${esc(name)}</button></td>${Q.map((_,k)=>{const u=sum(its,k,false);return `<td class="n">${fmt(sum(its,k,true))}${u?` <span class="vio">+${fmt(u)}</span>`:""}</td>`}).join("")}<td class="n">${its.length}</td></tr>`;
-    if(open)its.forEach(i=>h+=`<tr><td style="padding-left:22px"><button class="lnk" type="button" data-rec="i:${i.id}">${esc(i.name)}</button> <span class="muted">· ${i.funded?"Funded":'<span class="vio">Unfunded</span>'}</span></td>${i.q.map(x=>`<td class="n${i.funded?"":" vio"}">${x?fmt(x):"·"}</td>`).join("")}<td></td></tr>`);
+    if(open)its.forEach(i=>h+=`<tr><td style="padding-left:22px"><button class="lnk" type="button" data-rec="i:${esc(i.id)}">${esc(i.name)}</button> <span class="muted">· ${i.funded?"Funded":'<span class="vio">Unfunded</span>'}</span></td>${i.q.map(x=>`<td class="n${i.funded?"":" vio"}">${x?fmt(x):"·"}</td>`).join("")}<td></td></tr>`);
   });
   return h+`</tbody></table><p class="hint">FTE per quarter in funded initiatives; <span class="vio">+n</span> is unfunded FTE on top. Click a group to list its initiatives.</p></div>`;
 }
@@ -613,16 +631,16 @@ function vDecisions(){
   const fund=INITS.filter(i=>i.funded), disc=fund.filter(i=>i.disc), nd=fund.filter(i=>!i.disc);
   const rowsP=[...STRATS.map(s=>[s.id+" "+s.name,s.id]),["Not linked to a strategy",null]];
   const val=(arr,sid)=>r1(arr.filter(i=>i.strat===sid).reduce((a,i)=>a+avgH(i),0));
-  const mx=Math.max(...rowsP.map(r=>val(disc,r[1])));
-  const port=rowsP.map(([l,sid])=>{const v=val(disc,sid);return `<div class="pbar${PILOT.includes(sid)?" hl":""}"><span>${PILOT.includes(sid)?`<b>${l}</b>`:l}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`}).join("");
-  const ndList=state.showNonDisc?`<div style="margin-top:8px">${rowsP.map(([l,sid])=>{const v=val(nd,sid);return v?`<div class="pbar"><span>${l}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`:""}).join("")}</div>`:"";
+  const mx=Math.max(1e-9,...rowsP.map(r=>val(disc,r[1])));
+  const port=rowsP.map(([l,sid])=>{const v=val(disc,sid);return `<div class="pbar${PILOT.includes(sid)?" hl":""}"><span>${PILOT.includes(sid)?`<b>${esc(l)}</b>`:esc(l)}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`}).join("");
+  const ndList=state.showNonDisc?`<div style="margin-top:8px">${rowsP.map(([l,sid])=>{const v=val(nd,sid);return v?`<div class="pbar"><span>${esc(l)}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`:""}).join("")}</div>`:"";
   return `<div class="wrap view"><h2>Decision due: ${esc(pj)}</h2>
    <p class="lede">${esc(T.pilot)}. ${PILOT.length===1?"The strategy":"The strategies"} in depth, against the whole portfolio, with what they depend on and what could give up capacity. Set a decision on any initiative to see what moves, what it puts at risk and what evidence is missing.</p>
    <div class="callout"><b>Test decision.</b> ${esc(pj)} ${PILOT.length===1?"was":"were"} chosen by hand for ${esc(T.pilot)}. We still need a process and criteria for how a decision makes it to this section; that’s deferred for now.</div>
    <div class="card"><div class="label">${esc(T.pilot)} question</div><p class="pq">Have we allocated ${esc(META.team)} capacity as effectively as possible to deliver ${esc(PILOT.length>1?"both ":"")}${esc(pj)}, and if not, what are the realistic options?</p>
      <div class="legend" style="margin:0"><span class="pill amber">Experiment</span><span>${esc(T.decision)} (Proposed). Opportunities, epic links and commitments are Proposed or Inferred; proxies are stand-ins. Nothing here is saved.</span></div></div>
    <div class="card"><div class="card-h"><span class="num">?</span><h3>Gaps that block the decision</h3></div><p class="card-sub">The ${esc(T.brief)} asks ${esc(T.pilot)} to name the minimum evidence for each decision-critical gap. Computed from what the model is missing.</p>
-     <div class="scroll"><table><thead><tr><th>Gap</th><th>Decision question blocked</th><th>Minimum evidence needed</th><th>Owner or source</th><th>Confidence</th></tr></thead><tbody>${gaps.map(g=>`<tr><td><b>${esc(g[0])}</b></td><td>${esc(g[1])}</td><td>${esc(g[2])}</td><td>${esc(g[3])}</td><td>${g[4]}</td></tr>`).join("")}</tbody></table></div></div>
+     <div class="scroll"><table><thead><tr><th>Gap</th><th>Decision question blocked</th><th>Minimum evidence needed</th><th>Owner or source</th><th>Confidence</th></tr></thead><tbody>${gaps.map(g=>`<tr><td><b>${esc(g[0])}</b></td><td>${esc(g[1])}</td><td>${esc(g[2])}</td><td>${esc(g[3])}</td><td>${esc(g[4])}</td></tr>`).join("")}</tbody></table></div></div>
    <div class="card"><div class="card-h"><span class="num">1</span><h3>The whole portfolio</h3></div><p class="card-sub">Funded ${esc(HZ.label)} FTE in recorded initiatives: <b>${fmt(r1(fund.reduce((a,i)=>a+avgH(i),0)))}</b>. Discretionary work comes first; non-discretionary work sits below the line.</p>
      <div class="label" style="margin-bottom:6px">Discretionary · ${fmt(r1(disc.reduce((a,i)=>a+avgH(i),0)))} FTE in ${disc.length} initiatives</div>${port}
      <div class="below"><b>Below the line: non-discretionary · ${fmt(r1(nd.reduce((a,i)=>a+avgH(i),0)))} FTE in ${nd.length} initiatives</b><button class="btn sm" type="button" id="ndBtn" aria-expanded="${state.showNonDisc}">${state.showNonDisc?"Hide":"Show"}</button></div>${ndList}
@@ -631,22 +649,22 @@ function vDecisions(){
      <div class="twocol">${PILOT.map(stratDepth).join("")}</div></div>
    <div class="card" id="impact">${impactHtml()}</div>
    <div class="card olist"><div class="card-h"><h3>Other decisions waiting</h3></div><p class="card-sub" style="margin-left:0">Recorded in ${esc(T.source)}. Each opens here once it has a pilot question and the evidence to judge it.</p>
-     ${OTHER_DECISIONS.map(d=>`<div class="row"><span><span class="mono muted">${d.id}</span> · ${esc(d.t)}</span><span class="muted">Proposed · ${d.owner} · due ${d.due}</span></div>`).join("")}</div>
+     ${OTHER_DECISIONS.map(d=>`<div class="row"><span><span class="mono muted">${esc(d.id)}</span> · ${esc(d.t)}</span><span class="muted">Proposed · ${esc(d.owner)} · due ${esc(d.due)}</span></div>`).join("")}</div>
   </div>`;
 }
 function stratDepth(sid){
   const s=SBY[sid], its=initsOf(sid), fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avgH(i),0));
   const grp=[...s.opps.map(o=>[o,its.filter(i=>i.opp===o.id)]),[null,its.filter(i=>!i.opp)]];
-  return `<div class="scol"><div class="label">${sid}</div><h4>${s.name}</h4><small class="muted">${T.review} ${ST_LABEL[s.status]} · stated ${s.stated} FTE · in initiatives ${fmt(fte)} · ${plural(s.goals.length,"goal")} · ${s.opps.length} opportunities (proposed)</small>
-   <div class="proxy">${(s.proxies||[]).map(p=>`<div><span class="pill soft">Proxy · ${p[0]}</span> <b>${p[1]}:</b> ${p[2]}${p[3]?`<small>${p[3]}</small>`:""}<small>Indicative</small></div>`).join("")}</div>
-   ${grp.map(([o,list])=>`<div class="ogh">${o?`<div class="label">Opportunity ${o.id} <span class="pill soft">Proposed</span> <span style="text-transform:none;letter-spacing:0;font-weight:400">${o.goal?"under goal "+o.goal:"under the strategy (no goal yet)"}</span></div><b>${esc(o.name)}</b><small class="muted">Indicative description of this item.</small>`:`<div class="label">Linked straight to the strategy</div><b>Work with no opportunity yet</b>`}</div>
+  return `<div class="scol"><div class="label">${sid}</div><h4>${esc(s.name)}</h4><small class="muted">${T.review} ${ST_LABEL[s.status]} · stated ${s.stated} FTE · in initiatives ${fmt(fte)} · ${plural(s.goals.length,"goal")} · ${s.opps.length} opportunities (proposed)</small>
+   <div class="proxy">${(s.proxies||[]).map(p=>`<div><span class="pill soft">Proxy · ${esc(p[0])}</span> <b>${esc(p[1])}:</b> ${esc(p[2])}${p[3]?`<small>${esc(p[3])}</small>`:""}<small>Indicative</small></div>`).join("")}</div>
+   ${grp.map(([o,list])=>`<div class="ogh">${o?`<div class="label">Opportunity ${esc(o.id)} <span class="pill soft">Proposed</span> <span style="text-transform:none;letter-spacing:0;font-weight:400">${o.goal?"under goal "+o.goal:"under the strategy (no goal yet)"}</span></div><b>${esc(o.name)}</b><small class="muted">Indicative description of this item.</small>`:`<div class="label">Linked straight to the strategy</div><b>Work with no opportunity yet</b>`}</div>
      ${list.length?list.map(iniRow).join(""):`<p class="hint">No initiative serves this opportunity yet.</p>`}`).join("")}</div>`;
 }
 function iniRow(i){
   const ch=state.choice[i.id]||"continue", j=i.jira;
   const jira=j?`${esc(T.tracker)} ${j.open} open, <span class="amb">${j.unsized} unsized</span>${j.past?`, <span class="amb">${j.past} past target date</span>`:""}`:`<span class="pill dash">No epic linked</span>`;
-  return `<div class="ini${ch!=="continue"?" changed":""}"><button class="lnk nm" type="button" data-rec="i:${i.id}">${esc(i.name)}</button>
-   <select data-choice="${i.id}" aria-label="Decision for ${esc(i.name)}">${CHOICES.map(c=>`<option value="${c[0]}"${c[0]===ch?" selected":""}>${c[1]}</option>`).join("")}</select>
+  return `<div class="ini${ch!=="continue"?" changed":""}"><button class="lnk nm" type="button" data-rec="i:${esc(i.id)}">${esc(i.name)}</button>
+   <select data-choice="${esc(i.id)}" aria-label="Decision for ${esc(i.name)}">${CHOICES.map(c=>`<option value="${c[0]}"${c[0]===ch?" selected":""}>${c[1]}</option>`).join("")}</select>
    <div class="ln">${i.funded?"Funded":'<span class="vio">Unfunded</span>'} · ${fmt(avgH(i))} FTE avg ${esc(HZ.label)} <span class="pill ${i.disc?"":"out"}">${i.disc?"Discretionary":"Non-discretionary"} (suggested)</span> · not ranked</div>
    <div class="ln"><span class="pill box">Resourcing not assessed</span> FTE ${i.q.map(fmt).join(" / ")} · ${jira}</div>
    ${i.com||i.capSens?`<div class="ln">${i.com?`${plural(i.com,"commitment")}${i.comRisk?` <span class="amb">at risk</span>`:""}`:""}${i.capSens?` <span class="pill soft">Proxy · Low</span> Capacity-sensitive: Indicative`:""}</div>`:""}</div>`;
@@ -668,13 +686,13 @@ function impactHtml(){
 function vQuestions(){
   const qs=state.allQ?QUESTIONS:QUESTIONS.slice(0,6);
   return `<div class="wrap view"><h2>Open questions</h2><p class="lede">Questions the evidence raises that nobody has answered yet, each with a suggested decision maker. A question that needs a call becomes a decision in ${esc(T.source)}.</p>
-   <div class="notes">${qs.map(q=>`<article class="note"><div class="k"><span>${q.id}</span><span style="font-family:var(--font-body)">${q.cat}</span></div><h3>${esc(q.t)}</h3><p>${esc(q.why)}</p><small>Suggested decision maker <b>${q.dm}</b></small></article>`).join("")}</div>
+   <div class="notes">${qs.map(q=>`<article class="note"><div class="k"><span>${esc(q.id)}</span><span style="font-family:var(--font-body)">${esc(q.cat)}</span></div><h3>${esc(q.t)}</h3><p>${esc(q.why)}</p><small>Suggested decision maker <b>${esc(q.dm)}</b></small></article>`).join("")}</div>
    <div style="margin-top:16px"><button class="btn" type="button" id="allQ">${state.allQ?"Show fewer":"Show all "+QUESTIONS.length+" questions"}</button></div></div>`;
 }
 function vReview(){
   return `<div class="wrap view"><h2>Waiting for review</h2><p class="lede">Changes and source conflicts that need an owner to look at them before they count. Nothing changes the record until an owner accepts it.</p>
-   ${CHANGES.map(c=>`<div class="qitem"><div><div class="m"><span class="pill amber"><i class="dot"></i>${c.k}</span><span class="mono">${c.d}</span><span>${c.rev?"Review "+c.rev:"Review owner not recorded"}</span></div><b>Change ${c.n}: an indicative update</b><div class="diff"><del>Indicative earlier state.</del> → <ins>Indicative new state.</ins></div></div></div>`).join("")}
-   ${CLAIMDOCS.map(d=>`<div class="qitem"><div><div class="m"><span class="pill"><i class="dot"></i>Claims</span><span>${d.kind}</span></div><b>Source document ${d.id} (indicative)</b><div class="muted" style="font-size:12.5px">${d.n} claims Proposed${d.conflicts?`, <span class="red">${d.conflicts} conflict with the record</span>`:""}</div></div><button class="btn sm" type="button" data-claims="${d.id}">See claims</button></div>`).join("")}
+   ${CHANGES.map(c=>`<div class="qitem"><div><div class="m"><span class="pill amber"><i class="dot"></i>${esc(c.k)}</span><span class="mono">${c.d}</span><span>${c.rev?"Review "+c.rev:"Review owner not recorded"}</span></div><b>Change ${c.n}: an indicative update</b><div class="diff"><del>Indicative earlier state.</del> → <ins>Indicative new state.</ins></div></div></div>`).join("")}
+   ${CLAIMDOCS.map(d=>`<div class="qitem"><div><div class="m"><span class="pill"><i class="dot"></i>Claims</span><span>${esc(d.kind)}</span></div><b>Source document ${esc(d.id)} (indicative)</b><div class="muted" style="font-size:12.5px">${d.n} claims Proposed${d.conflicts?`, <span class="red">${d.conflicts} conflict with the record</span>`:""}</div></div><button class="btn sm" type="button" data-claims="${esc(d.id)}">See claims</button></div>`).join("")}
    ${MODELCHECKS.map(m=>`<div class="qitem mc"><b>Model check</b><span>Model-health flag ${m.n}</span><span></span><span class="muted" style="font-size:12.5px">Indicative detail about a gap or inconsistency in the model.</span></div>`).join("")}</div>`;
 }
 
@@ -689,23 +707,26 @@ function openDrawer(kicker,title,sub,body,push){
 function closeDrawer(){$("#drawer").hidden=true;$("#scrim").hidden=true;state.drawerStack=[]}
 const recActions=`<div class="legend" style="margin-top:14px"><button class="btn sm" type="button" data-contrib="1">Contribute</button><button class="btn sm" type="button" data-contrib="1">Challenge</button></div><p class="hint">Contributions go to the owner for review before they change the record.</p>`;
 function openList(q){
-  const [,sid,g,o]=q.split(":"), s=SBY[sid], its=INITS.filter(i=>i.strat===sid&&(i.goal||"none")===g&&(i.opp||"none")===o);
+  const [,sid,g,o]=q.split(":");
+  if(sid==="none"){const its=initsOf(null);return openDrawer(`Initiatives · ${its.length}`,"Not linked to a strategy",`No strategy, goal or opportunity · ${fmt(r1(its.reduce((a,i)=>a+avgH(i),0)))} FTE average in ${esc(HZ.label)}`,[...its].sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`)}
+  const s=SBY[sid], its=INITS.filter(i=>i.strat===sid&&(i.goal||"none")===g&&(i.opp||"none")===o);
   const title=g==="none"&&o==="none"?`${sid}: work with no goal`:o!=="none"?`Opportunity ${o}`:`Goal ${g}`;
-  const sub=`${g==="none"&&o==="none"?`Linked straight to ${sid} ${s.name}`:o!=="none"?`Via proposed opportunity ${o}${g!=="none"?" under goal "+g:""}`:`Under goal ${g}`} · ${fmt(r1(its.reduce((a,i)=>a+avgH(i),0)))} FTE average in ${esc(HZ.label)}`;
-  openDrawer(`Initiatives · ${its.length}`,title,sub,its.sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${i.id}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`);
+  const sub=`${g==="none"&&o==="none"?`Linked straight to ${sid} ${esc(s.name)}`:o!=="none"?`Via proposed opportunity ${o}${g!=="none"?" under goal "+g:""}`:`Under goal ${g}`} · ${fmt(r1(its.reduce((a,i)=>a+avgH(i),0)))} FTE average in ${esc(HZ.label)}`;
+  openDrawer(`Initiatives · ${its.length}`,title,sub,its.sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`);
 }
 function openRec(id,push){
   const [k,a,b]=id.split(":");
   if(id==="vision")return openDrawer("North Star · Org vision",VISION,"Owner: Org leadership · source: Org strategy (indicative)",`<p>The Org vision is the outcome the organisation exists to create. It is not yet measured, so the North Star level shows as not assessed.</p>`+recActions,push);
   if(k==="o"){const o=OBJECTIVES.find(x=>x.id===a),ss=STRATS.filter(s=>s.objs.includes(a));return openDrawer("Org objective · "+a,o.name,"Indicative description of this objective.",`<dl class="rec"><dt>Team strategies</dt><dd>${ss.map(s=>s.id+" "+s.name).join(", ")||"None"}</dd><dt>Status</dt><dd>Not assessed</dd></dl>`+recActions,push)}
+  if(k==="s"&&a==="none"){const its=initsOf(null);return openDrawer("Unlinked work","Not linked to a strategy","Initiatives with no strategy",`<p>${plural(its.length,"initiative")} ${its.length===1?"has":"have"} no strategy, so ${its.length===1?"it does":"they do"} not trace to a goal or an Org objective. An owner should link each one to a strategy, or confirm it stands alone and say why.</p><dl class="rec"><dt>FTE (${esc(HZ.label)} average)</dt><dd>${fmt(r1(its.reduce((x,i)=>x+avgH(i),0)))}</dd><dt>Unfunded</dt><dd>${its.filter(i=>!i.funded).length}</dd></dl>`+recActions,push)}
   if(k==="s"){const s=SBY[a],its=initsOf(a);return openDrawer("Team strategy · "+a,s.name,`${T.review}: ${ST_LABEL[s.status]}`,`<dl class="rec"><dt>Serves</dt><dd>${s.objs.join(", ")}</dd><dt>Stated FTE</dt><dd>${s.stated}</dd><dt>FTE in initiatives</dt><dd>${fmt(r1(its.filter(i=>i.funded).reduce((x,i)=>x+avgH(i),0)))} (${esc(HZ.label)} average, funded)</dd><dt>Goals</dt><dd>${s.goals.map(g=>g.id).join(", ")}</dd><dt>Success measure</dt><dd>${s.success?esc(s.success.m)+(s.success.by?" · by "+s.success.by:" · no date"):"Through its goals"}</dd><dt>Initiatives</dt><dd>${its.length} (${its.filter(i=>!i.goal).length} with no goal)</dd></dl>`+recActions,push)}
-  if(k==="g"){const g=GBY[b];return openDrawer("Team goal · "+b,g.name,`Under ${a} ${SBY[a].name}`,`<dl class="rec"><dt>Measured</dt><dd>${g.measured?"Yes, a metric has a current value":"No current value"}</dd><dt>Measures</dt><dd>${g.measures.length?g.measures.map(m=>`${esc(m.m)} (${m.kind}${m.by?", by "+m.by:", no date"})`).join("<br>"):"None recorded"}</dd><dt>Initiatives</dt><dd>${INITS.filter(i=>i.goal===b).length}</dd></dl>`+recActions,push)}
+  if(k==="g"){const g=GBY[b];return openDrawer("Team goal · "+b,g.name,`Under ${a} ${SBY[a].name}`,`<dl class="rec"><dt>Measured</dt><dd>${g.measured?"Yes, a metric has a current value":"No current value"}</dd><dt>Measures</dt><dd>${g.measures.length?g.measures.map(m=>`${esc(m.m)} (${esc(m.kind)}${m.by?", by "+m.by:", no date"})`).join("<br>"):"None recorded"}</dd><dt>Initiatives</dt><dd>${INITS.filter(i=>i.goal===b).length}</dd></dl>`+recActions,push)}
   if(k==="p"){const o=OBY[a];return openDrawer("Opportunity · Proposed",o.name,`${o.goal?"Under goal "+o.goal:"Under "+o.strat+" (no goal yet)"}`,`<p>Indicative description of this item. Opportunities are proposed until an owner accepts, rewords or rejects them.</p>`+recActions,push)}
-  if(k==="i"){const i=INITS.find(x=>x.id===a);return openDrawer("Initiative",i.name,`${i.funded?"Funded":"Unfunded"} · ${esc(T.workstream)} ${i.ws}`,`<dl class="rec"><dt>Strategy</dt><dd>${i.strat?i.strat+" "+SBY[i.strat].name:"Not linked"}</dd><dt>Goal</dt><dd>${i.goal||"No goal yet"}</dd><dt>Opportunity</dt><dd>${i.opp?i.opp+" (proposed)":"None"}</dd><dt>FTE by quarter</dt><dd class="mono">${Q.map((q,n)=>q+" "+fmt(i.q[n])).join(" · ")}</dd><dt>Beneficiary</dt><dd>${i.benef}</dd><dt>Discretion</dt><dd>${i.disc?"Discretionary":"Non-discretionary"} (suggested by rule)</dd><dt>${esc(T.tracker)}</dt><dd>${i.jira?`${i.jira.open} open epics, ${i.jira.unsized} unsized`:"No epic linked"}</dd><dt>Commitments</dt><dd>${i.com?i.com+(i.comRisk?" (at risk)":""):"None recorded"}</dd></dl>`+recActions,push)}
+  if(k==="i"){const i=INITS.find(x=>x.id===a);return openDrawer("Initiative",i.name,`${i.funded?"Funded":"Unfunded"} · ${esc(T.workstream)} ${i.ws}`,`<dl class="rec"><dt>Strategy</dt><dd>${i.strat?esc(i.strat+" "+SBY[i.strat].name):"Not linked"}</dd><dt>Goal</dt><dd>${esc(i.goal||"No goal yet")}</dd><dt>Opportunity</dt><dd>${i.opp?esc(i.opp)+" (proposed)":"None"}</dd><dt>FTE by quarter</dt><dd class="mono">${Q.map((q,n)=>q+" "+fmt(i.q[n])).join(" · ")}</dd><dt>Beneficiary</dt><dd>${esc(i.benef)}</dd><dt>Discretion</dt><dd>${i.disc?"Discretionary":"Non-discretionary"} (suggested by rule)</dd><dt>${esc(T.tracker)}</dt><dd>${i.jira?`${i.jira.open} open epics, ${i.jira.unsized} unsized`:"No epic linked"}</dd><dt>Commitments</dt><dd>${i.com?i.com+(i.comRisk?" (at risk)":""):"None recorded"}</dd></dl>`+recActions,push)}
 }
 function openClaims(d){
   const doc=CLAIMDOCS.find(x=>x.id===d);
-  openDrawer(`Claims · ${doc.n}`,`Source document ${d} (indicative)`,`${doc.kind} · ${doc.n} claims Proposed`,[...Array(doc.n)].map((_,k)=>`<div class="li"><b>Claim ${d}${k+1}: an indicative statement from the source</b><small>${k<doc.conflicts?'<span class="red">Conflicts with the record:</span> the record says something different':"Proposed · matches nothing in the record yet"}</small></div>`).join("")+`<p class="hint">An owner accepts or rejects each claim. Accepted claims update the record and are logged.</p>`);
+  openDrawer(`Claims · ${doc.n}`,`Source document ${d} (indicative)`,`${esc(doc.kind)} · ${doc.n} claims Proposed`,[...Array(doc.n)].map((_,k)=>`<div class="li"><b>Claim ${d}${k+1}: an indicative statement from the source</b><small>${k<doc.conflicts?'<span class="red">Conflicts with the record:</span> the record says something different':"Proposed · matches nothing in the record yet"}</small></div>`).join("")+`<p class="hint">An owner accepts or rejects each claim. Accepted claims update the record and are logged.</p>`);
 }
 
 /* ---------- flock ---------- */
@@ -717,7 +738,7 @@ function initFlock(){
   const N=230,B=[]; for(let i=0;i<N;i++)B.push({x:W*.4+Math.random()*W*.2,y:H*.5+(Math.random()-.5)*H*.5,vx:1+Math.random(),vy:Math.random()-.5,p:Math.random()*6.28,g:Math.random()<.52?0:1,sp:.8+Math.random()*.4,wa:Math.random()*6.28});
   let t=0,color="#111"; const cvar=SK.colorVar||"--fg"; let SX=W-90,SY=56;
   const locStar=()=>{const s=document.querySelector(".starbig");if(!s)return;const r=s.getBoundingClientRect(),c=cv.getBoundingClientRect();SX=r.left+r.width/2-c.left;SY=r.top+r.height/2-c.top};locStar();
-  window.onresize=()=>{size();locStar();if(state.view==="strategy")drawWires()};
+  window.onresize=()=>{size();locStar()};
   function step(){t++;
     const coh=.0006+.0078*score*score+.002*score, ali=.004+.085*score, sep=.55, wander=.2+.75*(1-score), pull=.0005+.0019*score;
     const lean=-.30+1.0*score, px=W*.45+Math.sin(t/310)*W*.15, py=H*.58+Math.sin(t/190+1)*H*.18;
@@ -742,11 +763,15 @@ const RENDER={overview:vOverview,strategy:vStrategy,work:vWork,decisions:vDecisi
 function render(keepScroll){
   const y=scrollY; renderHeader(); $("#main").innerHTML=RENDER[state.view]();
   if(state.view==="overview")initFlock(); else flockRun++;
-  if(state.view==="strategy")requestAnimationFrame(drawWires);
+  if(state.view==="strategy"){
+    if(state.sel&&![...document.querySelectorAll(".board [data-node]")].some(e=>e.dataset.node===state.sel)){state.sel=null;return render(keepScroll)}
+    requestAnimationFrame(drawWires)}
   if(keepScroll)scrollTo(0,y);
 }
 function route(){const h=location.hash.slice(1);const v=RENDER[h]?h:"overview";const changed=v!==state.view;state.view=v;if(changed)closeDrawer();render(!changed);if(changed)scrollTo(0,0)}
 addEventListener("hashchange",route);
+addEventListener("resize",()=>{if(state.view==="strategy")drawWires()});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(state.view==="strategy")drawWires()});
 document.addEventListener("click",e=>{
   const t=e.target;
   if(t.closest("#drClose")||t.closest("#scrim"))return closeDrawer();
