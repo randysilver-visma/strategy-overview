@@ -78,7 +78,21 @@ hosting:
 # ---------------------------------------------------------------------------
 data_store:
   status: in_progress
-  options_considered: []        # list of { type, why_considered, pros, cons, verified: true|false }
+  candidates_in_use: ["slite"]  # 2.1: the consultant named Slite only, "if possible"
+  options_considered:           # list of { type, why_considered, pros, cons, verified: true|false }
+    - type: slite
+      why_considered: "Already used at e-conomic; the consultant's preferred option. Connected in the interview environment."
+      pros:
+        - "Collections: structured docs with typed columns, one sub-doc per row (seen in the connector's tools)"
+        - "Doc review states (Verified, Outdated, Verification requested) and comment threads (seen in the connector's tools)"
+        - "Docs can hold links and uploaded files (seen in the connector's tools)"
+      cons:
+        - "[UNVERIFIED] Links between rows of different collections (initiative <-> goal, many-to-many) not seen in the connector's tools"
+        - "[UNVERIFIED] Edit history for collection cells not seen in the connector's tools"
+        - "[UNVERIFIED] Permissions appear to be per channel or doc, not per field"
+        - "A static page cannot hold a Slite API key safely, so the page cannot read or write Slite live without a backend or a scheduled export"
+      verified: false
+      verification_note: "slite.com and developers.slite.com do not resolve from the interview environment (2026-11-16). Assessed from the Slite connector's tool list only; nothing was created or tested."
   chosen:
     type: null                  # one of: google_sheets | excel_sharepoint | airtable | sql_database | other
     reason: null
@@ -89,13 +103,13 @@ data_store:
     credential_holder_role: null
     credential_storage: null    # where secrets live. Never record the secret itself.
   capabilities_needed:          # fill true/false once the chosen store is known; false = a gap
-    multi_user_writes: null
-    record_history_audit_trail: null
-    relational_links: null      # initiative <-> objective is many-to-many
-    field_level_permissions: null
-    approval_workflow_support: null
-    attachments_or_source_links: null
-    row_or_size_limits_ok: null
+    multi_user_writes: null           # [UNVERIFIED] Slite is a collaborative editor; collection editing not tested
+    record_history_audit_trail: null  # [UNVERIFIED] not exposed by the connector
+    relational_links: null      # initiative <-> objective is many-to-many. [UNVERIFIED] not exposed by the connector
+    field_level_permissions: null     # [UNVERIFIED] likely false: channel/doc permissions only
+    approval_workflow_support: null   # partial: doc-level review states and comments, not per-change approval
+    attachments_or_source_links: true # links and file uploads exposed by the connector
+    row_or_size_limits_ok: null       # [UNVERIFIED] limits unknown
   workarounds_for_gaps: []      # how each false capability is handled
   backup_and_recovery: null
   assumptions: []
