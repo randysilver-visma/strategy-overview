@@ -18,7 +18,9 @@ meta:
   client_alias: "client-a"      # short non-identifying label, e.g. "client-a"
   started: "2026-11-16"         # YYYY-MM-DD
   interviewer: "consultant"     # role, e.g. "consultant"; Claude runs the interview with them
-  client_sponsor_role: null     # who authorised the work
+  client_sponsor_role: "Product Lead, Agentic Experience"   # who authorised the work
+  client_sponsor_name: "Tobias Jensen"   # client copy only; never copy into the generic package
+  client_sponsor_confirmed: false        # stated by the consultant; not yet confirmed by the sponsor
   overall_status: in_progress   # not_started | in_progress | ready_to_build | blocked
   scope_unit: team             # one of: company | division | team
   scope_description: "The Agentic Experience (AX) team. Company-level goals may be needed as context above the team, but the first version focuses on AX."
@@ -206,6 +208,7 @@ readiness:
 template_feedback:
   missing_fields:
     - "meta.environment_check: a place to record which tools the interviewer could reach"
+    - "meta: no field for the day-to-day contact, which section 0 of the prompt asks for"
   confusing_fields: []
   fields_never_used: []
   client_specific_items_to_exclude_from_generic: []
