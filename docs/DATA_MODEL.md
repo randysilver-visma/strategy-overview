@@ -50,6 +50,10 @@ On the Review tab every row opens the item (or the related tab). In an item's re
 
 A side panel, opened from the header or the floating button. In the sample it answers from the page data (review and flags, conflicting sources, unlinked work, goals with no initiative, unfunded work, FTE coverage, owners, decisions, open questions), cites the records it used and says how much is unreviewed. A live build sends the question to a model hosted inside the client's network. Optional `chat` block: `{intro, chips: [..], answers: [{k: [keywords], a: text, cites: [record ids], act: [[label, "#view"]]}]}`; its answers are tried before the built-in ones.
 
+### Responding to a challenge
+
+The owner (or whoever the live build allows) can **Accept** a challenge, which flags the item "Challenge accepted, edit pending" until it is edited and reviewed, or **Reject** it with a reason. Each challenge in `challenges` then carries `status` (`accepted` or `rejected`) and `response: {by, on, reason}`. The hook receives `challenge_accepted` and `challenge_rejected` events. Not decided yet: what happens to a challenge nobody answers (timeout, escalation).
+
 ## Model checks
 
 The page computes these from the links and shows them in the Review tab. Each is something that should not occur: work not linked to any strategy, work linked to a strategy but to no goal or opportunity, goals with no initiative, goals with no outcome measure, opportunities not under a goal, strategies with no goals or no Org objective, and Org objectives that no strategy serves. A check clears itself when the data changes. `modelChecks` in the data file is optional and only for extra checks the import found: `[{title, detail}]`.

@@ -440,12 +440,20 @@ function validate(){
 const DATACHECKS=validate();
 /* Best guesses are shown as they are. Items the import could not be sure of carry conf ("high|medium|low"),
    flags (conflict|low_confidence|single_source|stale|no_owner|unclear) and alternatives [{value,source}]. */
-const FLAG_LABEL={challenged:"Challenged by a reader",conflict:"Sources conflict",low_confidence:"Low confidence",single_source:"Single source",stale:"Source may be stale",no_owner:"No owner",unclear:"Unclear"};
+const FLAG_LABEL={needs_edit:"Challenge accepted, edit pending",challenged:"Challenged by a reader",conflict:"Sources conflict",low_confidence:"Low confidence",single_source:"Single source",stale:"Source may be stale",no_owner:"No owner",unclear:"Unclear"};
 const flagsOf=x=>{const f=[...((x&&x.flags)||[])];if(x&&x.conf==="low"&&!f.includes("low_confidence"))f.push("low_confidence");return f};
 const reviewPill=x=>!x||x.reviewed?"":flagsOf(x).length?` <span class="pill amber" title="${esc(flagsOf(x).map(f=>FLAG_LABEL[f]||f).join(", "))}">Review</span>`:` <span class="pill dash" title="Imported best guess, not yet reviewed by an owner">Review</span>`;
 const ITEMS=[["Strategy",x=>"s:"+x.id,STRATS],["Goal",x=>"g:"+x.strat+":"+x.id,GOALS],["Opportunity",x=>"p:"+x.id,OPPS],["Initiative",x=>"i:"+x.id,INITS]].flatMap(([k,rid,list])=>list.map(x=>({kind:k,rid:rid(x),x})));
 const flaggedNow=()=>ITEMS.filter(r=>!r.x.reviewed&&flagsOf(r.x).length), unflaggedNow=()=>ITEMS.filter(r=>!r.x.reviewed&&!flagsOf(r.x).length);
 const UNREVIEWED=()=>ITEMS.filter(r=>!r.x.reviewed).length;
+function respondChallenge(rid,idx,decision,role,reason){
+  const r=ITEMS.find(z=>z.rid===rid), c=r&&(r.x.challenges||[])[idx]; if(!c)return null;
+  const on=new Date().toISOString().slice(0,10); c.status=decision; c.response={by:role,on,reason:reason||null};
+  let fl=r.x.flags||[]; if(!(r.x.challenges||[]).some(z=>!z.status))fl=fl.filter(f=>f!=="challenged"); if(decision==="accepted"&&!fl.includes("needs_edit"))fl=[...fl,"needs_edit"]; r.x.flags=fl;
+  const ev={rid,kind:r.kind,id:r.x.id,action:"challenge_"+decision,by:role,on,note:reason||null,challengeIndex:idx,challengedBy:c.by};
+  EVENTS.push(ev); try{const h=window.STARLING_HOOKS;if(h&&h.onReview)h.onReview(ev)}catch(_){}
+  return r;
+}
 const PARENT=r=>{const x=r.x;if(r.kind==="Goal")return"s:"+x.strat;if(r.kind==="Opportunity")return x.goal?"g:"+x.strat+":"+x.goal:"s:"+x.strat;if(r.kind==="Initiative")return x.opp?"p:"+x.opp:x.goal&&x.strat?"g:"+x.strat+":"+x.goal:x.strat?"s:"+x.strat:null;return null};
 function ownerOf(rid){let cur=rid;for(let n=0;cur&&n<6;n++){const r=ITEMS.find(z=>z.rid===cur);if(!r)return null;if(r.x.owner)return{owner:r.x.owner,via:cur===rid?null:r.x.name};cur=PARENT(r)}return null}
 function modelRules(){
@@ -475,14 +483,14 @@ function recordReview(rid,act,role,note,value){
   if(!x)return "";
   const f=flagsOf(x),alt=x.alternatives||[],R=x.reviewed;
   const why=f.length?`<br>Flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}`:"";
-  const ch=(x.challenges||[]).map(c=>`<br>Challenged by ${esc(c.by)} on ${esc(c.on)}: ${esc(c.note)}`).join("");
+  const ch=(x.challenges||[]).map((c,n)=>`<div class="alt" style="display:block"><b>Challenge ${n+1}</b> by ${esc(c.by)} on ${esc(c.on)}: ${esc(c.note)}${c.status?`<br><span class="muted">${c.status==="accepted"?"Accepted":"Rejected"} by ${esc(c.response.by)} on ${esc(c.response.on)}${c.response.reason?": "+esc(c.response.reason):""}</span>`:rid&&!R?`<div class="legend" style="margin-top:6px"><button class="btn sm" type="button" data-rvact="accept" data-rid="${esc(rid)}" data-ch="${n}">Accept challenge</button><button class="btn sm" type="button" data-rvact="reject" data-rid="${esc(rid)}" data-ch="${n}">Reject challenge</button></div>`:""}</div>`).join("");
   let h;
   if(R){
     h=`<b>Reviewed</b>${R.by?` by ${esc(R.by)}`:""}${R.on?` on ${esc(R.on)}`:""}${R.value?`<br>Preferred value: ${esc(R.value)}`:""}${f.length?`<br><span class="muted">Was flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}</span>`:""}`;
   }else{
     const alts=alt.length?`<br>Other values found:${alt.map((a,n)=>`<div class="alt"><span>${esc(a.value)}${a.source?` <span class="muted">(${esc(a.source)})</span>`:""}</span>${rid?`<button class="btn sm" type="button" data-rvact="prefer" data-rid="${esc(rid)}" data-val="${n}">Prefer this</button>`:""}</div>`).join("")}`:"";
     h=`<b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${why}${ch}${alts}<br><span class="muted">${(()=>{const o=rid&&ownerOf(rid);return o?`Owner: ${esc(o.owner)}${o.via?" (via "+esc(o.via)+")":""}. `:"No owner recorded up the chain. "})()}Imported from the sources. Not yet reviewed by an owner.</span>`
-      +(rid?`<div class="rvbox"><b>Review this item</b><label for="rvRole">Your role</label><input id="rvRole" type="text" autocomplete="off" placeholder="e.g. Strategy lead" value="${esc(state.role||"")}"><label for="rvNote">Note (needed to challenge)</label><textarea id="rvNote" rows="2"></textarea><div class="rvmsg" id="rvMsg" role="alert"></div><div class="legend"><button class="btn sm" type="button" data-rvact="ok" data-rid="${esc(rid)}">Mark reviewed</button><button class="btn sm" type="button" data-rvact="challenge" data-rid="${esc(rid)}">Challenge</button></div><p class="hint" style="margin:8px 0 0">Sample: a review is kept in this page only. A live build writes it to your database.</p></div>`:"");
+      +(rid?`<div class="rvbox"><b>Review this item</b><label for="rvRole">Your role</label><input id="rvRole" type="text" autocomplete="off" placeholder="e.g. Strategy lead" value="${esc(state.role||"")}"><label for="rvNote">Note (needed to challenge, or to reject a challenge)</label><textarea id="rvNote" rows="2"></textarea><div class="rvmsg" id="rvMsg" role="alert"></div><div class="legend"><button class="btn sm" type="button" data-rvact="ok" data-rid="${esc(rid)}">Mark reviewed</button><button class="btn sm" type="button" data-rvact="challenge" data-rid="${esc(rid)}">Challenge</button></div><p class="hint" style="margin:8px 0 0">Sample: a review is kept in this page only. A live build writes it to your database.</p></div>`:"");
   }
   return `<div id="rvwrap" class="callout" tabindex="-1" style="margin-top:12px">${h}</div>`;
 }
@@ -599,9 +607,9 @@ function vStrategy(){
     const its=initsOf(s.id), gs=groupsOf(s);
     if(!state.open[s.id]){
       rows+=`<div class="c-strat sblock">${stratCard(s)}</div>
-       <div class="c-goal"><div class="sumc"><b>${plural(s.goals.length,"goal")}</b>, <b>${s.goals.filter(g=>g.measured).length}</b> measured</div></div>
-       <div class="c-opp"><div class="sumc">${s.opps.length?`<b>${s.opps.length}</b> proposed opportunities`:"none proposed"}</div></div>
-       <div class="c-init"><div class="sumc"><b>${its.length}</b> in all<br><b class="amb">${its.filter(i=>!linksIn(i,s.id).some(l=>l.goal)).length}</b> with no goal</div></div>`;
+       <div class="c-goal"><div class="sumc"><button class="lnk" type="button" data-toggle="${esc(s.id)}" aria-label="Expand ${esc(s.name)} to show its goals"><b>${plural(s.goals.length,"goal")}</b>, <b>${s.goals.filter(g=>g.measured).length}</b> measured ›</button></div></div>
+       <div class="c-opp"><div class="sumc">${s.opps.length?`<button class="lnk" type="button" data-toggle="${esc(s.id)}" aria-label="Expand ${esc(s.name)} to show its opportunities"><b>${s.opps.length}</b> proposed opportunities ›</button>`:"none proposed"}</div></div>
+       <div class="c-init"><div class="sumc">${its.length?`<button class="lnk" type="button" data-list="q:${esc(s.id)}:all:all"><b>${its.length}</b> in all ›</button>`:"<b>0</b> in all"}<br>${its.filter(i=>!linksIn(i,s.id).some(l=>l.goal)).length?`<button class="lnk" type="button" data-list="q:${esc(s.id)}:nogoal:all"><b class="amb">${its.filter(i=>!linksIn(i,s.id).some(l=>l.goal)).length}</b> with no goal ›</button>`:`<b class="amb">0</b> with no goal`}</div></div>`;
       return;
     }
     const rowsG=[...s.goals.map(g=>g.id)]; if(gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
@@ -833,6 +841,7 @@ const recActions=`<div class="legend" style="margin-top:14px"><button class="btn
 function openList(q){
   const [,sid,g,o]=q.split(":");
   if(sid==="none"){const its=initsOf(null);return openDrawer(`Initiatives · ${its.length}`,"Not linked to a strategy",`No strategy, goal or opportunity · ${fmt(r1(its.reduce((a,i)=>a+avgH(i),0)))} FTE average in ${esc(HZ.label)}`,[...its].sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`)}
+  if(g==="all"||g==="nogoal"){const s=SBY[sid],its=initsOf(sid).filter(i=>g==="all"||!linksIn(i,sid).some(l=>l.goal));return openDrawer(`Initiatives · ${its.length}`,g==="all"?`All work under ${sid} ${esc(s.name)}`:`${sid}: work with no goal`,`${fmt(r1(its.reduce((a,i)=>a+avgS(i,sid),0)))} FTE average in ${esc(HZ.label)}`,[...its].sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button>${reviewPill(i)}<small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, review or challenge it.</p>`)}
   const s=SBY[sid], its=INITS.filter(i=>linksIn(i,sid).some(l=>(l.goal||"none")===g&&(l.opp||"none")===o));
   const title=g==="none"&&o==="none"?`${sid}: work with no goal`:o!=="none"?`Opportunity ${o}`:`Goal ${g}`;
   const sub=`${g==="none"&&o==="none"?`Linked straight to ${sid} ${esc(s.name)}`:o!=="none"?`Via proposed opportunity ${o}${g!=="none"?" under goal "+g:""}`:`Under goal ${g}`} · ${fmt(r1(its.reduce((a,i)=>a+avgS(i,sid),0)))} FTE average in ${esc(HZ.label)}`;
@@ -955,8 +964,14 @@ function doReview(btn){
   const rid=btn.dataset.rid, act=btn.dataset.rvact, role=(($("#rvRole")||{}).value||"").trim(), note=(($("#rvNote")||{}).value||"").trim(), msg=$("#rvMsg");
   const r=ITEMS.find(z=>z.rid===rid); if(!r)return;
   if(!role){msg.textContent="Add your role first, so the review can be traced to someone.";$("#rvRole").focus();return}
-  if(act==="challenge"&&!note){msg.textContent="Add a note saying what you would challenge.";$("#rvNote").focus();return}
+  if((act==="challenge"||act==="reject")&&!note){msg.textContent=act==="reject"?"Add the reason you are rejecting this challenge.":"Add a note saying what you would challenge.";$("#rvNote").focus();return}
   state.role=role;
+  if(act==="accept"||act==="reject"){
+    respondChallenge(rid,Number(btn.dataset.ch),act==="accept"?"accepted":"rejected",role,note);
+    const t2=document.createElement("div");t2.innerHTML=provHtml(r.x,rid);$("#rvwrap").replaceWith(t2.firstElementChild);$("#rvwrap").focus();
+    toast(act==="accept"?"Challenge accepted. The item stays flagged until it is edited and reviewed (sample: kept in this page only)":"Challenge rejected with your reason (sample: kept in this page only)");
+    return render(true);
+  }
   const val=act==="prefer"?((r.x.alternatives||[])[Number(btn.dataset.val)]||{}).value:null;
   recordReview(rid,act==="ok"||act==="prefer"?"reviewed":"challenge",role,note,val);
   const tmp=document.createElement("div");tmp.innerHTML=provHtml(r.x,rid);$("#rvwrap").replaceWith(tmp.firstElementChild);$("#rvwrap").focus();
