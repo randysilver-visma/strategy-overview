@@ -83,7 +83,7 @@ Set `flags` on every claim that needs a human, using these reasons:
 - `no_owner`: nobody can be named as accountable for it.
 - `unclear`: you could not tell what the source means.
 
-Then write a draft data file at `client/data/draft.json` in the shape of `docs/DATA_MODEL.md`. Include every non-rejected claim, with `conf` and `flags` carried over, so the page shows best guesses and marks what needs review.
+Then write the draft data file at `client/data/draft.json` by running `python design/claims_to_data.py client/onboarding/profile.yaml --out client/data/draft.json` (shape in `docs/DATA_MODEL.md`), and fix any errors it reports. If the script cannot be run, write the file by hand in that shape. Include every non-rejected claim, with `conf` and `flags` carried over, so the page shows best guesses and marks what needs review.
 
 ## Phase 3: Review queue
 

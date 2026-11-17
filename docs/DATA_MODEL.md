@@ -58,6 +58,22 @@ The owner (or whoever the live build allows) can **Accept** a challenge, which f
 
 The page computes these from the links and shows them in the Review tab. Each is something that should not occur: work not linked to any strategy, work linked to a strategy but to no goal or opportunity, goals with no initiative, goals with no outcome measure, opportunities not under a goal, strategies with no goals or no Org objective, and Org objectives that no strategy serves. A check clears itself when the data changes. `modelChecks` in the data file is optional and only for extra checks the import found: `[{title, detail}]`.
 
+## From onboarding claims to a data file
+
+```
+python design/claims_to_data.py client/onboarding/profile.yaml --out client/data/draft.json
+python design/build.py --data client/data/draft.json
+```
+
+`design/claims_to_data.py` reads the profile's `claims` (YAML needs PyYAML, or give JSON) and writes the data file. A worked example is `design/examples/profile.example.yaml`.
+
+- Every claim that is not `rejected` becomes an item. `confidence`, `flags`, `alternatives` and `sources` (shown in the record as "Found in", with the quote) are carried over. Rejected claims are dropped and listed in the report.
+- An item is `reviewed` only when `status` is `reviewed_ok` or `edited` and `reviewed_by_role` is set.
+- `model.objectives`, `model.strategies`, `model.goals`, `model.opportunities` and `work.initiatives` carry the model. `value` may be one object or a list of them. Strategies, goals, opportunities and initiatives may carry `owner`; `roles.owner` with `{id, owner}` sets it afterwards.
+- `cadence.horizon` supplies `quarters` and `horizon`; without it the periods are labelled Period 1..n and the script warns. `sources.inventory` becomes the source documents (with a count of claims citing each and how many conflict), and `open_items` become the Open questions.
+- Initiative `links` use `strategy`, `goal` and `opportunity`; `fte_by_quarter`, `funded`, `workstream`, `discretionary`, `beneficiary` and `tracker` map to the page's fields. A `split` may be percentages or fractions.
+- Fields the page does not use (terminology, principles, division level and similar) are left in the profile and listed in the report. The page runs its own data checks on load, so broken links show in the Review tab.
+
 ## Data checks
 
 The page validates the data on load and lists problems in the Review tab as "Data check" items: unknown strategies, goals or opportunities, an opportunity whose goal differs from the link's goal, duplicate IDs, a split that does not add up to 100%, and initiatives with no FTE in the quarters shown.

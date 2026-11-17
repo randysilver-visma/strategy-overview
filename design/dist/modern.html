@@ -498,7 +498,7 @@ function recordReview(rid,act,role,note,value){
     h=`<b>Reviewed</b>${R.by?` by ${esc(R.by)}`:""}${R.on?` on ${esc(R.on)}`:""}${R.value?`<br>Preferred value: ${esc(R.value)}`:""}${f.length?`<br><span class="muted">Was flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}</span>`:""}`;
   }else{
     const alts=alt.length?`<br>Other values found:${alt.map((a,n)=>`<div class="alt"><span>${esc(a.value)}${a.source?` <span class="muted">(${esc(a.source)})</span>`:""}</span>${rid?`<button class="btn sm" type="button" data-rvact="prefer" data-rid="${esc(rid)}" data-val="${n}">Prefer this</button>`:""}</div>`).join("")}`:"";
-    h=`<b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${why}${ch}${alts}<br><span class="muted">${(()=>{const o=rid&&ownerOf(rid);return o?`Owner: ${esc(o.owner)}${o.via?" (via "+esc(o.via)+")":""}. `:"No owner recorded up the chain. "})()}Imported from the sources. Not yet reviewed by an owner.</span>`
+    h=`<b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${why}${ch}${alts}${Array.isArray(x.sources)&&x.sources.length?`<br>Found in:${x.sources.map(z=>`<div class="alt" style="display:block">${esc(z.source||"")}${z.locator?", "+esc(z.locator):""}${z.quote?`: “${esc(z.quote)}”`:""}</div>`).join("")}`:""}<br><span class="muted">${(()=>{const o=rid&&ownerOf(rid);return o?`Owner: ${esc(o.owner)}${o.via?" (via "+esc(o.via)+")":""}. `:"No owner recorded up the chain. "})()}Imported from the sources. Not yet reviewed by an owner.</span>`
       +(rid?`<div class="rvbox"><b>Review this item</b><label for="rvRole">Your role</label><input id="rvRole" type="text" autocomplete="off" placeholder="e.g. Strategy lead" value="${esc(state.role||"")}"><label for="rvNote">Note (needed to challenge, or to reject a challenge)</label><textarea id="rvNote" rows="2"></textarea><div class="rvmsg" id="rvMsg" role="alert"></div><div class="legend"><button class="btn sm" type="button" data-rvact="ok" data-rid="${esc(rid)}">Mark reviewed</button><button class="btn sm" type="button" data-rvact="challenge" data-rid="${esc(rid)}">Challenge</button></div><p class="hint" style="margin:8px 0 0">Sample: a review is kept in this page only. A live build writes it to your database.</p></div>`:"");
   }
   return `<div id="rvwrap" class="callout" tabindex="-1" style="margin-top:12px">${h}</div>`;
@@ -528,7 +528,7 @@ const plural=(n,w,p)=>`${n} ${n===1?w:(p||w+"s")}`;
 const CHEV='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const STAR='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg>';
 function toast(m){const t=document.createElement("div");t.className="toast";t.setAttribute("role","status");t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2800)}
-const measureLine=m=>`<div class="meas">${m.by?`<span class="by">by ${m.by}</span>`:`<span class="by none">no date</span>`}<span>${esc(m.m)}: <strong>Indicative target${m.by?" by "+m.by:""}</strong></span></div>`;
+const measureLine=m=>`<div class="meas">${m.by?`<span class="by">by ${m.by}</span>`:`<span class="by none">no date</span>`}<span>${esc(m.m)}: <strong>${m.t?esc(m.t):"Indicative target"}${m.by?" by "+m.by:""}</strong></span></div>`;
 
 /* ---------- header and tabs ---------- */
 const VIEWS=[["overview","Overview"],["strategy","Strategy"],["work","Work"],["decisions","Decisions",decisionCount],["questions","Open questions",()=>QUESTIONS.length],["review","Review",reviewCount]];
@@ -672,7 +672,7 @@ function vWork(){
   const W=state.work, c=coverage(), gni=goalsNoInit(), unf=unfunded();
   const findings=`<div class="findings"><div class="finding bad"><b>Coverage</b><span>Only ${c.inRec} of ${c.stated} stated strategy FTE${c.pct===null?"":` (${c.pct}%)`} is in recorded initiatives, so most capacity can’t be traced to work yet.</span></div>
     <div class="finding"><b>Check</b><span>${gni.length} of ${GOALS.length} goals have no initiative: ${gni.map(g=>g.id).join(", ")}.</span></div>
-    <div class="finding"><b>Check</b><span>${unf.length} initiatives are unfunded: ${unf.map(i=>i.name).join("; ")}.</span></div></div>`;
+    <div class="finding"><b>Check</b><span>${unf.length?`${unf.length} initiatives are unfunded: ${unf.map(i=>i.name).join("; ")}.`:"No initiative is unfunded."}</span></div></div>`;
   const seg=(id,opts,cur,sm)=>`<div class="seg${sm?" sm":""}" role="group" aria-label="${id}">${opts.map(([v,l])=>`<button type="button" data-${id}="${v}" aria-pressed="${cur===v}">${l}</button>`).join("")}</div>`;
   let body="";
   if(W.view==="roadmap") body=roadmap();
