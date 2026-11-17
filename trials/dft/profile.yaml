@@ -1,0 +1,1342 @@
+meta:
+  template_version: 0.2.0
+  client_alias: UK Department for Transport (public sources)
+  started: '2026-11-17'
+  interviewer: consultant
+  overall_status: in_progress
+  scope_unit: department
+technical:
+  assumptions:
+  - text: Stand-in trial using public documents only. No technical questions were asked.
+    check_with_role: consultant
+claims:
+- id: C001
+  field: sources.inventory
+  value:
+    id: S1
+    kind: 'Strategy: Better Connected, a strategy for integrated transport (2 Apr 2026, executive summary)'
+    evidence_role: said
+  origin: derived
+  confidence: high
+  status: unreviewed
+- id: C002
+  field: sources.inventory
+  value:
+    id: S2
+    kind: Annual report and accounts 2025-26 (web version, Jul 2026)
+    evidence_role: said+done
+  origin: derived
+  confidence: high
+  status: unreviewed
+- id: C003
+  field: sources.inventory
+  value:
+    id: S3
+    kind: Strategic Asset Management Plan executive summary (updated 6 May 2026)
+    evidence_role: said
+  origin: derived
+  confidence: high
+  status: unreviewed
+- id: C004
+  field: sources.inventory
+  value:
+    id: S4
+    kind: Civil Service People Survey 2024 results highlights
+    evidence_role: understood
+  origin: derived
+  confidence: high
+  status: unreviewed
+- id: C005
+  field: sources.inventory
+  value:
+    id: S5
+    kind: Civil Service People Survey 2025 results highlights
+    evidence_role: understood
+  origin: derived
+  confidence: high
+  status: unreviewed
+- id: C006
+  field: sources.inventory
+  value:
+    id: S6
+    kind: 'National Audit Office: Innovation in transport (May 2026), search extract only'
+    evidence_role: done
+  origin: derived
+  confidence: high
+  status: unreviewed
+- id: C007
+  field: sources.inventory
+  value:
+    id: S7
+    kind: House of Lords written answer HL16268 (27 Apr 2026), search extract only
+    evidence_role: said
+  origin: derived
+  confidence: high
+  status: unreviewed
+- id: C008
+  field: scope.description
+  value: UK Department for Transport (public documents only)
+  origin: stated
+  confidence: high
+  status: unreviewed
+- id: C009
+  field: model.vision
+  value: Better Connected is this government's vision for domestic transport in England.
+  origin: derived
+  confidence: low
+  sources:
+  - source_id: S1
+    locator: Better Connected
+    quote: Better Connected is this government's vision for domestic transport in England.
+  flags:
+  - unclear
+  alternatives:
+  - value: No single vision statement for the department; the annual report gives three strategic outcomes instead
+    source_id: S2
+    locator: Report purpose
+  status: unreviewed
+  note: Scope is England and transport only; the department's remit is wider. No source gives one department-wide vision.
+- id: C010
+  field: model.objectives
+  value:
+    id: OBJ-1
+    name: Enhancing growth and place
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Performance analysis: Strategic outcome: enhancing growth and place'
+    quote: Enhancing economic growth by transforming the transport system.
+  - source_id: S6
+    locator: Report, paragraph 2
+    quote: priority outcomes of growth; greener, safer and healthier transport; and improving transport for people
+  flags:
+  - conflict
+  alternatives:
+  - value: Five transport priorities (rail, buses, infrastructure, greener transport, integrated network) plus five enablers
+    source_id: S3
+    locator: Our Objectives and Vision
+  - value: Eight priorities in Better Connected
+    source_id: S1
+    locator: Priorities
+  - value: Named 'growth' in the NAO report
+    source_id: S6
+    locator: Report, paragraph 2
+  status: unreviewed
+  note: Three documents describe the department's top level three different ways. Treated the annual report's three strategic outcomes as the
+    Org objectives because it is the formal accountability document.
+- id: C011
+  field: model.objectives
+  value:
+    id: OBJ-2
+    name: Improving journeys for people
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Performance analysis: Strategic outcome: improving journeys for people'
+    quote: Improving the transport system to prioritise people's needs
+  - source_id: S6
+    locator: Report, paragraph 2
+    quote: priority outcomes of growth; greener, safer and healthier transport; and improving transport for people
+  flags:
+  - conflict
+  alternatives:
+  - value: Five transport priorities (rail, buses, infrastructure, greener transport, integrated network) plus five enablers
+    source_id: S3
+    locator: Our Objectives and Vision
+  - value: Eight priorities in Better Connected
+    source_id: S1
+    locator: Priorities
+  - value: Named 'improving transport for people' in the NAO report
+    source_id: S6
+    locator: Report, paragraph 2
+  status: unreviewed
+  note: Three documents describe the department's top level three different ways. Treated the annual report's three strategic outcomes as the
+    Org objectives because it is the formal accountability document.
+- id: C012
+  field: model.objectives
+  value:
+    id: OBJ-3
+    name: Delivering green and healthy transport
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Performance analysis: Strategic outcome: delivering green and healthy transport'
+    quote: Delivering greener transport to cut emissions, improve air quality and boost public health
+  - source_id: S6
+    locator: Report, paragraph 2
+    quote: priority outcomes of growth; greener, safer and healthier transport; and improving transport for people
+  flags:
+  - conflict
+  alternatives:
+  - value: Five transport priorities (rail, buses, infrastructure, greener transport, integrated network) plus five enablers
+    source_id: S3
+    locator: Our Objectives and Vision
+  - value: Eight priorities in Better Connected
+    source_id: S1
+    locator: Priorities
+  - value: Named 'greener, safer and healthier transport' in the NAO report
+    source_id: S6
+    locator: Report, paragraph 2
+  status: unreviewed
+  note: Three documents describe the department's top level three different ways. Treated the annual report's three strategic outcomes as the
+    Org objectives because it is the formal accountability document.
+- id: C013
+  field: model.strategies
+  value:
+    id: P1
+    name: Simplify payments and information
+    status: not_assessed
+    objectives:
+    - OBJ-2
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Simplify payments and information
+    quote: a simple approach to payments and information
+  flags:
+  - no_owner
+  - unclear
+  status: unreviewed
+  note: Priority is stated in Better Connected. Its link to the annual report's three outcomes is inferred, not stated. No owner, status or FTE
+    is given in any source.
+- id: C014
+  field: model.strategies
+  value:
+    id: P2
+    name: Provide dependable and safe journeys
+    status: not_assessed
+    objectives:
+    - OBJ-2
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Provide dependable and safe journeys
+    quote: We will provide safe and dependable transport so people can trust the network
+  flags:
+  - no_owner
+  - unclear
+  status: unreviewed
+  note: Priority is stated in Better Connected. Its link to the annual report's three outcomes is inferred, not stated. No owner, status or FTE
+    is given in any source.
+- id: C015
+  field: model.strategies
+  value:
+    id: P3
+    name: Make travel accessible and affordable
+    status: not_assessed
+    objectives:
+    - OBJ-2
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Make travel accessible and affordable
+    quote: The transport network will be increasingly accessible and affordable, providing people real choice
+  flags:
+  - no_owner
+  - unclear
+  status: unreviewed
+  note: Priority is stated in Better Connected. Its link to the annual report's three outcomes is inferred, not stated. No owner, status or FTE
+    is given in any source.
+- id: C016
+  field: model.strategies
+  value:
+    id: P4
+    name: Create healthier communities
+    status: not_assessed
+    objectives:
+    - OBJ-3
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Create healthier communities
+    quote: Transport will help create healthier communities, where making healthy travel choices will be easy
+  flags:
+  - no_owner
+  - unclear
+  status: unreviewed
+  note: Priority is stated in Better Connected. Its link to the annual report's three outcomes is inferred, not stated. No owner, status or FTE
+    is given in any source.
+- id: C017
+  field: model.strategies
+  value:
+    id: P5
+    name: Align transport and development
+    status: not_assessed
+    objectives:
+    - OBJ-1
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Align transport and development
+    quote: Decisions on transport and development will be better joined up
+  flags:
+  - no_owner
+  - unclear
+  status: unreviewed
+  note: Priority is stated in Better Connected. Its link to the annual report's three outcomes is inferred, not stated. No owner, status or FTE
+    is given in any source.
+- id: C018
+  field: model.strategies
+  value:
+    id: P6
+    name: Champion data and technology
+    status: not_assessed
+    objectives:
+    - OBJ-1
+  origin: derived
+  confidence: low
+  sources:
+  - source_id: S1
+    locator: Champion data and technology
+    quote: We will champion data and technology to deliver an integrated, innovative and accessible transport system
+  flags:
+  - no_owner
+  - unclear
+  status: unreviewed
+  note: Priority is stated in Better Connected. Its link to the annual report's three outcomes is inferred, not stated. No owner, status or FTE
+    is given in any source.
+- id: C019
+  field: model.strategies
+  value:
+    id: P7
+    name: Empower local leaders
+    status: not_assessed
+    objectives:
+    - OBJ-1
+  origin: derived
+  confidence: low
+  sources:
+  - source_id: S1
+    locator: Empower local leaders
+    quote: We will support and empower local leaders who are accountable to their local electorate
+  flags:
+  - no_owner
+  - unclear
+  status: unreviewed
+  note: Priority is stated in Better Connected. Its link to the annual report's three outcomes is inferred, not stated. No owner, status or FTE
+    is given in any source.
+- id: C020
+  field: model.strategies
+  value:
+    id: P8
+    name: Optimise decision-making and appraisal
+    status: not_assessed
+    objectives:
+    - OBJ-1
+  origin: derived
+  confidence: low
+  sources:
+  - source_id: S1
+    locator: Optimise decision-making and appraisal
+    quote: We will optimise decision-making and appraisal so that it aligns with the principles set out in this strategy
+  flags:
+  - no_owner
+  - unclear
+  status: unreviewed
+  note: Priority is stated in Better Connected. Its link to the annual report's three outcomes is inferred, not stated. No owner, status or FTE
+    is given in any source.
+- id: C021
+  field: model.goals
+  value:
+    id: P2-1
+    name: Rail services run reliably
+    strategy: P2
+    measured: true
+    measures:
+    - name: Rail cancellations
+      kind: outcome
+      target: 'No target stated. Latest: cancellations trended downwards in year to Mar 2026'
+    - name: Rail punctuality
+      kind: outcome
+      target: 'No target stated. Latest: back to pre-pandemic levels'
+      current: 'yes'
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: improving journeys for people'
+    quote: Cancellations trended downwards over the last financial year ending March 2026.
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C022
+  field: model.goals
+  value:
+    id: P2-2
+    name: Road network delays fall
+    strategy: P2
+    measured: true
+    measures:
+    - name: Average delay on the strategic road network
+      kind: outcome
+      target: 'No target stated. Latest: increasing year on year since 2020'
+      current: 'yes'
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: enhancing growth and place'
+    quote: average delays on the SRN (strategic road network) have increased year on year since 2020.
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C023
+  field: model.goals
+  value:
+    id: P2-3
+    name: Fewer people killed or seriously injured on roads
+    strategy: P2
+    measured: false
+    measures:
+    - name: People killed or seriously injured
+      kind: outcome
+      target: National targets exist; figures not given in the report
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: improving journeys for people'
+    quote: set clear national targets to reduce those killed and seriously injured on our roads.
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C024
+  field: model.goals
+  value:
+    id: P3-1
+    name: Lower transport costs for passengers
+    strategy: P3
+    measured: false
+    measures:
+    - name: Rail fares freeze saving to passengers
+      kind: output
+      target: Projected £600 million saving in 2026-27
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: improving journeys for people'
+    quote: expected to save existing passengers £600 million in 2026 to 2027.
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C025
+  field: model.goals
+  value:
+    id: P3-2
+    name: An accessible railway
+    strategy: P3
+    measured: false
+    measures:
+    - name: 'Roadmap to an accessible railway: actions delivered'
+      kind: output
+      target: 31 actions; delivery status not given
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: improving journeys for people'
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C026
+  field: model.goals
+  value:
+    id: P4-1
+    name: More walking, wheeling and cycling
+    strategy: P4
+    measured: true
+    measures:
+    - name: Short urban stages walked or cycled
+      kind: outcome
+      target: '55% by 2035 (CWIS3). Latest: walking rising, cycling static'
+      target_year: 2035
+      current: 'yes'
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: delivering green and healthy transport'
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C027
+  field: model.goals
+  value:
+    id: P4-2
+    name: More zero emission vehicles
+    strategy: P4
+    measured: true
+    measures:
+    - name: Zero emission vehicles as a share of new car sales
+      kind: outcome
+      target: 22.9% in 2025, up from 19.1% in 2024. Target not stated in the report
+      current: 'yes'
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: delivering green and healthy transport'
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C028
+  field: model.goals
+  value:
+    id: P4-3
+    name: Lower transport emissions
+    strategy: P4
+    measured: true
+    measures:
+    - name: Transport greenhouse gas emissions
+      kind: outcome
+      target: Down 8% 2019 to 2024. No target stated
+      current: 'yes'
+    - name: Domestic maritime emissions
+      kind: outcome
+      target: 30% cut by 2030
+      target_year: 2030
+    - name: Sustainable aviation fuel share
+      kind: outcome
+      target: 11% by 2030
+      target_year: 2030
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: delivering green and healthy transport'
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C029
+  field: model.goals
+  value:
+    id: P5-1
+    name: Better connectivity for growth
+    strategy: P5
+    measured: true
+    measures:
+    - name: Connectivity score (sustainable travel)
+      kind: outcome
+      target: No target. England 64.78 in 2024. The aim is for all scores to rise
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: enhancing growth and place'
+    quote: Over time, the aim is to see all scores rising.
+  flags:
+  - unclear
+  - single_source
+  status: unreviewed
+  note: Goal derived from a measured result in the annual report and linked to the nearest Better Connected priority. The link is inferred; Better
+    Connected states no goals or metrics.
+- id: C030
+  field: model.opportunities
+  value:
+    id: P2-1-a
+    name: Satisfaction with trains and local buses is trending down
+    strategy: P2
+    goal: P2-1
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: improving journeys for people'
+    quote: showed a downward trend
+  flags:
+  - single_source
+  status: unreviewed
+- id: C031
+  field: model.opportunities
+  value:
+    id: P2-2-a
+    name: Strategic road network delays have risen every year since 2020
+    strategy: P2
+    goal: P2-2
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: enhancing growth and place'
+    quote: average delays on the SRN (strategic road network) have increased year on year since 2020.
+  flags:
+  - single_source
+  status: unreviewed
+- id: C032
+  field: model.opportunities
+  value:
+    id: P3-a
+    name: Public transport trips are still below pre-pandemic levels
+    strategy: P3
+    goal: null
+  origin: inferred
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: 'Strategic outcome: improving journeys for people'
+    quote: it has increased year-on-year
+  flags:
+  - single_source
+  status: unreviewed
+- id: C033
+  field: work.initiatives
+  value:
+    id: I01
+    name: Northern Powerhouse Rail
+    links:
+    - strategy: P5
+      goal: P5-1
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: enhancing growth and place
+    quote: funding envelope up to £45 billion
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C034
+  field: work.initiatives
+  value:
+    id: I02
+    name: TransPennine Route Upgrade
+    links:
+    - strategy: P5
+      goal: P5-1
+    - strategy: P4
+      goal: P4-3
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: listed under growth and place and under green and healthy transport
+    quote: £11 billion
+  flags:
+  - unclear
+  - conflict
+  alternatives:
+  - value: Linked to Strategy 5 (growth and place) only
+    source_id: S2
+    locator: 'Strategic outcome: enhancing growth and place'
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C035
+  field: work.initiatives
+  value:
+    id: I03
+    name: East West Rail
+    links:
+    - strategy: P5
+      goal: P5-1
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: enhancing growth and place
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C036
+  field: work.initiatives
+  value:
+    id: I04
+    name: HS2 reset
+    links:
+    - strategy: P5
+      goal: P5-1
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: enhancing growth and place
+    quote: expected cost £87.7bn to £102.7bn (2025 prices)
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C037
+  field: work.initiatives
+  value:
+    id: I05
+    name: Lower Thames Crossing
+    links:
+    - strategy: P2
+      goal: P2-2
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: enhancing growth and place
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C038
+  field: work.initiatives
+  value:
+    id: I06
+    name: Road Investment Strategy 3
+    links:
+    - strategy: P2
+      goal: P2-2
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: enhancing growth and place
+    quote: over £27 billion
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C039
+  field: work.initiatives
+  value:
+    id: I07
+    name: Airports National Policy Statement review
+    links:
+    - strategy: P5
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: enhancing growth and place
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C040
+  field: work.initiatives
+  value:
+    id: I08
+    name: Bus Services Act 2025
+    links:
+    - strategy: P7
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: enhancing growth and place
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C041
+  field: work.initiatives
+  value:
+    id: I09
+    name: Integrated settlements for local areas
+    links:
+    - strategy: P7
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: enhancing growth and place
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C042
+  field: work.initiatives
+  value:
+    id: I10
+    name: Railways Bill and Great British Railways
+    links:
+    - strategy: P2
+      goal: P2-1
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: improving journeys for people
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C043
+  field: work.initiatives
+  value:
+    id: I11
+    name: Public ownership of train operators
+    links:
+    - strategy: P2
+      goal: P2-1
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: improving journeys for people
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C044
+  field: work.initiatives
+  value:
+    id: I12
+    name: Motor Insurance Taskforce
+    links:
+    - strategy: P3
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: improving journeys for people
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C045
+  field: work.initiatives
+  value:
+    id: I13
+    name: £3 bus fare cap
+    links:
+    - strategy: P3
+      goal: P3-1
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: improving journeys for people
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C046
+  field: work.initiatives
+  value:
+    id: I14
+    name: Rail fares freeze
+    links:
+    - strategy: P3
+      goal: P3-1
+    funded: true
+    fte_by_quarter: []
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Make travel accessible and affordable
+    quote: including through the first rail fares freeze in 30 years
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C047
+  field: work.initiatives
+  value:
+    id: I15
+    name: Roadmap to an accessible railway (31 actions)
+    links:
+    - strategy: P3
+      goal: P3-2
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: improving journeys for people
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C048
+  field: work.initiatives
+  value:
+    id: I16
+    name: Accessible Travel Charter
+    links:
+    - strategy: P3
+      goal: P3-2
+    funded: true
+    fte_by_quarter: []
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Make travel accessible and affordable
+    quote: through our Accessible Travel Charter that will set expectations for transport providers
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C049
+  field: work.initiatives
+  value:
+    id: I17
+    name: Road safety strategy
+    links:
+    - strategy: P2
+      goal: P2-3
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: improving journeys for people
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C050
+  field: work.initiatives
+  value:
+    id: I18
+    name: Expanded role for the rail passenger watchdog
+    links:
+    - strategy: P2
+      goal: P2-1
+    funded: true
+    fte_by_quarter: []
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Provide dependable and safe journeys
+    quote: expand the role of the strengthened rail passenger watchdog
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C051
+  field: work.initiatives
+  value:
+    id: I19
+    name: Active Travel England schemes
+    links:
+    - strategy: P4
+      goal: P4-1
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: delivering green and healthy transport
+    quote: almost £300 million
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C052
+  field: work.initiatives
+  value:
+    id: I20
+    name: Cycling and Walking Investment Strategy 3
+    links:
+    - strategy: P4
+      goal: P4-1
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: delivering green and healthy transport
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C053
+  field: work.initiatives
+  value:
+    id: I21
+    name: Zero Emission Vehicle Mandate and Electric Car Grant
+    links:
+    - strategy: P4
+      goal: P4-2
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: delivering green and healthy transport
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C054
+  field: work.initiatives
+  value:
+    id: I22
+    name: Local EV Infrastructure Fund and public charging rollout
+    links:
+    - strategy: P4
+      goal: P4-2
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: delivering green and healthy transport
+    quote: more than 119,000 public EV chargers
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C055
+  field: work.initiatives
+  value:
+    id: I23
+    name: Sustainable Aviation Fuel Act
+    links:
+    - strategy: P4
+      goal: P4-3
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: delivering green and healthy transport
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C056
+  field: work.initiatives
+  value:
+    id: I24
+    name: Zero Emission Bus Regional Area programme
+    links:
+    - strategy: P4
+      goal: P4-3
+    funded: true
+    fte_by_quarter: []
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S2
+    locator: delivering green and healthy transport
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C057
+  field: work.initiatives
+  value:
+    id: I25
+    name: Strengthened statutory guidance for local transport authorities
+    links:
+    - strategy: P4
+    funded: true
+    fte_by_quarter: []
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Create healthier communities
+    quote: We will strengthen statutory guidance for local transport authorities
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C058
+  field: work.initiatives
+  value:
+    id: I26
+    name: Appraisal, Modelling and Evaluation Strategy
+    links:
+    - strategy: P8
+    funded: true
+    fte_by_quarter: []
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Optimise decision-making and appraisal
+    quote: We will shortly publish our new Appraisal, Modelling and Evaluation Strategy
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C059
+  field: work.initiatives
+  value:
+    id: I27
+    name: Strengthen data foundations and open data
+    links:
+    - strategy: P6
+    funded: true
+    fte_by_quarter: []
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S1
+    locator: Champion data and technology
+  flags:
+  - unclear
+  status: unreviewed
+  note: 'Named in a public document. Link to a priority is inferred. Funding and FTE are not published at this level: funded is assumed true because
+    the programme is government-delivered; FTE is unknown.'
+- id: C060
+  field: work.initiatives
+  value:
+    id: I28
+    name: Platform 4 (property programme)
+    links: []
+    funded: true
+    fte_by_quarter: []
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S3
+    locator: Strategic Programmes
+    quote: is forecast to unlock c.40,000 new homes
+  flags:
+  - unclear
+  status: unreviewed
+  note: Appears in the asset management plan only. No link to any priority or outcome is stated.
+- id: C061
+  field: work.initiatives
+  value:
+    id: I29
+    name: Great British Railways headquarters in Derby
+    links: []
+    funded: true
+    fte_by_quarter: []
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S3
+    locator: Strategic Programmes
+  flags:
+  - unclear
+  status: unreviewed
+  note: Appears in the asset management plan only. No link to any priority or outcome is stated.
+- id: C062
+  field: cadence.horizon
+  value:
+    quarters:
+    - label: Q1 ’26-27
+      year: 2026
+    - label: Q2 ’26-27
+      year: 2026
+    - label: Q3 ’26-27
+      year: 2026
+    - label: Q4 ’26-27
+      year: 2027
+    horizon:
+      label: 2026-27
+      from: 0
+      to: 3
+  origin: inferred
+  confidence: low
+  sources:
+  - source_id: S1
+    locator: Better Connected
+  flags:
+  - unclear
+  status: unreviewed
+  note: Better Connected gives no delivery dates. Used the 2026-27 financial year as a stand-in.
+- id: C063
+  field: evidence.understood
+  value:
+    measure: Employee engagement index
+    dft: 61% in 2024 (down 3pp, the largest fall among main organisations); 60% in 2025 (down 1pp)
+    civil_service: 64% in 2024; 65% in 2025
+  origin: derived
+  confidence: high
+  sources:
+  - source_id: S4
+    locator: Employee engagement and theme scores
+    quote: had the largest reduction (down 3pp)
+  - source_id: S5
+    locator: Table 1
+    quote: 'DFT row: 60% (-1)'
+  status: unreviewed
+- id: C064
+  field: evidence.understood
+  value:
+    measure: Leadership and Managing Change theme
+    dft: 49% in 2024 (down 9pp); 48% in 2025 (down 4pp)
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S4
+    locator: Employee engagement and theme scores
+    quote: Leadership and Managing Change in DFT (down 9pp)
+  - source_id: S5
+    locator: Table 1
+    quote: 48% (-4)
+  flags:
+  - conflict
+  - stale
+  alternatives:
+  - value: '2025 page says five themes changed and the 2024 figures were recalculated: ''should not be compared with the scores in previous publications'''
+    source_id: S5
+    locator: Table 1
+    quote: should not be compared with the scores in previous publications
+  status: unreviewed
+  note: 49% to 48% looks like -1pp, but the 2025 page reports -4pp against a recalculated 2024 figure. Not comparable year to year.
+- id: C065
+  field: evidence.understood
+  value:
+    measure: Organisational Objectives and Purpose theme
+    dft: 79% in 2024 (no change vs 2023)
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S4
+    locator: Table 1 (DFT row)
+  flags:
+  - single_source
+  status: unreviewed
+  note: Closest published measure to staff understanding the direction. It is department-wide and cannot be tied to any one priority.
+- id: C066
+  field: evidence.understood
+  value:
+    measure: Staff views on challenge and change
+    dft: Fewer positive responses on feeling safe to challenge; 'several high-profile change initiatives' may be reducing engagement
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: Raising a concern and whistleblowing
+    quote: there has been a reduction in positive responses to People Survey questions about how safe employees feel to challenge.
+  flags:
+  - single_source
+  status: unreviewed
+- id: C067
+  field: evidence.done
+  value:
+    measure: Departmental group average staff
+    value: 72,512 in 2025-26; 71,779 in 2024-25
+    note: An 8% workforce reduction through a voluntary exit scheme is also reported
+  origin: derived
+  confidence: medium
+  sources:
+  - source_id: S2
+    locator: Staff numbers table
+  flags:
+  - single_source
+  status: unreviewed
+  note: Whole department and delivery bodies, not per initiative. The text says whole-time equivalent but the table says average number of staff.
+coverage_gaps:
+- tier: Initiatives
+  gap: no_done_evidence
+- tier: Strategies
+  gap: owner_unknown
+- tier: Goals
+  gap: said_only
+- tier: Org objectives
+  gap: no_understood_evidence
+open_items:
+- claim_id: C0XX
+  flags:
+  - conflict
+  question: 'Which is the department''s current top-level structure: three strategic outcomes, five transport priorities with five enablers, or
+    the eight Better Connected priorities?'
+  reviewer_role: Director of Strategy
+  needed_by: '2026-12-01'
+- claim_id: C0XX
+  flags:
+  - no_owner
+  question: Who owns each of the eight Better Connected priorities and each of the three outcomes?
+  reviewer_role: Permanent Secretary / ExCo
+  needed_by: '2026-12-01'
+- claim_id: C0XX
+  flags:
+  - unclear
+  question: The strategy says baselines for its headline metrics are still being developed. Where will the metrics and targets be published?
+  reviewer_role: Head of Analysis
+  needed_by: '2026-12-15'
+- claim_id: C0XX
+  flags:
+  - unclear
+  question: Can the 2025 People Survey results for the Leadership and Managing Change theme be compared with 2024?
+  reviewer_role: Head of People Insight
+  needed_by: '2026-12-15'
