@@ -525,7 +525,7 @@ function groupsOf(s){const m=new Map();INITS.forEach(i=>linksIn(i,s.id).forEach(
 function edgesFor(s){
   const E=[];s.objs.forEach(o=>E.push([nid.o(o),nid.s(s.id)]));
   if(!state.open[s.id])return E;
-  const gs=groupsOf(s), rowsG=[...s.goals.map(g=>g.id)]; if(gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
+  const gs=groupsOf(s), rowsG=[...s.goals.map(g=>g.id)]; if(!rowsG.length||gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
   rowsG.forEach(g=>{E.push([nid.s(s.id),nid.g(s.id,g)]);
     s.opps.filter(o=>o.goal===g).forEach(o=>E.push([nid.g(s.id,g),nid.p(o.id)]));
     gs.filter(x=>x.goal===g).forEach(x=>E.push([x.opp?nid.p(x.opp):nid.g(s.id,g),nid.q(s.id,g,x.opp)]))});
@@ -566,7 +566,7 @@ function vStrategy(){
        <div class="c-init"><div class="sumc">${its.length?`<button class="lnk" type="button" data-list="q:${esc(s.id)}:all:all"><b>${its.length}</b> in all ›</button>`:"<b>0</b> in all"}<br>${its.filter(i=>!linksIn(i,s.id).some(l=>l.goal)).length?`<button class="lnk" type="button" data-list="q:${esc(s.id)}:nogoal:all"><b class="amb">${its.filter(i=>!linksIn(i,s.id).some(l=>l.goal)).length}</b> with no goal ›</button>`:`<b class="amb">0</b> with no goal`}</div></div>`;
       return;
     }
-    const rowsG=[...s.goals.map(g=>g.id)]; if(gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
+    const rowsG=[...s.goals.map(g=>g.id)]; if(!rowsG.length||gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
     rows+=`<div class="c-strat sblock" style="grid-row:span ${rowsG.length}">${stratCard(s)}</div>`;
     rowsG.forEach(gid=>{
       const g=gid?GBY[gid]:null, ops=s.opps.filter(o=>o.goal===gid), grs=gs.filter(x=>x.goal===gid);
