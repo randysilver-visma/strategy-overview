@@ -1,0 +1,368 @@
+# Strategy Mirror: onboarding profile for AX (client copy, private to this repo)
+# template_version: 0.2.0
+#
+# Migrated on 2026-11-17 from the 0.1.0 interview of 2026-11-16 (kept in archive/profile-0.1.0.yaml).
+# Shape: `technical` holds what people had to answer; `claims` holds everything else as best guesses.
+# Answers the consultant gave about the model, work and roles are claims with origin "stated":
+# shown as best guesses and left unreviewed until the owner named in reviewer_role confirms them.
+#
+# Conventions
+#   - null = not yet asked or answered. Never guess a value to fill a gap.
+#   - Role names, not personal names, in anything that may reach the generic package.
+#     This client copy uses some personal names; keep it private.
+#   - Never record a secret, only where it is stored.
+
+meta:
+  template_version: "0.2.0"
+  client_alias: "client-a"
+  started: "2026-11-16"
+  migrated_from: "0.1.0 (archive/profile-0.1.0.yaml), 2026-11-17"
+  interviewer: "consultant"     # Claude runs the onboarding with the consultant
+  overall_status: in_progress   # not_started | in_progress | ready_to_build | blocked
+  scope_unit: team
+  sponsor_role: "Product Lead, Agentic Experience"
+  sponsor_name: "Tobias Jensen"           # client copy only
+  sponsor_confirmed: false                # stated by the consultant; the sponsor has not confirmed
+  day_to_day_contact_role: "consultant"   # AX-only questions go through the sponsor (assumption below)
+  product_name: "Strategy Mirror"         # the e-conomic instance's name (skin config "product")
+  environment_check:            # what the onboarding environment reached, by trying it
+    confirmed:
+      - "GitHub: push access to this repository (2026-11-16)"
+      - "Slite: connected to the client's workspace; identity call and a capability test in a claude.ai chat (2026-11-16)"
+      - "Google Drive: shared drives listable, metadata only (2026-11-16)"
+      - "Google Drive: created the tech-questions doc (2026-11-16)"
+    unverified:
+      - "Google Docs, Sheets, Slides: connected; no client file opened [UNVERIFIED]"
+      - "Meetings: connected; not tried [UNVERIFIED]"
+      - "Atlassian (Jira, Confluence): connector appeared 2026-11-17; not tried, because Jira read permission is pending [UNVERIFIED]"
+    not_found: ["Airtable", "Excel/SharePoint"]
+    blocked:
+      - "Slite write tools: approvals for 'needs approval' tools are cancelled in this cloud session; use a claude.ai chat for Slite writes"
+      - "slite.com, developers.slite.com, docs.github.com: not reachable from this environment's network policy"
+
+# ---------------------------------------------------------------------------
+# technical: the questions people have to answer (the Ask phase)
+# ---------------------------------------------------------------------------
+technical:
+  scope:
+    description: "The Agentic Experience (AX) team. Org vision and Org objectives sit above it as context."
+  code:
+    host: github                # current; whether it stays is pending
+    repo_location: "randysilver-visma/strategy-overview (personal account)"
+    repo_visibility: null
+    who_can_create_repos_role: null
+    pending: "Stay in the personal repo or move to an e-conomic/Visma organisation (tech contact; tech-questions doc Q1)"
+  hosting:
+    runtime_target: other       # PROVISIONAL: "on GitHub, if possible", e.g. GitHub Pages
+    network_boundary: "Any e-conomic/Visma employee via company SSO, from anywhere (consultant's belief; may narrow to AX and stakeholders)"
+    authentication: sso
+    deployment_method: "PROVISIONAL: from GitHub, e.g. a GitHub Actions build"
+    admin_role: null            # who keeps it running: tech contact (Q6)
+    approval_steps: []          # pending: security, privacy, architecture, AI use (tech contact, Q4)
+  data_store:
+    options_considered:
+      - type: slite
+        pros:
+          - "Already used at e-conomic"
+          - "Collections with typed columns; many-to-many links between collections work (tested 2026-11-16)"
+          - "Doc review states and comment threads; links and file uploads"
+        cons:
+          - "Links read back as titles only, no ids (tested)"
+          - "No record of who changed a cell; rows have lastEditedAt only (tested)"
+          - "[UNVERIFIED] Permissions per channel or doc, not per field"
+          - "A static page cannot hold a Slite API key, so live reads and writes need a backend or GitHub Actions"
+        verified: partial
+        test: "Run by the consultant in a claude.ai chat via the Slite connector, 2026-11-16; full results in archive/profile-0.1.0.yaml"
+    chosen: other               # Slite
+    setup_preference:
+      - "1. Slite plus a small backend that writes a change log"
+      - "2. On GitHub: suggested changes as pull requests, approved by merge, a GitHub Action writes to Slite"
+      - "3. Fallback: scheduled snapshot plus a 'change through the Changes collection' rule"
+    reason: "Slite is already in use and was tested. It keeps no record of who changed what, so changes should go through a log."
+    decided_by_role: "consultant"
+    decision_status: provisional   # depends on hosting
+    access_method: api
+    credential_holder_role: "the consultant's tech contact or e-conomic IT (role to be named)"
+    credential_storage: null    # e.g. a GitHub repository secret (tech contact, Q5)
+    capabilities_needed:
+      multi_user_writes: null           # writes work; concurrent edits not tested
+      record_history_audit_trail: false # tested
+      many_to_many_links: true          # tested; titles only on read-back
+      field_level_permissions: null     # [UNVERIFIED] likely false
+      approval_step: null               # partial: doc-level review states only
+      source_links: true
+      size_limits_ok: null              # [UNVERIFIED]
+    workarounds_for_gaps:
+      - gap: "Links read back as titles, not ids"
+        workaround: "Every row title starts with a short unique id (e.g. \"S1 Strategy 1\"); no commas in titles; the build matches on the id."
+      - gap: "No record of who changed what"
+        workaround: "Changes go through pull requests (setup 2) or a Changes collection (setup 3). Direct edits in Slite bypass the log."
+    backup: "Git history if hosted on GitHub; otherwise Slite's own history and archive. Not business-critical."
+    cleanup_needed: "Six archived Slite test docs from 2026-11-16 to delete in the Slite UI; two older '[TEST] Strategy Mirror spike' docs (2026-11-11) in the consultant's personal channel."
+  read_grant:                   # one grant, replaces per-document permission (new in 0.2.0)
+    status: partial             # the full grant (locations, exclusions, grantor) is still to agree
+    locations:
+      - location: "https://e-conomic.slite.com/app/docs/t7Se-7EoMUOlmM (AX roadmap)"
+        kind: connector
+        granted_by_role: "consultant"
+        date: "2026-11-16"
+        owner_role: "Product Lead, Agentic Experience"
+      - location: "Published strategy review decks and pages (Google Slides/Drive and Slite)"
+        kind: connector
+        granted_by_role: "consultant"
+        date: "2026-11-16"
+        basis: "Published material is open to employees by default"
+      - location: "AX Jira project(s)"
+        kind: tracker
+        granted_by_role: null   # pending: Engineering Lead, Agentic Experience (Paul)
+        date: null
+        note: "Ask covers which projects, which fields (titles, comments, assignees) and who may see them"
+    to_add:
+      - "The competing AX strategy documents in Slite and Google Docs/Slides (consultant to list, or grant whole spaces/folders)"
+      - "Further AX Slite pages (consultant)"
+    exclusions:
+      - "Unpublished drafts of review decks and pages"
+    redaction_rules: []         # names are shown for now (privacy below)
+  privacy_and_model:
+    data_must_stay_on_network: false   # derived from GitHub hosting; tech contact to confirm
+    model_provider_allowed: "Anthropic Claude, through the company's Claude account"
+    model_hosting: vendor_api   # an API key under the company's Anthropic organisation needs checking (Q5)
+    data_residency: null        # tech contact (Q7)
+    personal_data_in_sources: true
+    show_names_on_page: "yes, for now (consultant)"
+    transcript_consent_confirmed: null   # not applicable: no transcripts among sources
+    survey_min_group_size: null          # not applicable: no surveys
+    query_logging: null         # the chat (Ask Strategy Mirror) is back in the design; decide if questions are logged
+  security_review:
+    required: null              # tech contact (Q4)
+    owner_role: null
+  access_to_page:
+    viewers: "any e-conomic/Visma employee via SSO; may narrow to AX and stakeholders (provisional)"
+    editors: "people with GitHub access to the repo, proposing changes as pull requests (provisional)"
+    admin_role: "consultant during the pilot; hand over to AX later"
+  refresh:
+    method: event_driven        # ideal; needs a backend, webhooks or Actions. Fallback schedule to agree for setup 3
+    schedule: null
+    correction_route: "Challenge or suggest from the page; becomes a pull request reviewed by the item's owner"
+    notification_channel: "Private Slack channel for AX (consultant to create)"
+    challenge_days: null        # the page defaults to 7 days before a challenge is overdue (assumption to confirm)
+  assumptions:
+    - text: "Questions only AX staff can answer go through the sponsor."
+      check_with_role: "Product Lead, Agentic Experience"
+    - text: "Everyone who would suggest or approve a change has GitHub access."
+      check_with_role: "Product Lead, Agentic Experience; tech contact"
+    - text: "[UNVERIFIED] GitHub Pages behind company SSO needs GitHub Enterprise Cloud with private Pages."
+      check_with_role: "tech contact"
+    - text: "[UNVERIFIED] GitHub Pages serves static files only."
+      check_with_role: "tech contact"
+  tech_questions_doc: "https://docs.google.com/document/d/1s5hP45qgyAerAsfk6HH1LvR8Bvx0lS3Fh9Q3R2eLCX4/edit"
+
+# ---------------------------------------------------------------------------
+# claims: everything else, shown as a best guess, flagged if unsure
+# The import phase (reading the granted sources) has not run yet. The claims below are what the
+# consultant stated in the 0.1.0 interview. They are unreviewed until the named reviewer confirms.
+# ---------------------------------------------------------------------------
+claims:
+  - id: C001
+    field: sources.inventory
+    value: {id: S1, name: "AX work in Jira", kind: work_tracker, owner_role: "Engineering Lead, Agentic Experience", tier: work, evidence: done, sensitivity: general}
+    origin: stated
+    sources: []
+    confidence: medium
+    flags: [single_source]
+    status: unreviewed
+    reviewer_role: "Engineering Lead, Agentic Experience"
+    note: "Read permission pending; not examined"
+  - id: C002
+    field: sources.inventory
+    value: {id: S2, name: "AX roadmap in Slite", kind: roadmap, owner_role: "Product Lead, Agentic Experience", tier: work, evidence: said, sensitivity: general}
+    origin: stated
+    confidence: medium
+    flags: []
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+  - id: C003
+    field: sources.inventory
+    value: {id: S3, name: "Strategy review decks and notes (published)", kind: review_pack, prepared_by: "teams and leadership, at different levels", tier: cross_cutting, evidence: "said (leadership slides) and understood (team slides)", sensitivity: general}
+    origin: stated
+    confidence: medium
+    flags: [no_owner]
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+  - id: C004
+    field: sources.inventory
+    value: {name: "Several competing AX strategy documents (Slite, Google Docs/Slides)", evidence: said}
+    origin: stated
+    confidence: low
+    flags: [conflict, unclear]
+    status: unreviewed
+    reviewer_role: "consultant"
+    note: "Not yet listed. The consultant expects them to disagree; that is what the tool should show."
+  - id: C005
+    field: model.terminology
+    value: "OKRs are in use, 'could be stronger'. Where they sit in the model (team goals, strategies or Org objectives) is largely unknown and may vary by document."
+    origin: stated
+    confidence: low
+    flags: [unclear]
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+  - id: C006
+    field: model.division_level
+    value: {needed: false, note: "AX strategies serve the Org objectives directly"}
+    origin: stated
+    confidence: medium
+    flags: [single_source]
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+  - id: C007
+    field: work.initiatives_source
+    value: "Jira; also a roadmap or initiative list in Slite (S2). The initiative level in Jira is not yet examined."
+    origin: stated
+    confidence: medium
+    flags: [unclear]
+    status: unreviewed
+    reviewer_role: "Engineering Lead, Agentic Experience"
+  - id: C008
+    field: work.effort_unit
+    value: "fte per quarter, until AX's documents or practice show otherwise"
+    origin: stated
+    confidence: medium
+    flags: []
+    status: unreviewed
+    reviewer_role: "Engineering Lead, Agentic Experience"
+  - id: C009
+    field: work.link_method
+    value: "edited_in_tool: initial links set in one batch by the consultant with initiative owners, signed off by the Product Lead; then the initiative owner proposes and the goal owner approves (pull request)"
+    origin: stated
+    confidence: medium
+    flags: []
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+    note: "With the Product Lead owning every goal, they approve every link change. Possible bottleneck."
+  - id: C010
+    field: work.confidence_scale
+    value: "hypothesis | partly validated | validated"
+    origin: stated
+    confidence: high
+    flags: []
+    status: unreviewed
+    reviewer_role: "consultant"
+  - id: C011
+    field: roles.owner
+    value: {area: "AX team strategies", owner: "Product Lead + Engineering Lead, Agentic Experience (joint)", decides: "Product Lead on what and why; Engineering Lead on how and capacity", escalation: "governance team"}
+    origin: stated
+    confidence: medium
+    flags: [single_source]
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+  - id: C012
+    field: roles.owner
+    value: {area: "AX team goals and measures", owner: "Product Lead, Agentic Experience", approver: "governance team"}
+    origin: stated
+    confidence: medium
+    flags: [single_source]
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+  - id: C013
+    field: roles.owner
+    value: {area: "AX initiatives", owner: "a named owner per initiative (team lead or product manager), in Jira or the Slite roadmap"}
+    origin: stated
+    confidence: medium
+    flags: [unclear]
+    status: unreviewed
+    reviewer_role: "Engineering Lead, Agentic Experience"
+  - id: C014
+    field: roles.owner
+    value: {area: "Org vision and Org objectives", owner: "CPO", route_from_ax: "via the Product Lead, Agentic Experience"}
+    origin: stated
+    confidence: medium
+    flags: [single_source]
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+  - id: C015
+    field: roles.owner
+    value: {area: "governance team", exists: true, name: null, members: null, cadence: null}
+    origin: stated
+    confidence: low
+    flags: [unclear]
+    status: unreviewed
+    reviewer_role: "consultant"
+  - id: C016
+    field: cadence.horizon
+    value: null
+    origin: stated
+    confidence: low
+    flags: [unclear]
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+    note: "Unknown. The review decks (S3) probably show it once imported."
+  - id: C017
+    field: cadence.review
+    value: "Strategy review meetings exist (S3); rhythm unknown"
+    origin: stated
+    confidence: low
+    flags: [unclear]
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+  - id: C018
+    field: cadence.decision_points
+    value: "Not recorded well yet. AX wants the tool to help create them (a requirement for the Decisions view)."
+    origin: stated
+    confidence: high
+    flags: []
+    status: unreviewed
+    reviewer_role: "Product Lead, Agentic Experience"
+
+# ---------------------------------------------------------------------------
+# Coverage: what the material cannot show (before import)
+# ---------------------------------------------------------------------------
+coverage_gaps:
+  - {tier: vision, gap: no_source}
+  - {tier: objectives, gap: no_source}
+  - {tier: strategy, gap: said_only}
+  - {tier: work, gap: no_done_evidence, note: "Jira read permission pending"}
+  - {tier: all, gap: no_understood_evidence, note: "only team slides in review decks"}
+
+# ---------------------------------------------------------------------------
+# open_items: seed the page's Review tab
+# ---------------------------------------------------------------------------
+open_items:
+  - {claim_id: C001, question: "Grant Jira read access: which projects and fields?", reviewer_role: "Engineering Lead, Agentic Experience", needed_by: "before 'done' evidence"}
+  - {claim_id: C004, question: "List the competing strategy documents, or grant the spaces and folders that hold them", reviewer_role: "consultant", needed_by: "before import"}
+  - {claim_id: C015, question: "Governance team: name, members, meeting rhythm", reviewer_role: "consultant", needed_by: null}
+  - {claim_id: C016, question: "Planning horizon and review cadence", reviewer_role: "Product Lead, Agentic Experience", needed_by: null}
+
+# ---------------------------------------------------------------------------
+# readiness and hand-off
+# ---------------------------------------------------------------------------
+readiness:
+  claims_imported: {stated_in_interview: 18, derived_from_sources: 0}
+  claims_flagged: {conflict: 1, low_confidence: 0, single_source: 5, stale: 0, no_owner: 1, unclear: 7}
+  claims_reviewed: 0
+  can_build_first_version: false
+  reason: "Hosting and the data-store setup are provisional, the read grant is partial, and nothing has been imported from sources yet."
+  blockers:
+    - {item: "Code host and hosting (GitHub Pages behind SSO; who keeps it running)", owner_role: "tech contact", needed_by: "before the first build"}
+    - {item: "Approvals before going live", owner_role: "tech contact", needed_by: "before opening the page beyond the consultant"}
+    - {item: "Slite and Claude API keys: holder and storage", owner_role: "tech contact or IT", needed_by: "before the first build"}
+    - {item: "Read grant: competing strategy documents and further Slite pages", owner_role: "consultant", needed_by: "before import"}
+    - {item: "Jira read permission", owner_role: "Engineering Lead, Agentic Experience", needed_by: "before 'done' evidence"}
+  next_step: "Phase 2 import from the granted sources (AX roadmap in Slite, published review decks) into claims, then claims_to_data.py to a draft page"
+  first_version_scope: "AX only. Best guesses from the Slite roadmap, published review decks and the strategy documents once granted, each flagged where unsure. Changes and challenges proposed as pull requests."
+  deferred_to_later: ["Jira 'done' evidence until permission", "e-conomic/Visma branding", "live chat model (the page's chat answers from page data only)", "approval deadlines beyond the page's 7-day overdue marker"]
+  draft_data_file: null         # client/data/draft.json once imported
+  next_review_date: "2026-11-17"  # tech questions with the tech contact
+
+template_feedback:
+  missing_fields:
+    - "meta.environment_check: where to record which tools the onboarding could reach"
+    - "technical.code: no field for a pending move between repos"
+    - "technical.read_grant.to_add: grants that are expected but not yet given"
+    - "technical.refresh.notification_channel and challenge_days (used by the page, no template field)"
+  confusing_fields:
+    - "work.confidence_scale: template default (low | medium | validated) differs from the page's (hypothesis | partly validated | validated)"
+  fields_never_used: []
+  client_specific_items_to_exclude_from_generic: []
+  process_feedback:
+    - "0.1.0 asked too much that documents can answer. The consultant asked for derive-and-propose with the interview kept to tech setup. 0.2.0 does this."
+    - "Approving connector write tools from a cloud session fails; plan for capability tests in a claude.ai chat."

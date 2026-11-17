@@ -1,0 +1,37 @@
+# Worked example: a tiny, synthetic onboarding profile. Run:
+#   python design/claims_to_data.py design/examples/profile.example.yaml --out /tmp/example.json
+#   python design/build.py --data /tmp/example.json
+meta: { client_alias: Example Co, scope_unit: division }
+technical:
+  data_store: { chosen: google_sheets }
+claims:
+  - { id: C001, field: sources.inventory, value: { id: S1, kind: Strategy deck }, origin: derived, confidence: high }
+  - { id: C002, field: sources.inventory, value: { id: S2, kind: Quarterly review }, origin: derived, confidence: high }
+  - { id: C003, field: sources.inventory, value: { id: S3, kind: Planning sheet }, origin: derived, confidence: high }
+  - { id: C010, field: scope.description, value: "Example Co, Platform division", origin: stated, confidence: high }
+  - { id: C011, field: model.vision, value: "Every parcel arrives when we said it would", origin: derived, confidence: high,
+      sources: [{ source_id: S1, locator: "slide 2", quote: "Every parcel arrives when we said it would" }] }
+  - { id: C012, field: cadence.horizon, origin: stated, confidence: high,
+      value: { quarters: [{label: "Q1 ’27", year: 2027}, {label: "Q2 ’27", year: 2027}, {label: "Q3 ’27", year: 2027}, {label: "Q4 ’27", year: 2027}], horizon: {label: "2027", from: 0, to: 3} } }
+  - { id: C020, field: model.objectives, value: [{ id: OBJ-1, name: Reliable delivery }, { id: OBJ-2, name: Grow mid-market }], origin: derived, confidence: high }
+  - { id: C030, field: model.strategies, origin: derived, confidence: high, value: { id: S-A, name: Faster onboarding, status: on_track, stated_fte: 12, objectives: [OBJ-1] },
+      sources: [{ source_id: S1, locator: "slide 5", quote: "Cut onboarding from 74 days to 45" }] }
+  - { id: C031, field: model.strategies, origin: derived, confidence: medium, flags: [conflict], value: { id: S-B, name: Mid-market self-serve, status: on_track, stated_fte: 9, objectives: [OBJ-2] },
+      sources: [{ source_id: S1, locator: "slide 8", quote: "On track" }],
+      alternatives: [{ value: "Status: at risk", source_id: S2, locator: "page 2", quote: "At risk" }] }
+  - { id: C040, field: model.goals, origin: derived, confidence: high, value: { id: "1.1", name: Onboarding under 45 days, strategy: S-A, measured: true, measures: [{ name: Days to onboard, kind: outcome, target: "45 days", target_year: 2027 }] } }
+  - { id: C041, field: model.goals, origin: inferred, confidence: low, flags: [unclear, single_source], value: { id: "2.1", name: Trial conversion, strategy: S-B, measures: [] } }
+  - { id: C042, field: model.opportunities, origin: inferred, confidence: medium, value: { id: "1.1-a", name: Customers stall at data import, strategy: S-A, goal: "1.1" } }
+  - { id: C050, field: roles.owner, value: { id: S-A, owner: Head of Operations }, origin: derived, confidence: high }
+  - { id: C051, field: roles.owner, value: { id: S-B, owner: Head of Growth }, origin: derived, confidence: high }
+  - { id: C060, field: work.initiatives, origin: derived, confidence: high, status: reviewed_ok, reviewed_by_role: Programme manager, date: 2026-11-10,
+      value: { id: I1, name: Import wizard, links: [{ strategy: S-A, goal: "1.1", opportunity: "1.1-a" }], fte_by_quarter: [3, 3, 2, 0], funded: true, workstream: 1 } }
+  - { id: C061, field: work.initiatives, origin: derived, confidence: high,
+      value: { id: I2, name: Guided setup, links: [{ strategy: S-A, goal: "1.1" }, { strategy: S-B }], split: { S-A: 60, S-B: 40 }, fte_by_quarter: [2, 2, 2, 2], funded: true, workstream: 2 } }
+  - { id: C062, field: work.initiatives, origin: derived, confidence: medium, flags: [no_owner],
+      value: { id: I3, name: Rate-card editor, links: [], fte_by_quarter: [3, 3, 3, 3], funded: false, workstream: 2 } }
+  - { id: C063, field: work.initiatives, origin: inferred, confidence: low, flags: [unclear], value: { id: I4, name: Carrier sync spike, fte_by_quarter: [1, 1, 0, 0], funded: true } }
+  - { id: C070, field: model.terminology, value: { quarterly_review: "Business review" }, origin: stated, confidence: high }
+  - { id: C071, field: model.goals, origin: inferred, confidence: low, status: rejected, note: "Not a goal, a project name", value: { id: "9.9", name: Misread, strategy: S-A } }
+open_items:
+  - { claim_id: C031, flags: [conflict], question: "Is Mid-market self-serve on track or at risk?", reviewer_role: Head of Growth, needed_by: 2026-12-01 }
