@@ -36,7 +36,7 @@ Starling is a mirror: it shows its best guess from the sources and does not wait
 | `conf` | `high`, `medium` or `low` | How well the sources support the value. `low` flags the item |
 | `flags` | list of `conflict`, `low_confidence`, `single_source`, `stale`, `no_owner`, `unclear` | Why an owner should look at it |
 | `alternatives` | `[{value, source}]` | Other values found in other sources, shown beside the best guess |
-| `owner` | text | Who owns the item. Strategies should have one. A challenge on an item with no owner notifies the owner of its parent (initiative → opportunity → goal → strategy) |
+| `owner` | text (also allowed on Org objectives) | Who owns the item. Strategies should have one. A challenge on an item with no owner notifies the owner of its parent (initiative → opportunity → goal → strategy) |
 | `reviewed` | `{by, on, value?}` (role, date, preferred value) | Set only when an owner has reviewed the item. Clears its Review marker |
 | `challenges` | `[{by, on, note}]` | Set when a reader challenges the item. The item also gets the `challenged` flag and stays in the review list |
 
@@ -52,7 +52,7 @@ A side panel, opened from the header or the floating button. In the sample it an
 
 ### Responding to a challenge
 
-The owner (or whoever the live build allows) can **Accept** a challenge, which flags the item "Challenge accepted, edit pending" until it is edited and reviewed, or **Reject** it with a reason. Each challenge in `challenges` then carries `status` (`accepted` or `rejected`) and `response: {by, on, reason}`. The hook receives `challenge_accepted` and `challenge_rejected` events. Not decided yet: what happens to a challenge nobody answers (timeout, escalation).
+The owner (or whoever the live build allows) can **Accept** a challenge, which flags the item "Challenge accepted, edit pending" until it is edited and reviewed, or **Reject** it with a reason. Each challenge in `challenges` then carries `status` (`accepted` or `rejected`) and `response: {by, on, reason}`. The hook receives `challenge_accepted` and `challenge_rejected` events. A challenge unanswered for more than `meta.challengeDays` (default 7, an assumption to confirm per client) is **overdue**. It is listed first in the Review tab with a "Challenges overdue" filter, and it escalates to the next distinct owner up the chain (item, then parent goal or strategy, then the strategy's Org objective, which may carry an `owner`). If nobody is above, it says so. The page shows this; the live adapter sends the escalation.
 
 ## Model checks
 
