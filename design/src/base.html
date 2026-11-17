@@ -77,6 +77,10 @@ nav.tabs .n{font-family:var(--font-mono);font-size:10.5px;background:var(--surfa
 .sky canvas{position:absolute;inset:0;width:100%;height:100%}
 .starbig{position:absolute;right:48px;top:14px;width:86px;height:86px;color:var(--star);filter:drop-shadow(0 0 26px var(--star))}
 .skycap{position:absolute;left:22px;top:14px;font-size:11.5px;color:var(--muted)}
+.flockctl{position:absolute;right:22px;bottom:12px}
+@media (max-width:560px){.sky .ragkey{bottom:52px}}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .ragkey{position:absolute;left:22px;bottom:14px;display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted)}
 .ragkey i{display:block;width:120px;height:7px;border-radius:99px;background:linear-gradient(90deg,hsl(142 55% 40%),hsl(43 95% 52%),hsl(3 78% 50%))}
 .levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 22px;padding:18px 32px 26px}
@@ -128,6 +132,7 @@ button.tile:hover{background:var(--surface2)}
 .obj b{display:block;font-weight:500;font-size:13px}
 .obj small{color:var(--muted);font-size:11px}
 .strat{width:100%;border-width:2px}
+.strat.unl{border-style:dashed;border-color:var(--warn-line);background:var(--warn-soft)}
 .strat.on{border-color:var(--ok)} .strat.risk{border-color:var(--warn-line)} .strat.na{border-style:dashed;border-color:var(--muted)}
 .strat-t{display:flex;align-items:center;gap:8px;font-weight:500}
 .chev{width:24px;height:24px;border:1px solid var(--line);border-radius:6px;background:var(--surface);display:grid;place-items:center;flex:none;padding:0}
@@ -162,7 +167,7 @@ td{padding:8px 10px 8px 0;border-top:1px solid var(--line);vertical-align:top}
 .seg button[aria-pressed="true"]{background:var(--bar-dark);color:var(--bar-dark-fg)}
 .ctrls .meta{margin-left:auto;font-size:12px;color:var(--muted)}
 .rg{min-width:900px;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.rr{display:grid;grid-template-columns:220px repeat(5,minmax(0,1fr));border-top:1px solid var(--line);position:relative}
+.rr{display:grid;grid-template-columns:220px repeat(var(--nq,5),minmax(0,1fr));border-top:1px solid var(--line);position:relative}
 .rr.hd{border-top:0;background:var(--surface2);font-family:var(--font-mono);font-size:11px;color:var(--muted)}
 .rr.hd>div{padding:10px;text-align:center}
 .rr.hd>div:first-child{text-align:left}
@@ -179,7 +184,7 @@ td{padding:8px 10px 8px 0;border-top:1px solid var(--line);vertical-align:top}
 .rr.grow .rl{padding-left:34px}
 .rr.irow .rl{padding-left:46px;font-size:11.5px}
 .rr.irow .rl b{font-size:12.5px;font-weight:500}
-.bars{grid-column:2/7;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:center;row-gap:4px;padding:8px 0}
+.bars{grid-column:2/-1;display:grid;grid-template-columns:repeat(var(--nq,5),minmax(0,1fr));align-items:center;row-gap:4px;padding:8px 0}
 .gb{height:24px;border-radius:3px;background:var(--g-goal);color:#111;font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:space-between;padding:0 8px;margin:0 4px;min-width:0;overflow:hidden;white-space:nowrap}
 .gb .dia{background:#111}
 .mini{height:10px;border-radius:2px;margin:0 4px}
@@ -230,6 +235,33 @@ table.ft tr.grp-r td:first-child{padding-left:8px}
 /* review */
 .qitem{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 14px;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
 .qitem+.qitem{margin-top:8px}
+.qitem[hidden]{display:none}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.rvbox{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.rvbox label{display:block;font-size:12.5px;color:var(--muted);margin-top:8px}
+.rvbox input,.rvbox textarea,.rvtools input[type=search]{width:100%;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.rvbox .legend{margin-top:10px}
+.alt{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:6px}
+.rvmsg{color:var(--bad);font-size:12.5px;min-height:1em;margin-top:6px}
+.rvtools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:10px 0}
+.rvtools input[type=search]{width:260px;max-width:100%}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:20;box-shadow:0 4px 16px rgba(0,0,0,.25);border-radius:99px;padding:10px 18px}
+.chat{position:fixed;top:0;bottom:0;right:0;width:min(420px,100%);z-index:25;background:var(--surface);border-left:1px solid var(--line);display:flex;flex-direction:column;box-shadow:-8px 0 24px rgba(0,0,0,.18)}
+.chat[hidden]{display:none}
+.chat-head{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chat-head small{display:block;color:var(--muted)}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:92%;padding:9px 12px;border-radius:10px;overflow-wrap:anywhere}
+.msg.u{align-self:flex-end;background:var(--accent);color:var(--accent-fg)}
+.msg.a{align-self:flex-start;background:var(--surface2)}
+.msg .cites{margin-top:6px;display:flex;gap:4px 10px;flex-wrap:wrap}
+.msg .basis{margin-top:6px;font-size:12px;color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 8px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:99px;padding:3px 10px;font-size:12px}
+.chip:hover{background:var(--surface2)}
+.composer{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line)}
+.composer input{flex:1;font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
+.chat .notice{font-size:12px;color:var(--muted);padding:8px 14px;border-top:1px solid var(--line);background:var(--warn-soft)}
 .qitem>div{min-width:0}
 .qitem .m{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--muted)}
 .qitem b{display:block;font-size:14.5px;margin:3px 0 2px}
@@ -271,10 +303,10 @@ footer.credits a{color:inherit}
 <header class="top"><div class="wrap">
   <div class="top-row">
     <div class="brand"><!--@LOGO@-->
-      <h1><span class="wm" id="wm">Strategy Mirror</span> <span class="proto">Prototype</span></h1>
+      <h1><span class="wm" id="wm">Starling</span> <span class="proto">Prototype</span></h1>
       <div class="tag" id="tagline" hidden></div>
       <div class="sub" id="hdrSub"></div>
-      <div class="hdr-actions"><button class="btn" id="themeBtn" type="button">Theme</button></div>
+      <div class="hdr-actions"><button class="btn primary" id="askTop" type="button" aria-controls="chat" aria-expanded="false">Ask <span data-pname>Starling</span></button><button class="btn" id="themeBtn" type="button">Theme</button></div>
     </div>
     <nav class="tabs" id="tabs" aria-label="Views"></nav>
   </div>
@@ -282,115 +314,158 @@ footer.credits a{color:inherit}
 
 <main id="main"></main>
 
-<footer class="credits"><div class="wrap">Built on the <a href="https://www.mindtheproduct.com/the-product-decision-stack-martin-eriksson/" target="_blank" rel="noopener">Decision Stack</a> by Martin Eriksson and the <a href="https://itamargilad.com/outcome-roadmaps/" target="_blank" rel="noopener">outcome roadmap</a> template by Itamar Gilad. Packaged by <a href="https://outofowls.com" target="_blank" rel="noopener">Out of Owls</a>. All figures are synthetic sample data (<span class="mono">model built 2026-11-12</span>).</div></footer>
+<footer class="credits"><div class="wrap">Built on the <a href="https://www.mindtheproduct.com/the-product-decision-stack-martin-eriksson/" target="_blank" rel="noopener">Decision Stack</a> by Martin Eriksson and the <a href="https://itamargilad.com/outcome-roadmaps/" target="_blank" rel="noopener">outcome roadmap</a> template by Itamar Gilad. Packaged by <a href="https://outofowls.com" target="_blank" rel="noopener">Out of Owls</a>. <span id="sampleNote"></span></div></footer>
 
 <div class="scrim" id="scrim" hidden></div>
-<aside class="drawer" id="drawer" hidden aria-labelledby="drTitle">
+<div class="sr" id="live" role="status" aria-live="polite"></div>
+<button class="btn primary fab" id="chatFab" type="button" aria-expanded="false" aria-controls="chat"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-6l-5 4v-4H7a3 3 0 0 1-3-3z" fill="currentColor"/></svg>Ask <span data-pname>Starling</span></button>
+<aside class="chat" id="chat" hidden aria-label="Ask Starling" data-pname-label="Ask">
+  <div class="chat-head"><div><strong>Ask <span data-pname>Starling</span></strong><small>Answers cite records and say how much is unreviewed</small></div><button class="btn sm" id="chatClose" type="button">Close</button></div>
+  <div class="msgs" id="chatMsgs" aria-live="polite"></div>
+  <div class="chips" id="chatChips"></div>
+  <div class="notice">Sample: answers are worked out from the data on this page. A live build sends your question to a model hosted inside your network, with the same citations.</div>
+  <form class="composer" id="chatForm"><label for="chatIn" class="sr">Question</label><input type="text" id="chatIn" placeholder="Ask about gaps, owners, review, unlinked work…" autocomplete="off"><button class="btn primary" type="submit">Send</button></form>
+</aside>
+<aside class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="drTitle">
   <div class="dr-h"><div><div class="label" id="drKicker"></div><h3 id="drTitle"></h3><div class="sub" id="drSub"></div></div><button class="xbtn" id="drClose" type="button" aria-label="Close">×</button></div>
   <div class="dr-b" id="drBody"></div>
 </aside>
 
-<script>window.SKIN=/*@CONFIG@*/{};</script>
+<script>window.SKIN=/*@CONFIG@*/{};window.STARLING_DATA=/*@DATA@*/{};</script>
 <script>
 /* =====================================================================
-   Synthetic sample model. Names are placeholders ("Strategy 1", "Initiative 84").
-   A live build reads the same shapes from the client's data store.
+   Data model: read from window.STARLING_DATA, which build.py inlines from a JSON file
+   (design/data/sample.json by default; see docs/DATA_MODEL.md). No client data lives in this file.
    ===================================================================== */
-let seed=20261112;
-const rnd=()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
-const pick=a=>a[Math.floor(rnd()*a.length)];
-const META={org:"Example Organisation",team:"Team",teamFull:"Example Team",snapshot:"12 Nov 2026",sources:2,claims:14};
-const Q=["Q4 ’26","Q1 ’27","Q2 ’27","Q3 ’27","Q4 ’27"];
-const VISION="An indicative vision: the outcome the organisation exists to create";
-const OBJECTIVES=[1,2,3,4,5].map(n=>({id:"OBJ-"+n,name:"Objective "+n}));
+const D=window.STARLING_DATA||{};
+const META=D.meta||{}, T=Object.assign({source:"Data store",tracker:"Tracker",review:"Quarterly review",pilot:"Pilot",decision:"Decision",brief:"decision brief",discretionRule:"funding for keeping the lights on, maintenance work, a non-negotiable category, or a regulatory, client or dependency commitment",workstream:"Workstream"},D.text||{});
+const QS=D.quarters||[], Q=QS.map(q=>q.label), HZ=Object.assign({label:"",from:0,to:Math.max(0,QS.length-1)},D.horizon||{});
+const VISION=D.vision||"", OBJECTIVES=D.objectives||[];
 const ST_LABEL={on:"On Track",risk:"At Risk",na:"Not assessed"};
-/* measures: kind outcome|output, by = year the target names (null = no date) */
-const M=(m,by,kind="outcome")=>({m,by,kind});
-const STRATS=[
- {id:"S1",status:"on",stated:28,objs:["OBJ-4","OBJ-5"],success:M("Client Adoption measure 7","2026"),
-  goals:[{id:"1.1",measured:true,measures:[M("Revenue measure 12","2031"),M("Client Adoption measure 15",null)]}],
-  opps:[{id:"1.1-a",goal:"1.1"},{id:"S1-b",goal:null},{id:"S1-c",goal:null}],
-  groups:[["1.1","1.1-a",2],[null,"S1-b",5],[null,"S1-c",1],[null,null,5]],
-  proxies:[["Low","Revenue / profit at stake","Indicative",""],["Medium","Customer value","252","indicative units"]]},
- {id:"S2",status:"on",stated:90,objs:["OBJ-1","OBJ-2"],success:null,
-  goals:[{id:"2.1",measured:true,measures:[M("Revenue measure 2","2030"),M("Revenue measure 14","2030")]},{id:"2.2",measures:[]},{id:"2.3",measures:[]},{id:"2.4",measures:[]}],
-  opps:[],groups:[["2.1",null,1],["2.2",null,1],["2.3",null,3],[null,null,51]]},
- {id:"S3",status:"risk",stated:21,objs:["OBJ-2","OBJ-3"],success:M("Client Adoption measure 3","2026"),
-  goals:[{id:"3.1",measured:true,measures:[M("Revenue measure 8","2029")]},{id:"3.2",measures:[]}],
-  opps:[{id:"3.1-a",goal:"3.1"},{id:"3.1-b",goal:"3.1"},{id:"3.2-a",goal:"3.2"}],
-  groups:[["3.1","3.1-a",1],["3.1","3.1-b",1],["3.2","3.2-a",1],[null,null,14]],
-  proxies:[["Low","Revenue / profit at stake","23.5","indicative units"],["Medium","Customer value","43","indicative units"],["Low","Capacity-sensitive","Indicative",""]]},
- {id:"S4",status:"on",stated:30,objs:["OBJ-3"],success:null,
-  goals:[{id:"4.1",measured:true,measures:[M("Client Adoption measure 9",null)]},{id:"4.2",measures:[]}],
-  opps:[],groups:[["4.1",null,1],["4.2",null,1],[null,null,9]]},
- {id:"S5",status:"risk",stated:80,objs:["OBJ-1","OBJ-4"],success:null,
-  goals:[{id:"5.1",measured:true,measures:[M("Reliability measure 4","2026")]},{id:"5.2",measured:true,measures:[M("Capability measure 1",null,"output")]},{id:"5.3",measured:true,measures:[M("Capability measure 2",null,"output")]},
-   {id:"5.4",measures:[]},{id:"5.5",measured:true,measures:[M("Reliability measure 6","2027")]},{id:"5.6",measured:true,measures:[M("Reliability measure 9",null)]},{id:"5.7",measures:[]}],
-  opps:[],groups:[["5.1",null,1],["5.2",null,1],["5.3",null,1],["5.5",null,1],[null,null,18]]},
- {id:"S6",status:"na",stated:107,objs:["OBJ-5"],success:null,outputOnly:true,
-  goals:[{id:"6.1",measures:[M("Coverage measure 2",null,"output")]},{id:"6.2",measures:[]},{id:"6.3",measures:[]}],
-  opps:[],groups:[["6.1",null,2],["6.2",null,1],["6.3",null,1],[null,null,14]]}
-];
-STRATS.forEach((s,i)=>{s.name="Strategy "+(i+1);s.goals.forEach(g=>{g.name="Goal "+g.id;g.strat=s.id;g.measured=!!g.measured});s.opps.forEach(o=>{o.name="Opportunity "+o.id+": an indicative customer problem";o.strat=s.id})});
+const STRATS=D.strategies||[], INITS=D.initiatives||[];
+STRATS.forEach(s=>{s.objs=s.objs||[];s.goals=s.goals||[];s.opps=s.opps||[];s.goals.forEach(g=>{g.strat=s.id;g.measures=g.measures||[];g.measured=!!g.measured});s.opps.forEach(o=>{o.strat=s.id})});
+INITS.forEach(i=>{i.q=Q.map((_,k)=>(i.q||[])[k]||0)});
 const SBY=Object.fromEntries(STRATS.map(s=>[s.id,s]));
 const GOALS=STRATS.flatMap(s=>s.goals), GBY=Object.fromEntries(GOALS.map(g=>[g.id,g]));
 const OPPS=STRATS.flatMap(s=>s.opps), OBY=Object.fromEntries(OPPS.map(o=>[o.id,o]));
-/* initiatives */
-const ids=[...Array(160)].map((_,i)=>i+1); for(let i=ids.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
-let nextId=0; const INITS=[];
-const BENEF=["Beneficiary group A","Beneficiary group B","Beneficiary group C","Beneficiary group D","Beneficiary group E"];
-function mkInit(strat,goal,opp){
-  const fte=pick([0.5,0.5,0.5,1,1,1,1.5,1.5,2,2,3,3,4,5]);
-  let s=0,e=4; const r=rnd(); if(r>.86){s=Math.floor(rnd()*3);e=s+1+Math.floor(rnd()*(4-s))} else if(r>.78){e=1+Math.floor(rnd()*3)}
-  const q=Q.map((_,k)=>k>=s&&k<=e?fte:0);
-  const deep=strat==="S1"||strat==="S3";
-  const jira=deep&&rnd()<.38?(()=>{const open=1+Math.floor(rnd()*3);return{open,unsized:open,past:Math.floor(rnd()*(open+1)*.7)}})():null;
-  const com=deep&&rnd()<.3?1+Math.floor(rnd()*3):0;
-  const it={id:"I"+ids[nextId],name:"Initiative "+ids[nextId++],strat,goal,opp,fte,q,funded:rnd()>.075,ws:1+Math.floor(rnd()*30),
-    disc:rnd()>.13,benef:pick(BENEF),jira,com,comRisk:com&&rnd()<.6?com:0,capSens:deep&&rnd()<.12};
-  INITS.push(it); return it;
-}
-STRATS.forEach(s=>s.groups.forEach(([g,o,n])=>{for(let k=0;k<n;k++)mkInit(s.id,g,o)}));
-for(let k=0;k<12;k++)mkInit(null,null,null);
-const avg27=i=>(i.q[1]+i.q[2]+i.q[3]+i.q[4])/4;
+const BENEF=[...new Set(INITS.map(i=>i.benef).filter(Boolean))].sort();
+/* An initiative can serve several strategies: links:[{strat,goal,opp}]. Legacy strat/goal/opp become one link.
+   i.strat/goal/opp stay as the first link (the primary). Optional split:{strategyId:share} divides FTE; default is equal. */
+INITS.forEach(i=>{if(!Array.isArray(i.links))i.links=i.strat?[{strat:i.strat,goal:i.goal||null,opp:i.opp||null}]:[];
+  i.links=i.links.filter(l=>l&&l.strat).map(l=>({strat:l.strat,goal:l.goal||null,opp:l.opp||null}));
+  const f=i.links[0]||{};i.strat=f.strat||null;i.goal=f.goal||null;i.opp=f.opp||null});
+const strOf=i=>[...new Set(i.links.map(l=>l.strat))];
+const linksIn=(i,sid)=>i.links.filter(l=>l.strat===sid);
+const inStrat=(i,sid)=>sid==null?!i.links.length:i.links.some(l=>l.strat===sid);
+const sh=(i,sid)=>{if(sid==null)return 1;const ss=strOf(i);if(!ss.includes(sid))return 0;if(i.split&&i.split[sid]!=null)return Number(i.split[sid])||0;return 1/ss.length};
+const avgS=(i,sid)=>avgH(i)*sh(i,sid);
+const QUESTIONS=D.questions||[], CHANGES=D.changes||[], CLAIMDOCS=D.claimDocs||[], MODELCHECKS=D.modelChecks||[], OTHER_DECISIONS=D.otherDecisions||[];
+const PILOT=(D.pilot||[]).filter(id=>SBY[id]);
+const avgH=i=>{let t=0,n=0;for(let k=HZ.from;k<=HZ.to;k++){t+=i.q[k]||0;n++}return n?t/n:0};
 const r1=x=>Math.round(x*10)/10;
 const fmt=x=>(Math.round(x*10)/10).toString();
-
-/* open questions, review items, decisions */
-const QCATS=["Identity","Ownership","Governance","Identity","Provenance","Metrics","Ownership","Capacity","Governance","Metrics","Provenance","Identity","Capacity","Ownership","Metrics","Governance","Identity","Provenance","Capacity","Metrics"];
-const PEOPLE=["Person A","Person B","Person C","Person D","Person E"];
-const QUESTIONS=QCATS.map((c,i)=>({id:"RQ"+String(i+1).padStart(2,"0"),cat:c,t:`Question ${i+1}: an indicative open question?`,why:"Indicative reason this needs an answer.",dm:PEOPLE[i%5]}));
-const CHANGES=[
- {n:1,k:"Capacity",d:"2026-11-11",rev:null},{n:2,k:"Metric",d:"2026-10-23",rev:"Person K, Person M"},{n:3,k:"Strategy",d:"2026-10-23",rev:"Person R, Person A1"},
- {n:4,k:"Target",d:"2026-10-08",rev:"Person R, Person M, Person A1"},{n:5,k:"Strategy",d:"2026-10-29",rev:"Person H, Person A1"},{n:7,k:"Strategy",d:"2026-10-28",rev:null},{n:8,k:"Strategy",d:"2026-11-12",rev:null}];
-const CLAIMDOCS=[{id:"A",kind:"Plan",n:7,conflicts:0},{id:"B",kind:"Review",n:7,conflicts:3}];
-const MODELCHECKS=[...Array(12)].map((_,i)=>({n:i+1}));
-const OTHER_DECISIONS=[19,20,21,22,23,24].map((n,i)=>({id:"Decision 00"+n,t:`Decision ${n}: an indicative call the evidence asks for`,owner:PEOPLE[(i+2)%5],due:["28 Nov 2026","5 Dec 2026","12 Dec 2026","9 Jan 2027","23 Jan 2027","6 Feb 2027"][i]}));
-const PILOT=["S1","S3"];
-const state={view:"overview",sel:null,open:{},allOpen:false,work:{view:"roadmap",level:"strategies",open:{},research:false},showNonDisc:false,allQ:false,choice:{},drawerStack:[]};
+const state={view:"overview",sel:null,open:{},allOpen:false,work:{view:"roadmap",level:"strategies",open:{},research:false},showNonDisc:false,allQ:false,choice:{},drawerStack:[],rv:{kind:"All",all:false,q:""},role:""};
 
 /* ---------- derived figures ---------- */
-const initsOf=s=>INITS.filter(i=>i.strat===s);
-function coverage(){const stated=STRATS.reduce((a,s)=>a+s.stated,0);const inRec=INITS.filter(i=>i.strat&&i.funded).reduce((a,i)=>a+avg27(i),0);return{stated,inRec:Math.round(inRec),pct:Math.round(100*inRec/stated)}}
-const goalsNoInit=()=>GOALS.filter(g=>!INITS.some(i=>i.goal===g.id));
+const initsOf=s=>INITS.filter(i=>inStrat(i,s));
+function coverage(){const stated=STRATS.reduce((a,s)=>a+(Number(s.stated)||0),0);const inRec=INITS.filter(i=>i.strat&&i.funded).reduce((a,i)=>a+avgH(i),0);return{stated,inRec:Math.round(inRec),pct:stated?Math.round(100*inRec/stated):null}}
+const goalsNoInit=()=>GOALS.filter(g=>!INITS.some(i=>i.links.some(l=>l.goal===g.id)));
 const unfunded=()=>INITS.filter(i=>!i.funded&&i.strat);
 const assessed=()=>STRATS.filter(s=>s.status!=="na");
-const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+MODELCHECKS.length;
+function validate(){
+  const w=[], seen=new Set(), ids=[...OBJECTIVES.map(o=>o.id),...STRATS.map(s=>s.id),...GOALS.map(g=>g.id),...OPPS.map(o=>o.id),...INITS.map(i=>i.id)];
+  ids.forEach(id=>{const x=String(id);if(/[:|]/.test(x)||x==="none")w.push(`The ID “${x}” contains “:” or “|” or is “none”. These are used to trace links, so rename it.`);if(seen.has(x))w.push(`The ID “${x}” is used more than once.`);seen.add(x)});
+  INITS.forEach(i=>{i.links.forEach(l=>{const s=SBY[l.strat];
+    if(!s){w.push(`${i.name} is linked to an unknown strategy “${l.strat}”.`);return}
+    if(l.goal&&!s.goals.some(g=>g.id===l.goal))w.push(`${i.name}: goal “${l.goal}” is not a goal of ${l.strat}.`);
+    if(l.opp){const o=s.opps.find(x=>x.id===l.opp);if(!o)w.push(`${i.name}: opportunity “${l.opp}” is not an opportunity of ${l.strat}.`);else if((o.goal||null)!==(l.goal||null))w.push(`${i.name}: it links goal ${l.goal||"(none)"} but its opportunity ${l.opp} sits under goal ${o.goal||"(none)"}.`)}});
+    if(i.split){const t=strOf(i).reduce((a,x)=>a+(Number(i.split[x])||0),0);if(Math.abs(t-1)>.01)w.push(`${i.name}: its FTE split adds up to ${Math.round(t*100)}%, not 100%.`)}
+    if(i.links.length&&!i.q.some(x=>x>0))w.push(`${i.name} has no FTE in the quarters shown.`)});
+  return w;
+}
+const DATACHECKS=validate();
+/* Best guesses are shown as they are. Items the import could not be sure of carry conf ("high|medium|low"),
+   flags (conflict|low_confidence|single_source|stale|no_owner|unclear) and alternatives [{value,source}]. */
+const FLAG_LABEL={needs_edit:"Challenge accepted, edit pending",challenged:"Challenged by a reader",conflict:"Sources conflict",low_confidence:"Low confidence",single_source:"Single source",stale:"Source may be stale",no_owner:"No owner",unclear:"Unclear"};
+const flagsOf=x=>{const f=[...((x&&x.flags)||[])];if(x&&x.conf==="low"&&!f.includes("low_confidence"))f.push("low_confidence");return f};
+const reviewPill=x=>!x||x.reviewed?"":flagsOf(x).length?` <span class="pill amber" title="${esc(flagsOf(x).map(f=>FLAG_LABEL[f]||f).join(", "))}">Review</span>`:` <span class="pill dash" title="Imported best guess, not yet reviewed by an owner">Review</span>`;
+const ITEMS=[["Strategy",x=>"s:"+x.id,STRATS],["Goal",x=>"g:"+x.strat+":"+x.id,GOALS],["Opportunity",x=>"p:"+x.id,OPPS],["Initiative",x=>"i:"+x.id,INITS]].flatMap(([k,rid,list])=>list.map(x=>({kind:k,rid:rid(x),x})));
+const flaggedNow=()=>ITEMS.filter(r=>!r.x.reviewed&&flagsOf(r.x).length), unflaggedNow=()=>ITEMS.filter(r=>!r.x.reviewed&&!flagsOf(r.x).length);
+const UNREVIEWED=()=>ITEMS.filter(r=>!r.x.reviewed).length;
+function respondChallenge(rid,idx,decision,role,reason){
+  const r=ITEMS.find(z=>z.rid===rid), c=r&&(r.x.challenges||[])[idx]; if(!c)return null;
+  const on=new Date().toISOString().slice(0,10); c.status=decision; c.response={by:role,on,reason:reason||null};
+  let fl=r.x.flags||[]; if(!(r.x.challenges||[]).some(z=>!z.status))fl=fl.filter(f=>f!=="challenged"); if(decision==="accepted"&&!fl.includes("needs_edit"))fl=[...fl,"needs_edit"]; r.x.flags=fl;
+  const ev={rid,kind:r.kind,id:r.x.id,action:"challenge_"+decision,by:role,on,note:reason||null,challengeIndex:idx,challengedBy:c.by};
+  EVENTS.push(ev); try{const h=window.STARLING_HOOKS;if(h&&h.onReview)h.onReview(ev)}catch(_){}
+  return r;
+}
+const PARENT=r=>{const x=r.x;if(r.kind==="Goal")return"s:"+x.strat;if(r.kind==="Opportunity")return x.goal?"g:"+x.strat+":"+x.goal:"s:"+x.strat;if(r.kind==="Initiative")return x.opp?"p:"+x.opp:x.goal&&x.strat?"g:"+x.strat+":"+x.goal:x.strat?"s:"+x.strat:null;return null};
+function ownerOf(rid){let cur=rid;for(let n=0;cur&&n<6;n++){const r=ITEMS.find(z=>z.rid===cur);if(!r)return null;if(r.x.owner)return{owner:r.x.owner,via:cur===rid?null:r.x.name};cur=PARENT(r)}return null}
+function ownerChain(rid){
+  const out=[];let cur=rid,last=null;
+  for(let n=0;cur&&n<6;n++){const r=ITEMS.find(z=>z.rid===cur);if(!r)break;last=r;if(r.x.owner&&!out.some(o=>o.owner===r.x.owner))out.push({owner:r.x.owner,via:cur===rid?null:r.x.name});cur=PARENT(r)}
+  if(last&&last.kind==="Strategy")(last.x.objs||[]).forEach(id=>{const o=OBJECTIVES.find(z=>z.id===id);if(o&&o.owner&&!out.some(z=>z.owner===o.owner))out.push({owner:o.owner,via:o.id+" "+o.name})});
+  return out;
+}
+const CH_DAYS=Number((D.meta||{}).challengeDays)||7;
+const overdueOf=x=>(x.challenges||[]).map((c,n)=>({c,n,d:Math.floor((Date.now()-Date.parse(c.on))/864e5)})).filter(o=>!o.c.status&&o.d>CH_DAYS);
+const escLine=rid=>{const e=ownerChain(rid)[1];return e?`Escalated to ${e.owner}${e.via?" (owner of "+e.via+")":""}.`:"No one above to escalate to."};
+function modelRules(){
+  const I=(k,x)=>ITEMS.find(r=>r.kind===k&&r.x===x), it=l=>l.map(x=>I("Initiative",x)).filter(Boolean), gl=l=>l.map(x=>I("Goal",x)).filter(Boolean), op=l=>l.map(x=>I("Opportunity",x)).filter(Boolean), st=l=>l.map(x=>I("Strategy",x)).filter(Boolean);
+  const obj=OBJECTIVES.filter(o=>!STRATS.some(s=>(s.objs||[]).includes(o.id))).map(o=>({rid:"o:"+o.id,x:{name:o.id+" "+o.name}}));
+  return [
+   ["work that is not linked to any strategy",it(INITS.filter(i=>!(i.links||[]).length))],
+   ["work linked to a strategy but to no goal or opportunity",it(INITS.filter(i=>(i.links||[]).length&&i.links.every(l=>!l.goal&&!l.opp)))],
+   ["goals with no initiative",gl(goalsNoInit())],
+   ["goals with no outcome measure",gl(GOALS.filter(g=>!outcomeMeasures(g).length))],
+   ["opportunities not under a goal",op(OPPS.filter(o=>!o.goal))],
+   ["strategies with no goals",st(STRATS.filter(s=>!(s.goals||[]).length))],
+   ["strategies that serve no Org objective",st(STRATS.filter(s=>!(s.objs||[]).length))],
+   ["Org objectives that no strategy serves",obj]
+  ].filter(r=>r[1].length).map(([t,items],n)=>({n,t,items}));
+}
+const EVENTS=[];
+function recordReview(rid,act,role,note,value){
+  const r=ITEMS.find(z=>z.rid===rid); if(!r)return null;
+  const on=new Date().toISOString().slice(0,10), ev={rid,kind:r.kind,id:r.x.id,action:act,by:role,on,note:note||null,value:value||null};
+  if(act==="challenge"){r.x.flags=[...(r.x.flags||[]).filter(f=>f!=="challenged"),"challenged"];r.x.challenges=[...(r.x.challenges||[]),{by:role,on,note}];delete r.x.reviewed}
+  else r.x.reviewed=Object.assign({by:role,on},value?{value}:{});
+  if(act==="challenge"){const o=ownerOf(rid);ev.notify=o?o.owner:null;ev.notifyVia=o&&o.via||null}
+  EVENTS.push(ev); try{const h=window.STARLING_HOOKS;if(h&&h.onReview)h.onReview(ev)}catch(_){}
+  return r;
+}function provHtml(x,rid){
+  if(!x)return "";
+  const f=flagsOf(x),alt=x.alternatives||[],R=x.reviewed;
+  const why=f.length?`<br>Flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}`:"";
+  const ch=(x.challenges||[]).map((c,n)=>`<div class="alt" style="display:block"><b>Challenge ${n+1}</b> by ${esc(c.by)} on ${esc(c.on)}: ${esc(c.note)}${!c.status&&rid&&Math.floor((Date.now()-Date.parse(c.on))/864e5)>CH_DAYS?`<br><span class="red">Overdue: unanswered for ${Math.floor((Date.now()-Date.parse(c.on))/864e5)} days. ${esc(escLine(rid))}</span>`:""}${c.status?`<br><span class="muted">${c.status==="accepted"?"Accepted":"Rejected"} by ${esc(c.response.by)} on ${esc(c.response.on)}${c.response.reason?": "+esc(c.response.reason):""}</span>`:rid&&!R?`<div class="legend" style="margin-top:6px"><button class="btn sm" type="button" data-rvact="accept" data-rid="${esc(rid)}" data-ch="${n}">Accept challenge</button><button class="btn sm" type="button" data-rvact="reject" data-rid="${esc(rid)}" data-ch="${n}">Reject challenge</button></div>`:""}</div>`).join("");
+  let h;
+  if(R){
+    h=`<b>Reviewed</b>${R.by?` by ${esc(R.by)}`:""}${R.on?` on ${esc(R.on)}`:""}${R.value?`<br>Preferred value: ${esc(R.value)}`:""}${f.length?`<br><span class="muted">Was flagged: ${f.map(k=>esc(FLAG_LABEL[k]||k)).join(", ")}</span>`:""}`;
+  }else{
+    const alts=alt.length?`<br>Other values found:${alt.map((a,n)=>`<div class="alt"><span>${esc(a.value)}${a.source?` <span class="muted">(${esc(a.source)})</span>`:""}</span>${rid?`<button class="btn sm" type="button" data-rvact="prefer" data-rid="${esc(rid)}" data-val="${n}">Prefer this</button>`:""}</div>`).join("")}`:"";
+    h=`<b>Best guess${x.conf?` · ${esc(x.conf)} confidence`:""}</b>${why}${ch}${alts}${Array.isArray(x.sources)&&x.sources.length?`<br>Found in:${x.sources.map(z=>`<div class="alt" style="display:block">${esc(z.source||"")}${z.locator?", "+esc(z.locator):""}${z.quote?`: “${esc(z.quote)}”`:""}</div>`).join("")}`:""}<br><span class="muted">${(()=>{const o=rid&&ownerOf(rid);return o?`Owner: ${esc(o.owner)}${o.via?" (via "+esc(o.via)+")":""}. `:"No owner recorded up the chain. "})()}Imported from the sources. Not yet reviewed by an owner.</span>`
+      +(rid?`<div class="rvbox"><b>Review this item</b><label for="rvRole">Your role</label><input id="rvRole" type="text" autocomplete="off" placeholder="e.g. Strategy lead" value="${esc(state.role||"")}"><label for="rvNote">Note (needed to challenge, or to reject a challenge)</label><textarea id="rvNote" rows="2"></textarea><div class="rvmsg" id="rvMsg" role="alert"></div><div class="legend"><button class="btn sm" type="button" data-rvact="ok" data-rid="${esc(rid)}">Mark reviewed</button><button class="btn sm" type="button" data-rvact="challenge" data-rid="${esc(rid)}">Challenge</button></div><p class="hint" style="margin:8px 0 0">Sample: a review is kept in this page only. A live build writes it to your database.</p></div>`:"");
+  }
+  return `<div id="rvwrap" class="callout" tabindex="-1" style="margin-top:12px">${h}</div>`;
+}
+const reviewCount=()=>CHANGES.length+CLAIMDOCS.length+modelRules().length+MODELCHECKS.length+DATACHECKS.length+flaggedNow().length;
 const decisionCount=()=>1+OTHER_DECISIONS.length;
 const outcomeMeasures=g=>g.measures.filter(m=>m.kind==="outcome");
-function goalTarget(g){const ys=outcomeMeasures(g).map(m=>m.by).filter(Boolean).map(Number);if(!ys.length)return null;const y=Math.min(...ys);return y<=2026?0:y===2027?4:"later"}
+function goalTarget(g){const ys=outcomeMeasures(g).map(m=>m.by).filter(Boolean).map(Number).filter(Number.isFinite);if(!ys.length||!QS.length)return null;const y=Math.min(...ys);if(y>QS[QS.length-1].year)return "later";let idx=0;QS.forEach((q,k)=>{if(q.year<=y)idx=k});return idx}
 function rag(x){const k=[[142,55,40],[43,95,52],[3,78,50]],u=Math.max(0,Math.min(1,x)),i=u<=.5?0:1,t=u<=.5?u/.5:(u-.5)/.5,a=k[i],b=k[i+1],m=j=>Math.round((a[j]+(b[j]-a[j])*t)*10)/10;return `hsl(${m(0)} ${m(1)}% ${m(2)}%)`}
 function levels(){
   const c=coverage(), gm=GOALS.filter(g=>g.measured).length, on=assessed().filter(s=>s.status==="on").length, as=assessed().length;
   const st=r=>r>=.8?"aligned":r>=.4?"drift":"conflict";
+  const none={status:null,note:"No measure yet"};
   return [
-   {k:"Work",href:"#work",status:st(c.pct/100),sev:1-c.pct/100,note:`${c.pct}% of stated strategy FTE is in recorded initiatives`},
-   {k:"Team goals",href:"#strategy",status:st(gm/GOALS.length),sev:1-gm/GOALS.length+.1,note:`${gm} of ${GOALS.length} goals have a metric with a current value`},
-   {k:"Team strategies",href:"#strategy",status:st(on/as),sev:1-on/as,note:`${on} of ${as} assessed strategies On Track (Q3 quarterly review)`},
+   {k:"Work",href:"#work",...(c.pct===null?none:{status:st(c.pct/100),sev:1-c.pct/100,note:`${c.pct}% of stated strategy FTE is in recorded initiatives`})},
+   {k:"Team goals",href:"#strategy",...(!GOALS.length?none:{status:st(gm/GOALS.length),sev:Math.min(1,1-gm/GOALS.length+.1),note:`${gm} of ${GOALS.length} goals have a metric with a current value`})},
+   {k:"Team strategies",href:"#strategy",...(!as?none:{status:st(on/as),sev:1-on/as,note:`${on} of ${as} assessed strategies On Track (${T.review})`})},
    {k:"Team role",status:null,note:"No measure yet"},{k:"Org objectives",status:null,note:"No measure yet"},{k:"North Star",star:true,status:null,note:"No measure yet"}];
 }
 const SLAB={aligned:"Aligned",drift:"Drifting",conflict:"Conflict"};
-function flockScore(){const L=levels().filter(l=>l.status);return L.reduce((a,l)=>a+({aligned:1,drift:.5,conflict:0}[l.status]),0)/L.length}
+function flockScore(){const L=levels().filter(l=>l.status);if(!L.length)return .5;return L.reduce((a,l)=>a+({aligned:1,drift:.5,conflict:0}[l.status]),0)/L.length}
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -399,15 +474,23 @@ const plural=(n,w,p)=>`${n} ${n===1?w:(p||w+"s")}`;
 const CHEV='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const STAR='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg>';
 function toast(m){const t=document.createElement("div");t.className="toast";t.setAttribute("role","status");t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2800)}
-const measureLine=m=>`<div class="meas">${m.by?`<span class="by">by ${m.by}</span>`:`<span class="by none">no date</span>`}<span>${esc(m.m)}: <strong>Indicative target${m.by?" by "+m.by:""}</strong></span></div>`;
+const measureLine=m=>`<div class="meas">${m.by?`<span class="by">by ${m.by}</span>`:`<span class="by none">no date</span>`}<span>${esc(m.m)}: <strong>${m.t?esc(m.t):"Indicative target"}${m.by?" by "+m.by:""}</strong></span></div>`;
 
 /* ---------- header and tabs ---------- */
 const VIEWS=[["overview","Overview"],["strategy","Strategy"],["work","Work"],["decisions","Decisions",decisionCount],["questions","Open questions",()=>QUESTIONS.length],["review","Review",reviewCount]];
 function renderHeader(){
   const SK=window.SKIN||{};
-  if(SK.wordmark){$("#wm").innerHTML='Strategy M<span class="wm-i">ı<svg class="wm-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg></span>rror';$("#wm").setAttribute("aria-label","Strategy Mirror")}
+  /* product name comes from the skin config ("product"), default Starling; the wordmark dots its last "i" with the North Star */
+  const PNAME=SK.product||"Starling";
+  document.querySelectorAll("[data-pname]").forEach(e=>e.textContent=PNAME);
+  document.querySelectorAll("[data-pname-label]").forEach(e=>e.setAttribute("aria-label",e.dataset.pnameLabel+" "+PNAME));
+  $("#wm").textContent=PNAME;
+  const iAt=PNAME.lastIndexOf("i");
+  if(SK.wordmark&&iAt>=0){$("#wm").innerHTML=esc(PNAME.slice(0,iAt))+'<span class="wm-i">ı<svg class="wm-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg></span>'+esc(PNAME.slice(iAt+1));$("#wm").setAttribute("aria-label",PNAME)}
+  $("#sampleNote").innerHTML=META.sample?`All figures are synthetic sample data (<span class="mono">model built ${esc(META.built||META.snapshot)}</span>).`:"";
+  document.documentElement.style.setProperty("--nq",Math.max(1,Q.length));
   if(SK.tagline){$("#tagline").textContent=SK.tagline;$("#tagline").hidden=false}
-  $("#hdrSub").innerHTML=`${esc(META.org)} · ${esc(META.teamFull)} · Airtable snapshot <span class="mono">${esc(META.snapshot)}</span> · ${META.sources} sources, ${META.claims} claims`;
+  $("#hdrSub").innerHTML=`${esc(META.org)} · ${esc(META.teamFull)} · ${esc(T.source)} snapshot <span class="mono">${esc(META.snapshot)}</span> · ${META.sources} sources, ${META.claims} claims`;
   $("#tabs").innerHTML=VIEWS.map(([id,l,n])=>`<a href="#${id}" ${state.view===id?'aria-current="page"':""}>${l}${n?` <span class="n">${n()}</span>`:""}</a>`).join("");
 }
 
@@ -420,34 +503,36 @@ function vOverview(){
   <section class="hero" aria-label="Alignment overview">
     <div class="hero-text">
       <div class="label">The question</div>
-      <h2>Is ${esc(META.team)} flying toward the Org North Star?</h2>
+      <h2>Is Your Team flying toward the Org North Star?</h2>
       <p>The star is the Org vision. The flock tightens as ${esc(META.team)}’s work, goals and strategies line up behind it. Tightness is computed from the levels that have a measure; the rest are shown as not assessed.</p>
       <div class="northstar">${STAR}<div><b>${esc((window.SKIN||{}).starLabel||"North Star")}</b><span>${esc(VISION)}</span></div></div>
     </div>
     <div class="sky"><canvas id="flock" aria-hidden="true"></canvas>
       <svg class="starbig" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.2 5.7 20.9l1.5-7.1L1.8 8.9l7.2-.8z" fill="currentColor"/></svg>
+      <button class="btn sm flockctl" id="flockPause" type="button" aria-pressed="${!!state.flockPaused}">Pause motion</button>
       <div class="skycap">Flock tightness ${Math.round(flockScore()*100)}% · from ${L.filter(l=>l.status).length} measured levels; ${L.filter(l=>!l.status).length} not assessed · illustrative</div>
       <div class="ragkey" aria-hidden="true"><span>Aligned</span><i></i><span>Severe gap</span></div>
     </div>
     <div class="levels">${L.map(l=>{const tag=l.href?"a":"div";return `<${tag} class="lvl" ${l.href?`href="${l.href}"`:""} ${l.status?`style="--rag:${rag(l.sev)}"`:""}><span class="bar"></span><b>${l.star?'<span style="color:var(--star)">★</span> ':""}${l.k}</b><small>${l.status?SLAB[l.status]:"Not assessed"}</small><small>${esc(l.note)}</small></${tag}>`}).join("")}</div>
   </section>
   <div class="tiles">
-    <a class="tile att" href="#strategy" style="text-decoration:none"><b>${risk} of ${assessed().length}</b><span>assessed strategies At Risk (Q3 quarterly review)</span></a>
-    <a class="tile att" href="#work" style="text-decoration:none"><b>${c.pct}%</b><span>of stated FTE in funded initiatives linked to a strategy (${c.inRec} of ${c.stated})</span></a>
+    <a class="tile att" href="#strategy" style="text-decoration:none"><b>${risk} of ${assessed().length}</b><span>assessed strategies At Risk (${T.review})</span></a>
+    <a class="tile att" href="#work" style="text-decoration:none"><b>${c.pct===null?"n/a":c.pct+"%"}</b><span>of stated FTE in funded initiatives linked to a strategy (${c.inRec} of ${c.stated})</span></a>
     <a class="tile att" href="#work" style="text-decoration:none"><b>${gni}</b><span>goals with no initiative</span></a>
     <a class="tile" href="#decisions" style="text-decoration:none"><b>${decisionCount()}</b><span>decisions waiting</span></a>
     <a class="tile" href="#questions" style="text-decoration:none"><b>${QUESTIONS.length}</b><span>open questions</span></a>
     <a class="tile" href="#review" style="text-decoration:none"><b>${reviewCount()}</b><span>items waiting for review</span></a>
+    <a class="tile" href="#review" style="text-decoration:none"><b>${UNREVIEWED()} of ${ITEMS.length}</b><span>strategies, goals, opportunities and initiatives not yet reviewed by an owner</span></a>
   </div></div>`;
 }
 
 /* ---------- strategy board ---------- */
 const nid={o:id=>"o:"+id,s:id=>"s:"+id,g:(s,g)=>"g:"+s+":"+(g||"none"),p:id=>"p:"+id,q:(s,g,o)=>"q:"+s+":"+(g||"none")+":"+(o||"none")};
-function groupsOf(s){const m=new Map();initsOf(s.id).forEach(i=>{const k=(i.goal||"none")+"|"+(i.opp||"none");if(!m.has(k))m.set(k,{goal:i.goal,opp:i.opp,items:[]});m.get(k).items.push(i)});return [...m.values()]}
+function groupsOf(s){const m=new Map();INITS.forEach(i=>linksIn(i,s.id).forEach(l=>{const k=(l.goal||"none")+"|"+(l.opp||"none");if(!m.has(k))m.set(k,{goal:l.goal,opp:l.opp,items:[]});const it=m.get(k).items;if(!it.includes(i))it.push(i)}));return [...m.values()]}
 function edgesFor(s){
   const E=[];s.objs.forEach(o=>E.push([nid.o(o),nid.s(s.id)]));
   if(!state.open[s.id])return E;
-  const gs=groupsOf(s), rowsG=[...s.goals.map(g=>g.id)]; if(gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
+  const gs=groupsOf(s), rowsG=[...s.goals.map(g=>g.id)]; if(!rowsG.length||gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
   rowsG.forEach(g=>{E.push([nid.s(s.id),nid.g(s.id,g)]);
     s.opps.filter(o=>o.goal===g).forEach(o=>E.push([nid.g(s.id,g),nid.p(o.id)]));
     gs.filter(x=>x.goal===g).forEach(x=>E.push([x.opp?nid.p(x.opp):nid.g(s.id,g),nid.q(s.id,g,x.opp)]))});
@@ -458,7 +543,7 @@ function related(sel){
   if(!sel)return null; const E=allEdges(), set=new Set([sel]);
   const up=n=>E.filter(e=>e[1]===n).forEach(e=>{if(!set.has(e[0])){set.add(e[0]);up(e[0])}});
   const down=n=>E.filter(e=>e[0]===n).forEach(e=>{if(!set.has(e[1])){set.add(e[1]);down(e[1])}});
-  if(sel.startsWith("o:")){down(sel);[...set].filter(n=>n.startsWith("s:")).forEach(n=>{const s=SBY[n.slice(2)];s.objs.forEach(o=>set.add(nid.o(o)))})}
+  if(sel.startsWith("o:")){down(sel)}
   else{up(sel);down(sel)}
   return set;
 }
@@ -466,14 +551,14 @@ function stratCard(s){
   const open=!!state.open[s.id];
   const succ=s.success?measureLine(s.success):s.outputOnly?`<small class="amb">No outcome measure · ${plural(s.goals.filter(g=>g.measures.some(m=>m.kind==="output")).length,"output measure")} only</small>`:`<small>Success measured through its goals</small>`;
   return `<div class="box strat ${s.status}" data-node="${nid.s(s.id)}" tabindex="0">
-    <div class="strat-t"><button class="chev" type="button" data-toggle="${s.id}" aria-expanded="${open}" aria-label="${open?"Collapse":"Expand"} ${s.name}">${CHEV}</button><button class="lnk" type="button" data-rec="${nid.s(s.id)}">${s.id} ${s.name}</button></div>
+    <div class="strat-t"><button class="chev" type="button" data-toggle="${esc(s.id)}" aria-expanded="${open}" aria-label="${open?"Collapse":"Expand"} ${esc(s.name)}">${CHEV}</button><button class="lnk" type="button" data-rec="${nid.s(s.id)}">${esc(s.id)} ${esc(s.name)}</button>${reviewPill(s)}</div>
     <small style="margin:4px 0 2px">${ST_LABEL[s.status]} · ${plural(s.goals.length,"goal")}</small>${succ}</div>`;
 }
 function goalCard(s,g){
-  if(!g){return `<div class="box goal nog" data-node="${nid.g(s.id,null)}" tabindex="0"><div class="goal-t">No goal yet</div><small>work linked straight to ${s.id}</small></div>`}
+  if(!g){return `<div class="box goal nog" data-node="${nid.g(s.id,null)}" tabindex="0"><div class="goal-t">No goal yet</div><small>work linked straight to ${esc(s.id)}</small></div>`}
   const om=outcomeMeasures(g), out=g.measures.filter(m=>m.kind==="output");
   const ms=om.length?om.map(measureLine).join(""):`<small class="amb">No outcome measure${out.length?` · ${plural(out.length,"output measure")} only`:""}</small>`;
-  return `<div class="box goal" data-node="${nid.g(s.id,g.id)}" tabindex="0"><div class="goal-t"><span class="gdot ${g.measured?"m":""}" title="${g.measured?"Measured":"Not measured"}"></span><button class="lnk" type="button" data-rec="${nid.g(s.id,g.id)}">${g.id} ${esc(g.name)}</button></div>${ms}</div>`;
+  return `<div class="box goal" data-node="${nid.g(s.id,g.id)}" tabindex="0"><div class="goal-t"><span class="gdot ${g.measured?"m":""}" title="${g.measured?"Measured":"Not measured"}"></span><button class="lnk" type="button" data-rec="${nid.g(s.id,g.id)}">${esc(g.id)} ${esc(g.name)}</button>${reviewPill(g)}</div>${ms}</div>`;
 }
 function vStrategy(){
   const rel=related(state.sel);
@@ -483,34 +568,40 @@ function vStrategy(){
     const its=initsOf(s.id), gs=groupsOf(s);
     if(!state.open[s.id]){
       rows+=`<div class="c-strat sblock">${stratCard(s)}</div>
-       <div class="c-goal"><div class="sumc"><b>${plural(s.goals.length,"goal")}</b>, <b>${s.goals.filter(g=>g.measured).length}</b> measured</div></div>
-       <div class="c-opp"><div class="sumc">${s.opps.length?`<b>${s.opps.length}</b> proposed opportunities`:"none proposed"}</div></div>
-       <div class="c-init"><div class="sumc"><b>${its.length}</b> in all<br><b class="amb">${its.filter(i=>!i.goal).length}</b> with no goal</div></div>`;
+       <div class="c-goal"><div class="sumc"><button class="lnk" type="button" data-toggle="${esc(s.id)}" aria-label="Expand ${esc(s.name)} to show its goals"><b>${plural(s.goals.length,"goal")}</b>, <b>${s.goals.filter(g=>g.measured).length}</b> measured ›</button></div></div>
+       <div class="c-opp"><div class="sumc">${s.opps.length?`<button class="lnk" type="button" data-toggle="${esc(s.id)}" aria-label="Expand ${esc(s.name)} to show its opportunities"><b>${s.opps.length}</b> proposed opportunities ›</button>`:"none proposed"}</div></div>
+       <div class="c-init"><div class="sumc">${its.length?`<button class="lnk" type="button" data-list="q:${esc(s.id)}:all:all"><b>${its.length}</b> in all ›</button>`:"<b>0</b> in all"}<br>${its.filter(i=>!linksIn(i,s.id).some(l=>l.goal)).length?`<button class="lnk" type="button" data-list="q:${esc(s.id)}:nogoal:all"><b class="amb">${its.filter(i=>!linksIn(i,s.id).some(l=>l.goal)).length}</b> with no goal ›</button>`:`<b class="amb">0</b> with no goal`}</div></div>`;
       return;
     }
-    const rowsG=[...s.goals.map(g=>g.id)]; if(gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
+    const rowsG=[...s.goals.map(g=>g.id)]; if(!rowsG.length||gs.some(x=>!x.goal)||s.opps.some(o=>!o.goal))rowsG.push(null);
     rows+=`<div class="c-strat sblock" style="grid-row:span ${rowsG.length}">${stratCard(s)}</div>`;
     rowsG.forEach(gid=>{
       const g=gid?GBY[gid]:null, ops=s.opps.filter(o=>o.goal===gid), grs=gs.filter(x=>x.goal===gid);
       rows+=`<div class="c-goal">${goalCard(s,g)}</div>
-       <div class="c-opp">${ops.map(o=>`<div class="box oppc${rel&&rel.has(nid.p(o.id))?" selc":""}" data-node="${nid.p(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.p(o.id)}">${esc(o.name)}</button></b><small>Proposed</small></div>`).join("")}</div>
+       <div class="c-opp">${ops.map(o=>`<div class="box oppc${rel&&rel.has(nid.p(o.id))?" selc":""}" data-node="${nid.p(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.p(o.id)}">${esc(o.name)}</button></b>${reviewPill(o)}<small>Proposed</small></div>`).join("")}</div>
        <div class="c-init">${grs.length?grs.map(x=>`<div class="box grp" data-node="${nid.q(s.id,gid,x.opp)}" tabindex="0"><b>${x.items.length}</b><small>${x.items.length===1?"initiative":"initiatives"}</small><button class="btn sm" type="button" data-list="${nid.q(s.id,gid,x.opp)}">List ›</button></div>`).join(""):`<div class="box grp zero" data-node="${nid.q(s.id,gid,null)}"><b>0</b><small>none yet</small></div>`}</div>`;
     });
   });
-  const html=`<div class="wrap view"><h2>Strategy</h2><p class="lede">How each piece of ${esc(META.team)}’s work connects to the goals, strategies and Org objectives it serves.</p>
-   <div class="nsbar"><span class="label">North Star · Org vision</span><button class="lnk" type="button" data-rec="vision">${esc(VISION)}</button></div>
-   <div class="legend"><span class="lg"><i class="sw on"></i>Strategy On Track</span><span class="lg"><i class="sw risk"></i>At Risk</span><span class="lg"><i class="sw na"></i>Not assessed</span><span class="lg"><i class="sw dot"></i>goal measured</span><span class="lg"><i class="sw opp"></i>Opportunity (proposed)</span><span class="lg"><i class="sw ng"></i>No goal yet</span><span class="lg"><span class="by">by 2027</span>success measure and when it’s due (outcomes only)</span><span class="sp"></span><button class="btn sm" type="button" id="expandAll">${STRATS.every(s=>state.open[s.id])?"Collapse all":"Expand all"}</button></div>
+  const un=initsOf(null);
+  if(un.length){const ufte=r1(un.filter(i=>i.funded).reduce((a,i)=>a+avgH(i),0)), un0=un.filter(i=>!i.funded).length;
+    rows+=`<div class="c-strat sblock"><div class="box strat unl" data-node="${nid.s("none")}" tabindex="0"><div class="strat-t"><button class="lnk" type="button" data-rec="${nid.s("none")}">Not linked to a strategy</button></div><small style="margin:4px 0 2px" class="amb">Unlinked work</small><small>${plural(un.length,"initiative")} · ${fmt(ufte)} FTE (${esc(HZ.label)} average, funded)${un0?` · ${un0} unfunded`:""}</small></div></div>
+     <div class="c-goal"><div class="sumc">no goal</div></div><div class="c-opp"><div class="sumc">no opportunity</div></div>
+     <div class="c-init"><div class="box grp" data-node="${nid.q("none",null,null)}" tabindex="0"><b>${un.length}</b><small>unlinked</small><button class="btn sm" type="button" data-list="${nid.q("none",null,null)}">List ›</button></div></div>`}
+  const unNote=un.length?`<div class="callout"><b>${plural(un.length,"initiative")} ${un.length===1?"is":"are"} not linked to any strategy</b> (${fmt(r1(un.reduce((a,i)=>a+avgH(i),0)))} FTE, ${esc(HZ.label)} average). They are shown at the bottom of the board. Each needs an owner to link it to a strategy or to confirm it should stand alone.</div>`:"";
+  const html=`<div class="wrap view"><h2>Strategy</h2><p class="lede">How each piece of ${esc(META.team)}’s work connects to the goals, strategies and Org objectives it serves. Everything here is a best guess imported from the sources; items marked Review conflict, have low confidence or lack an owner.</p>
+   ${unNote}<div class="nsbar"><span class="label">North Star · Org vision</span><button class="lnk" type="button" data-rec="vision">${esc(VISION)}</button></div>
+   <div class="legend"><span class="lg"><i class="sw on"></i>Strategy On Track</span><span class="lg"><i class="sw risk"></i>At Risk</span><span class="lg"><i class="sw na"></i>Not assessed</span><span class="lg"><i class="sw dot"></i>goal measured</span><span class="lg"><i class="sw opp"></i>Opportunity (proposed)</span><span class="lg"><i class="sw ng"></i>No goal yet</span><span class="lg"><span class="by">by ${esc(HZ.label||"year")}</span>success measure and when it’s due (outcomes only)</span><span class="lg"><span class="pill amber">Review</span>flagged by the import</span><span class="lg"><span class="pill dash">Review</span>imported, not yet reviewed</span><span class="lg">No pill: reviewed by an owner</span><span class="sp"></span><button class="btn sm" type="button" id="expandAll">${STRATS.every(s=>state.open[s.id])?"Collapse all":"Expand all"}</button></div>
    <div class="boardwrap"><div class="board" id="board">
-     <div class="ocol"><div class="colh"><b>Org objectives</b><small>why</small></div>${OBJECTIVES.map(o=>`<div class="box obj${cls(nid.o(o.id))}" data-node="${nid.o(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.o(o.id)}">${o.name}</button></b><small>${o.id}</small></div>`).join("")}</div>
+     <div class="ocol"><div class="colh"><b>Org objectives</b><small>why</small></div>${OBJECTIVES.map(o=>`<div class="box obj${cls(nid.o(o.id))}" data-node="${nid.o(o.id)}" tabindex="0"><b><button class="lnk" type="button" data-rec="${nid.o(o.id)}">${esc(o.name)}</button></b><small>${esc(o.id)}</small></div>`).join("")}</div>
      <div class="rows">${rows}</div>
      <svg class="wires" id="wires" aria-hidden="true"></svg>
    </div></div>
-   <p class="hint">Ask “how?” left to right and “why?” right to left. Click a box to trace its links; click a name to open the record. Success criteria are outcome measures only (client adoption, revenue, reliability), with the date their target names. Capability, coverage and delivery measures are outputs, so they’re not shown as success. Initiative counts can overlap while opportunity links are proposed.</p>
+   <p class="hint">Ask “how?” left to right and “why?” right to left. Click a box to trace its links; click a name to open the record. Success criteria are outcome measures only with the date their target names. Capability, coverage and delivery measures are outputs, so they’re not shown as success. Initiative counts can overlap while opportunity links are proposed.</p>
    <details class="dstack"><summary>The Decision Stack in detail: what the record says, what the work shows, what people understand</summary>${dstackTable()}</details></div>`;
   return html.replace(/class="box ([^"]*)" data-node="([^"]+)"/g,(m,c,n)=>`class="box ${c}${c.includes(" dim")||c.includes(" sel")?"":cls(n)}" data-node="${n}"`);
 }
 function dstackTable(){
-  const L=[["North Star","Org vision"],["Org objectives","5 objectives"],["Team role","Team charter"],["Team strategies","6 strategies"],["Team goals","19 goals"],["Work","Initiatives in Airtable"]];
+  const L=[["North Star","Org vision"],["Org objectives",plural(OBJECTIVES.length,"objective")],["Team role","Team charter"],["Team strategies",plural(STRATS.length,"strategy","strategies")],["Team goals",plural(GOALS.length,"goal")],["Work","Initiatives in "+T.source]];
   return `<div class="scroll" style="margin-top:12px"><table><thead><tr><th>Level</th><th>Said (record)</th><th>Done (work and data)</th><th>Understood (people)</th></tr></thead><tbody>${L.map(([k,s])=>`<tr><td><b>${k}</b><br><span class="muted">${s}</span></td><td>Indicative statement from the record.</td><td>Indicative evidence from work and data.</td><td class="muted">Not yet gathered</td></tr>`).join("")}</tbody></table></div>`;
 }
 function drawWires(){
@@ -531,18 +622,22 @@ function drawWires(){
 function activeIn(its,k,f){return its.filter(i=>i.q[k]>0&&(f===undefined||i.funded===f)).length}
 function vWork(){
   const W=state.work, c=coverage(), gni=goalsNoInit(), unf=unfunded();
-  const findings=`<div class="findings"><div class="finding bad"><b>Coverage</b><span>Only ${c.inRec} of ${c.stated} stated strategy FTE (${c.pct}%) is in recorded initiatives, so most capacity can’t be traced to work yet.</span></div>
+  const findings=`<div class="findings"><div class="finding bad"><b>Coverage</b><span>Only ${c.inRec} of ${c.stated} stated strategy FTE${c.pct===null?"":` (${c.pct}%)`} is in recorded initiatives, so most capacity can’t be traced to work yet.</span></div>
     <div class="finding"><b>Check</b><span>${gni.length} of ${GOALS.length} goals have no initiative: ${gni.map(g=>g.id).join(", ")}.</span></div>
-    <div class="finding"><b>Check</b><span>${unf.length} initiatives are unfunded: ${unf.map(i=>i.name).join("; ")}.</span></div></div>`;
+    <div class="finding"><b>Check</b><span>${unf.length?`${unf.length} initiatives are unfunded: ${unf.map(i=>i.name).join("; ")}.`:"No initiative is unfunded."}</span></div></div>`;
   const seg=(id,opts,cur,sm)=>`<div class="seg${sm?" sm":""}" role="group" aria-label="${id}">${opts.map(([v,l])=>`<button type="button" data-${id}="${v}" aria-pressed="${cur===v}">${l}</button>`).join("")}</div>`;
   let body="";
   if(W.view==="roadmap") body=roadmap();
-  else body=fteTable(W.view==="strategy"?STRATS.map(s=>[`${s.id} ${s.name}`,initsOf(s.id)]).concat([["Not linked to a strategy",initsOf(null)]]):BENEF.map(b=>[b,INITS.filter(i=>i.benef===b)]));
+  else body=fteTable(W.view==="strategy"?STRATS.map(s=>[`${esc(s.id)} ${esc(s.name)}`,initsOf(s.id),s.id]).concat([["Not linked to a strategy",initsOf(null),null]]):BENEF.map(b=>[b,INITS.filter(i=>i.benef===b)]));
   return `<div class="wrap view"><h2>Work</h2><p class="lede">Work starts from outcomes: the outcome roadmap (Itamar Gilad’s template) shows each goal with its target. Every initiative should serve at least one goal. Headcount is shown, but it’s what the work costs, not what it’s worth. The other views group initiatives by strategy or beneficiary with their FTE per quarter.</p>
    <div class="ctrls">${seg("wview",[["roadmap","Outcome roadmap"],["strategy","By strategy"],["beneficiary","By beneficiary"]],W.view)}
    ${W.view==="roadmap"?seg("wlevel",[["strategies","Strategies"],["goals","Goals"],["deliveries","Deliveries"]],W.level,true)+`<button class="btn sm" type="button" id="resBtn" aria-pressed="${W.research}">Show research, discovery and delay</button>`:""}
-   <span class="meta">FTE from Airtable Initiatives, ${Q[0]} to ${Q[4]}</span></div>
-   ${findings}${body}</div>`;
+   <span class="meta">FTE from ${esc(T.source)} initiatives, ${esc(Q[0]||"")} to ${esc(Q[Q.length-1]||"")}</span></div>
+   ${findings}<div class="legend" style="margin:8px 0"><span class="lg"><span class="pill amber">Review</span>flagged by the import</span><span class="lg"><span class="pill dash">Review</span>imported, not yet reviewed</span><span class="lg">No pill: reviewed by an owner</span></div>${body}</div>`;
+}
+function irow(i){
+  const act=i.q.map((x,k)=>x>0?k:-1).filter(k=>k>=0), s0=act.length?act[0]:-1, e0=act.length?act[act.length-1]:-1;
+  return `<div class="rr irow"><div class="rl"><button class="lnk" type="button" data-rec="i:${esc(i.id)}"><b>${esc(i.name)}</b></button>${reviewPill(i)}<br>${i.funded?"Funded":'<span class="vio">Unfunded</span>'} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</div><div class="bars">${s0<0?`<span class="muted" style="grid-column:1/${Q.length+1};font-size:12px">No FTE in this window</span>`:`<div class="ib${i.funded?"":" unf"}" style="grid-column:${s0+1}/${e0+2}" title="${esc(i.name)}: ${esc(Q[s0])} to ${esc(Q[e0])}"></div>`}</div></div>`;
 }
 function roadmap(){
   const W=state.work;
@@ -550,101 +645,109 @@ function roadmap(){
    <div class="lgrow"><span><i class="k" style="border:1px solid var(--line)"></i>Collapsed strategy: number of initiatives active in the quarter, not headcount (<span class="vio">+n violet</span> = unfunded)</span><span><i class="k" style="background:var(--bar-dark)"></i>Product delivery: funded initiative</span><span><i class="k" style="background:var(--violet-soft);border:1.5px solid var(--violet)"></i>Unfunded (violet outline)</span><span><i class="k" style="border:1.5px dashed var(--muted)"></i>Not recorded (dashed)</span>${W.research?`<span><i class="k" style="background:var(--g-res)"></i>Research</span><span><i class="k" style="background:var(--g-disc)"></i>Discovery</span><span><i class="k" style="background:var(--g-delay)"></i>Effect delay</span>`:""}</div>`;
   let h=`<div class="rr hd"><div>Goal and work</div>${Q.map(q=>`<div>${q}</div>`).join("")}</div>`;
   STRATS.forEach(s=>{
-    const its=initsOf(s.id), open=W.level!=="strategies"||W.open[s.id], fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avg27(i),0));
-    const tq=s.goals.map(goalTarget), later=tq.filter(t=>t==="later").length, gni=s.goals.filter(g=>!its.some(i=>i.goal===g.id)).length, nunf=its.filter(i=>!i.funded).length;
-    h+=`<div class="rr srow"><div class="rl"><div class="t"><button class="chev" type="button" data-wopen="${s.id}" aria-expanded="${!!open}" aria-label="${open?"Collapse":"Expand"} ${s.name}">${CHEV}</button><b>${s.id} ${s.name}</b></div>${plural(s.goals.length,"goal")} · Q3 quarterly review ${ST_LABEL[s.status]} · ${plural(its.length,"initiative")} · ${fmt(fte)} FTE${nunf?` · ${nunf} unfunded`:""}<br>${s.goals.filter(g=>g.measured).length} of ${plural(s.goals.length,"goal")} measured${gni?` · ${gni} with no initiative`:""}</div>
-     ${Q.map((_,k)=>{const f=activeIn(its,k,true),u=activeIn(its,k,false),d=tq.includes(k);return `<div class="qc"><b>${f}${u?` <span class="vio">+${u}</span>`:""}${d?' <i class="dia" title="Goal target this quarter"></i>':""}</b><span>${u?"initiatives · unfunded":"initiatives"}</span>${k===4&&later?`<span class="later">${later} later →</span>`:""}</div>`}).join("")}</div>`;
+    const its=initsOf(s.id), open=W.level!=="strategies"||W.open[s.id], fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avgS(i,s.id),0));
+    const tq=s.goals.map(goalTarget), later=tq.filter(t=>t==="later").length, gni=s.goals.filter(g=>!its.some(i=>linksIn(i,s.id).some(l=>l.goal===g.id))).length, nunf=its.filter(i=>!i.funded).length;
+    h+=`<div class="rr srow"><div class="rl"><div class="t"><button class="chev" type="button" data-wopen="${esc(s.id)}" aria-expanded="${!!open}" aria-label="${open?"Collapse":"Expand"} ${esc(s.name)}">${CHEV}</button><b>${esc(s.id)} ${esc(s.name)}</b></div>${plural(s.goals.length,"goal")} · ${T.review} ${ST_LABEL[s.status]} · ${plural(its.length,"initiative")} · ${fmt(fte)} FTE${nunf?` · ${nunf} unfunded`:""}<br>${s.goals.filter(g=>g.measured).length} of ${plural(s.goals.length,"goal")} measured${gni?` · ${gni} with no initiative`:""}</div>
+     ${Q.map((_,k)=>{const f=activeIn(its,k,true),u=activeIn(its,k,false),d=tq.includes(k);return `<div class="qc"><b>${f}${u?` <span class="vio">+${u}</span>`:""}${d?' <i class="dia" title="Goal target this quarter"></i>':""}</b><span>${u?"initiatives · unfunded":"initiatives"}</span>${k===Q.length-1&&later?`<span class="later">${later} later →</span>`:""}</div>`}).join("")}</div>`;
     if(!open)return;
-    const gl=[...s.goals,...(its.some(i=>!i.goal)?[null]:[])];
+    const gl=[...s.goals,...(its.some(i=>linksIn(i,s.id).some(l=>!l.goal))?[null]:[])];
     gl.forEach(g=>{
-      const gi=its.filter(i=>i.goal===(g?g.id:null));
-      if(g){const t=goalTarget(g), end=t===null||t==="later"?4:t;
-        h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">${g.id} ${esc(g.name)}</b><br>${outcomeMeasures(g).length?esc(outcomeMeasures(g)[0].m)+(outcomeMeasures(g)[0].by?" · by "+outcomeMeasures(g)[0].by:" · no date"):'<span class="amb">No outcome measure</span>'}</div>
-         <div class="bars"><div class="gb" style="grid-column:1/${end+2}"><span>${g.id}</span>${typeof t==="number"?'<i class="dia"></i>':""}</div>
-         ${W.research?`<div class="mini r" style="grid-column:1/2;grid-row:2" title="Research"></div><div class="mini d" style="grid-column:1/3;grid-row:3" title="Discovery"></div>${gi.length?`<div class="mini e" style="grid-column:${Math.min(5,Math.max(...gi.map(i=>i.q.lastIndexOf(i.fte)))+1)}/6;grid-row:4" title="Effect delay"></div>`:""}`:""}</div></div>`;}
-      else h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">No goal yet</b><br>work linked straight to ${s.id}</div><div class="bars"></div></div>`;
+      const gi=its.filter(i=>linksIn(i,s.id).some(l=>l.goal===(g?g.id:null)));
+      if(g){const t=goalTarget(g), end=t===null||t==="later"?Q.length-1:t;
+        h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">${esc(g.id)} ${esc(g.name)}</b><br>${outcomeMeasures(g).length?esc(outcomeMeasures(g)[0].m)+(outcomeMeasures(g)[0].by?" · by "+outcomeMeasures(g)[0].by:" · no date"):'<span class="amb">No outcome measure</span>'}</div>
+         <div class="bars"><div class="gb" style="grid-column:1/${end+2}"><span>${esc(g.id)}</span>${typeof t==="number"?'<i class="dia"></i>':""}</div>
+         ${W.research?`<div class="mini r" style="grid-column:1/2;grid-row:2" title="Research"></div><div class="mini d" style="grid-column:1/3;grid-row:3" title="Discovery"></div>${gi.length?`<div class="mini e" style="grid-column:${Math.min(Q.length,Math.max(...gi.map(i=>i.q.reduce((l,x,k)=>x>0?k:l,-1)))+1)}/${Q.length+1};grid-row:4" title="Effect delay"></div>`:""}`:""}</div></div>`;}
+      else h+=`<div class="rr grow"><div class="rl"><b style="font-size:13px">No goal yet</b><br>work linked straight to ${esc(s.id)}</div><div class="bars"></div></div>`;
       if(W.level==="deliveries"||W.open[s.id]){
-        if(!gi.length&&g) h+=`<div class="rr irow"><div class="rl"><b>Not recorded</b><br>no initiative serves this goal</div><div class="bars"><div class="ib nr" style="grid-column:1/6"></div></div></div>`;
-        gi.forEach(i=>{const s0=i.q.findIndex(x=>x>0),e0=i.q.length-1-[...i.q].reverse().findIndex(x=>x>0);
-          h+=`<div class="rr irow"><div class="rl"><button class="lnk" type="button" data-rec="i:${i.id}"><b>${esc(i.name)}</b></button><br>${i.funded?"Funded":'<span class="vio">Unfunded</span>'} · ${fmt(i.fte)} FTE · Workstream ${i.ws}</div><div class="bars"><div class="ib${i.funded?"":" unf"}" style="grid-column:${s0+1}/${e0+2}" title="${esc(i.name)}: ${Q[s0]} to ${Q[e0]}"></div></div></div>`});
+        if(!gi.length&&g) h+=`<div class="rr irow"><div class="rl"><b>Not recorded</b><br>no initiative serves this goal</div><div class="bars"><div class="ib nr" style="grid-column:1/${Q.length+1}"></div></div></div>`;
+        gi.forEach(i=>{h+=irow(i)});
       }
     });
   });
+  const un=initsOf(null);
+  if(un.length){
+    const open=W.level==="deliveries"||W.open.none, fte=r1(un.filter(i=>i.funded).reduce((a,i)=>a+avgH(i),0)), nunf=un.filter(i=>!i.funded).length;
+    h+=`<div class="rr srow"><div class="rl"><div class="t"><button class="chev" type="button" data-wopen="none" aria-expanded="${!!open}" aria-label="${open?"Collapse":"Expand"} unlinked work">${CHEV}</button><b>Not linked to a strategy</b></div><span class="amb">No strategy, goal or target</span> · ${plural(un.length,"initiative")} · ${fmt(fte)} FTE${nunf?` · ${nunf} unfunded`:""}</div>
+     ${Q.map((_,k)=>{const f=activeIn(un,k,true),u=activeIn(un,k,false);return `<div class="qc"><b>${f}${u?` <span class="vio">+${u}</span>`:""}</b><span>${u?"initiatives · unfunded":"initiatives"}</span></div>`}).join("")}</div>`;
+    if(open)un.forEach(i=>{h+=irow(i)});
+  }
   return lg+`<div class="scroll"><div class="rg">${h}</div></div>`;
 }
 function fteTable(groups){
-  const sum=(its,k,f)=>r1(its.filter(i=>i.funded===f).reduce((a,i)=>a+i.q[k],0));
+  const sum=(its,k,f,sid)=>r1(its.filter(i=>i.funded===f).reduce((a,i)=>a+i.q[k]*(sid===undefined?1:sh(i,sid)),0));
   let h=`<div class="card scroll"><table class="ft"><thead><tr><th>Group and initiative</th>${Q.map(q=>`<th class="n">${q}</th>`).join("")}<th class="n">Initiatives</th></tr></thead><tbody>`;
-  groups.forEach(([name,its],gi)=>{
+  groups.forEach(([name,its,gsid],gi)=>{
     const open=state.work.open["g"+gi];
-    h+=`<tr class="grp-r"><td><button class="lnk" type="button" data-wgrp="${gi}" aria-expanded="${!!open}">${open?"▾":"▸"} ${esc(name)}</button></td>${Q.map((_,k)=>{const u=sum(its,k,false);return `<td class="n">${fmt(sum(its,k,true))}${u?` <span class="vio">+${fmt(u)}</span>`:""}</td>`}).join("")}<td class="n">${its.length}</td></tr>`;
-    if(open)its.forEach(i=>h+=`<tr><td style="padding-left:22px"><button class="lnk" type="button" data-rec="i:${i.id}">${esc(i.name)}</button> <span class="muted">· ${i.funded?"Funded":'<span class="vio">Unfunded</span>'}</span></td>${i.q.map(x=>`<td class="n${i.funded?"":" vio"}">${x?fmt(x):"·"}</td>`).join("")}<td></td></tr>`);
+    h+=`<tr class="grp-r"><td><button class="lnk" type="button" data-wgrp="${gi}" aria-expanded="${!!open}">${open?"▾":"▸"} ${esc(name)}</button></td>${Q.map((_,k)=>{const u=sum(its,k,false,gsid);return `<td class="n">${fmt(sum(its,k,true,gsid))}${u?` <span class="vio">+${fmt(u)}</span>`:""}</td>`}).join("")}<td class="n">${its.length}</td></tr>`;
+    if(open)its.forEach(i=>h+=`<tr><td style="padding-left:22px"><button class="lnk" type="button" data-rec="i:${esc(i.id)}">${esc(i.name)}</button>${reviewPill(i)} <span class="muted">· ${i.funded?"Funded":'<span class="vio">Unfunded</span>'}${gsid!==undefined&&gsid!==null&&sh(i,gsid)<1?` · ${Math.round(100*sh(i,gsid))}% of its FTE counted here`:""}</span></td>${i.q.map(x=>{const v=x*(gsid===undefined?1:sh(i,gsid));return `<td class="n${i.funded?"":" vio"}">${v?fmt(v):"·"}</td>`}).join("")}<td></td></tr>`);
   });
-  return h+`</tbody></table><p class="hint">FTE per quarter in funded initiatives; <span class="vio">+n</span> is unfunded FTE on top. Click a group to list its initiatives.</p></div>`;
+  return h+`</tbody></table><p class="hint">FTE per quarter in funded initiatives; <span class="vio">+n</span> is unfunded FTE on top. Click a group to list its initiatives. An initiative that serves several strategies splits its FTE between them (equally unless the data says otherwise), so totals are not double counted.</p></div>`;
 }
 
 /* ---------- decisions ---------- */
 const CHOICES=[["continue","Continue",1],["reduce","Reduce by half",.5],["pause","Pause",0],["stop","Stop",0]];
 const chf=i=>CHOICES.find(c=>c[0]===(state.choice[i.id]||"continue"))[2];
 function vDecisions(){
-  const pil=INITS.filter(i=>PILOT.includes(i.strat));
+  if(!PILOT.length)return `<div class="wrap view"><h2>Decisions</h2><p class="lede">No decision pilot is configured. Name one or more strategies in the data file’s <span class="mono">pilot</span> list to open a decision here.</p></div>`;
+  const pil=INITS.filter(i=>i.links.some(l=>PILOT.includes(l.strat)));
   const openEp=pil.reduce((a,i)=>a+(i.jira?i.jira.open:0),0), linked=pil.filter(i=>i.jira).length, opps=PILOT.reduce((a,s)=>a+SBY[s].opps.length,0);
+  const pn=PILOT.map(id=>SBY[id].name), pj=pn.join(" and "), pid=PILOT.join("/"), tr=T.tracker;
   const gaps=[
-   [`${pil.length} of ${pil.length} S1/S3 initiatives have no resourcing assessment`,"Would moving FTE between S1 and S3 change any date?","Each engineering owner’s call, with minimum viable and useful maximum FTE","Engineering owners of S1 and S3","Low"],
-   [`${openEp} of ${openEp} open epics have no size in Jira`,"Which milestones are capacity-sensitive, and by how much?","An estimate or SWAG per epic, and the critical path","Engineering leads, in Jira","Low"],
+   [`${pil.length} of ${pil.length} ${pid} initiatives have no resourcing assessment`,`Would moving FTE between ${pj} change any date?`,"Each engineering owner’s call, with minimum viable and useful maximum FTE",`Engineering owners of ${pj}`,"Low"],
+   [`${openEp} of ${openEp} open epics have no size in ${tr}`,"Which milestones are capacity-sensitive, and by how much?","An estimate or SWAG per epic, and the critical path",`Engineering leads, in ${tr}`,"Low"],
    [`${linked} epic-to-initiative links are unconfirmed`,"Which work actually moves if an initiative’s FTE changes?","Owners confirm or move each link","Initiative product and engineering owners","Medium"],
-   ["Strategy 1 revenue at stake isn’t sized","Is a Strategy 1 FTE worth more or less than a Strategy 3 FTE?","The team’s share of the parent objective’s revenue","S1 business owner, with Finance","Low"],
-   [`${opps} opportunities are proposed, not accepted`,"What the organisation gap does each option close?","Owners accept, reword or reject them","S1 and S3 owners","Medium"],
+   [`${pn[0]} value at stake isn’t sized`,`Is a ${pn[0]} FTE worth more or less than a ${pn[1]||"portfolio-average"} FTE?`,"The team’s share of the parent objective’s value",`${pn[0]} business owner, with Finance`,"Low"],
+   [`${opps} opportunities are proposed, not accepted`,"What the organisation gap does each option close?","Owners accept, reword or reject them",`${pj} owners`,"Medium"],
    ["Discretion isn’t set by any owner","What is truly movable?","Discretionary or non-discretionary per initiative, with the reason","Initiative owners; the Team decision audience challenges them","Low"]];
   const fund=INITS.filter(i=>i.funded), disc=fund.filter(i=>i.disc), nd=fund.filter(i=>!i.disc);
   const rowsP=[...STRATS.map(s=>[s.id+" "+s.name,s.id]),["Not linked to a strategy",null]];
-  const val=(arr,sid)=>r1(arr.filter(i=>i.strat===sid).reduce((a,i)=>a+avg27(i),0));
-  const mx=Math.max(...rowsP.map(r=>val(disc,r[1])));
-  const port=rowsP.map(([l,sid])=>{const v=val(disc,sid);return `<div class="pbar${PILOT.includes(sid)?" hl":""}"><span>${PILOT.includes(sid)?`<b>${l}</b>`:l}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`}).join("");
-  const ndList=state.showNonDisc?`<div style="margin-top:8px">${rowsP.map(([l,sid])=>{const v=val(nd,sid);return v?`<div class="pbar"><span>${l}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`:""}).join("")}</div>`:"";
-  return `<div class="wrap view"><h2>Decision due: Strategy 1 and Strategy 3</h2>
-   <p class="lede">Pilot 1. The two strategies in depth, against the whole portfolio, with what they depend on and what could give up capacity. Set a decision on any initiative to see what moves, what it puts at risk and what evidence is missing.</p>
-   <div class="callout"><b>Test decision.</b> Strategy 1 and Strategy 3 were chosen by hand for Pilot 1. We still need a process and criteria for how a decision makes it to this section; that’s deferred for now.</div>
-   <div class="card"><div class="label">Pilot 1 question</div><p class="pq">Have we allocated ${esc(META.team)} capacity as effectively as possible to deliver both Strategy 1 and Strategy 3, and if not, what are the realistic options?</p>
-     <div class="legend" style="margin:0"><span class="pill amber">Experiment</span><span>Decision 0025 (Proposed). Opportunities, epic links and commitments are Proposed or Inferred; proxies are stand-ins. Nothing here is saved.</span></div></div>
-   <div class="card"><div class="card-h"><span class="num">?</span><h3>Gaps that block the decision</h3></div><p class="card-sub">The RFC asks Pilot 1 to name the minimum evidence for each decision-critical gap. Computed from what the model is missing.</p>
-     <div class="scroll"><table><thead><tr><th>Gap</th><th>Decision question blocked</th><th>Minimum evidence needed</th><th>Owner or source</th><th>Confidence</th></tr></thead><tbody>${gaps.map(g=>`<tr><td><b>${esc(g[0])}</b></td><td>${esc(g[1])}</td><td>${esc(g[2])}</td><td>${esc(g[3])}</td><td>${g[4]}</td></tr>`).join("")}</tbody></table></div></div>
-   <div class="card"><div class="card-h"><span class="num">1</span><h3>The whole portfolio</h3></div><p class="card-sub">Funded 2027 FTE in recorded initiatives: <b>${fmt(r1(fund.reduce((a,i)=>a+avg27(i),0)))}</b>. Discretionary work comes first; non-discretionary work sits below the line.</p>
-     <div class="label" style="margin-bottom:6px">Discretionary · ${fmt(r1(disc.reduce((a,i)=>a+avg27(i),0)))} FTE in ${disc.length} initiatives</div>${port}
-     <div class="below"><b>Below the line: non-discretionary · ${fmt(r1(nd.reduce((a,i)=>a+avg27(i),0)))} FTE in ${nd.length} initiatives</b><button class="btn sm" type="button" id="ndBtn" aria-expanded="${state.showNonDisc}">${state.showNonDisc?"Hide":"Show"}</button></div>${ndList}
-     <p class="hint" style="margin-bottom:0">Discretion is not set by any owner yet; until it is, the page suggests it by rule (KTLO funding, maintenance work, a non-negotiable category, or a regulatory, client or dependency commitment). Deprioritising or stopping non-discretionary work is allowed, but it asks for the reason to be challenged first.</p></div>
-   <div class="card"><div class="card-h"><span class="num">2</span><h3>Strategy 1 and Strategy 3, in depth</h3></div><p class="card-sub">Each initiative shows the evidence beside its resourcing assessment: plan FTE by quarter, Jira epics, commitments, dependencies and any proxy.</p>
+  const val=(arr,sid)=>r1(arr.filter(i=>inStrat(i,sid)).reduce((a,i)=>a+avgS(i,sid),0));
+  const mx=Math.max(1e-9,...rowsP.map(r=>val(disc,r[1])));
+  const port=rowsP.map(([l,sid])=>{const v=val(disc,sid);return `<div class="pbar${PILOT.includes(sid)?" hl":""}"><span>${PILOT.includes(sid)?`<b>${esc(l)}</b>`:esc(l)}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`}).join("");
+  const ndList=state.showNonDisc?`<div style="margin-top:8px">${rowsP.map(([l,sid])=>{const v=val(nd,sid);return v?`<div class="pbar"><span>${esc(l)}</span><span class="tr"><i style="width:${(100*v/mx).toFixed(1)}%"></i></span><span class="v">${fmt(v)}</span></div>`:""}).join("")}</div>`:"";
+  return `<div class="wrap view"><h2>Decision due: ${esc(pj)}</h2>
+   <p class="lede">${esc(T.pilot)}. ${PILOT.length===1?"The strategy":"The strategies"} in depth, against the whole portfolio, with what they depend on and what could give up capacity. Set a decision on any initiative to see what moves, what it puts at risk and what evidence is missing.</p>
+   <div class="callout"><b>Test decision.</b> ${esc(pj)} ${PILOT.length===1?"was":"were"} chosen by hand for ${esc(T.pilot)}. We still need a process and criteria for how a decision makes it to this section; that’s deferred for now.</div>
+   <div class="card"><div class="label">${esc(T.pilot)} question</div><p class="pq">Have we allocated ${esc(META.team)} capacity as effectively as possible to deliver ${esc(PILOT.length>1?"both ":"")}${esc(pj)}, and if not, what are the realistic options?</p>
+     <div class="legend" style="margin:0"><span class="pill amber">Experiment</span><span>${esc(T.decision)} (Proposed). Opportunities, epic links and commitments are Proposed or Inferred; proxies are stand-ins. Nothing here is saved.</span></div></div>
+   <div class="card"><div class="card-h"><span class="num">?</span><h3>Gaps that block the decision</h3></div><p class="card-sub">The ${esc(T.brief)} asks ${esc(T.pilot)} to name the minimum evidence for each decision-critical gap. Computed from what the model is missing.</p>
+     <div class="scroll"><table><thead><tr><th>Gap</th><th>Decision question blocked</th><th>Minimum evidence needed</th><th>Owner or source</th><th>Confidence</th></tr></thead><tbody>${gaps.map(g=>`<tr><td><b>${esc(g[0])}</b></td><td>${esc(g[1])}</td><td>${esc(g[2])}</td><td>${esc(g[3])}</td><td>${esc(g[4])}</td></tr>`).join("")}</tbody></table></div></div>
+   <div class="card"><div class="card-h"><span class="num">1</span><h3>The whole portfolio</h3></div><p class="card-sub">Funded ${esc(HZ.label)} FTE in recorded initiatives: <b>${fmt(r1(fund.reduce((a,i)=>a+avgH(i),0)))}</b>. Discretionary work comes first; non-discretionary work sits below the line.</p>
+     <div class="label" style="margin-bottom:6px">Discretionary · ${fmt(r1(disc.reduce((a,i)=>a+avgH(i),0)))} FTE in ${disc.length} initiatives</div>${port}
+     <div class="below"><b>Below the line: non-discretionary · ${fmt(r1(nd.reduce((a,i)=>a+avgH(i),0)))} FTE in ${nd.length} initiatives</b><button class="btn sm" type="button" id="ndBtn" aria-expanded="${state.showNonDisc}">${state.showNonDisc?"Hide":"Show"}</button></div>${ndList}
+     <p class="hint" style="margin-bottom:0">Discretion is not set by any owner yet; until it is, the page suggests it by rule (${esc(T.discretionRule)}). Deprioritising or stopping non-discretionary work is allowed, but it asks for the reason to be challenged first.</p></div>
+   <div class="card"><div class="card-h"><span class="num">2</span><h3>${esc(pj)}, in depth</h3></div><p class="card-sub">Each initiative shows the evidence beside its resourcing assessment: plan FTE by quarter, ${esc(T.tracker)} epics, commitments, dependencies and any proxy.</p>
      <div class="twocol">${PILOT.map(stratDepth).join("")}</div></div>
    <div class="card" id="impact">${impactHtml()}</div>
-   <div class="card olist"><div class="card-h"><h3>Other decisions waiting</h3></div><p class="card-sub" style="margin-left:0">Recorded in Airtable. Each opens here once it has a pilot question and the evidence to judge it.</p>
-     ${OTHER_DECISIONS.map(d=>`<div class="row"><span><span class="mono muted">${d.id}</span> · ${esc(d.t)}</span><span class="muted">Proposed · ${d.owner} · due ${d.due}</span></div>`).join("")}</div>
+   <div class="card olist"><div class="card-h"><h3>Other decisions waiting</h3></div><p class="card-sub" style="margin-left:0">Recorded in ${esc(T.source)}. Each opens here once it has a pilot question and the evidence to judge it.</p>
+     ${OTHER_DECISIONS.map(d=>`<div class="row"><span><span class="mono muted">${esc(d.id)}</span> · ${esc(d.t)}</span><span class="muted">Proposed · ${esc(d.owner)} · due ${esc(d.due)}</span></div>`).join("")}</div>
   </div>`;
 }
 function stratDepth(sid){
-  const s=SBY[sid], its=initsOf(sid), fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avg27(i),0));
-  const grp=[...s.opps.map(o=>[o,its.filter(i=>i.opp===o.id)]),[null,its.filter(i=>!i.opp)]];
-  return `<div class="scol"><div class="label">${sid}</div><h4>${s.name}</h4><small class="muted">Q3 quarterly review ${ST_LABEL[s.status]} · stated ${s.stated} FTE · in initiatives ${fmt(fte)} · ${plural(s.goals.length,"goal")} · ${s.opps.length} opportunities (proposed)</small>
-   <div class="proxy">${(s.proxies||[]).map(p=>`<div><span class="pill soft">Proxy · ${p[0]}</span> <b>${p[1]}:</b> ${p[2]}${p[3]?`<small>${p[3]}</small>`:""}<small>Indicative</small></div>`).join("")}</div>
-   ${grp.map(([o,list])=>`<div class="ogh">${o?`<div class="label">Opportunity ${o.id} <span class="pill soft">Proposed</span> <span style="text-transform:none;letter-spacing:0;font-weight:400">${o.goal?"under goal "+o.goal:"under the strategy (no goal yet)"}</span></div><b>${esc(o.name)}</b><small class="muted">Indicative description of this item.</small>`:`<div class="label">Linked straight to the strategy</div><b>Work with no opportunity yet</b>`}</div>
+  const s=SBY[sid], its=initsOf(sid), fte=r1(its.filter(i=>i.funded).reduce((a,i)=>a+avgS(i,sid),0));
+  const grp=[...s.opps.map(o=>[o,its.filter(i=>linksIn(i,sid).some(l=>l.opp===o.id))]),[null,its.filter(i=>!linksIn(i,sid).some(l=>l.opp))]];
+  return `<div class="scol"><div class="label">${sid}</div><h4>${esc(s.name)}</h4><small class="muted">${T.review} ${ST_LABEL[s.status]} · stated ${s.stated} FTE · in initiatives ${fmt(fte)} · ${plural(s.goals.length,"goal")} · ${s.opps.length} opportunities (proposed)</small>
+   <div class="proxy">${(s.proxies||[]).map(p=>`<div><span class="pill soft">Proxy · ${esc(p[0])}</span> <b>${esc(p[1])}:</b> ${esc(p[2])}${p[3]?`<small>${esc(p[3])}</small>`:""}<small>Indicative</small></div>`).join("")}</div>
+   ${grp.map(([o,list])=>`<div class="ogh">${o?`<div class="label">Opportunity ${esc(o.id)} <span class="pill soft">Proposed</span> <span style="text-transform:none;letter-spacing:0;font-weight:400">${o.goal?"under goal "+o.goal:"under the strategy (no goal yet)"}</span></div><b>${esc(o.name)}</b><small class="muted">Indicative description of this item.</small>`:`<div class="label">Linked straight to the strategy</div><b>Work with no opportunity yet</b>`}</div>
      ${list.length?list.map(iniRow).join(""):`<p class="hint">No initiative serves this opportunity yet.</p>`}`).join("")}</div>`;
 }
 function iniRow(i){
   const ch=state.choice[i.id]||"continue", j=i.jira;
-  const jira=j?`Jira ${j.open} open, <span class="amb">${j.unsized} unsized</span>${j.past?`, <span class="amb">${j.past} past target date</span>`:""}`:`<span class="pill dash">No epic linked</span>`;
-  return `<div class="ini${ch!=="continue"?" changed":""}"><button class="lnk nm" type="button" data-rec="i:${i.id}">${esc(i.name)}</button>
-   <select data-choice="${i.id}" aria-label="Decision for ${esc(i.name)}">${CHOICES.map(c=>`<option value="${c[0]}"${c[0]===ch?" selected":""}>${c[1]}</option>`).join("")}</select>
-   <div class="ln">${i.funded?"Funded":'<span class="vio">Unfunded</span>'} · ${fmt(avg27(i))} FTE avg 2027 <span class="pill ${i.disc?"":"out"}">${i.disc?"Discretionary":"Non-discretionary"} (suggested)</span> · not ranked</div>
+  const jira=j?`${esc(T.tracker)} ${j.open} open, <span class="amb">${j.unsized} unsized</span>${j.past?`, <span class="amb">${j.past} past target date</span>`:""}`:`<span class="pill dash">No epic linked</span>`;
+  return `<div class="ini${ch!=="continue"?" changed":""}"><button class="lnk nm" type="button" data-rec="i:${esc(i.id)}">${esc(i.name)}</button>
+   <select data-choice="${esc(i.id)}" aria-label="Decision for ${esc(i.name)}">${CHOICES.map(c=>`<option value="${c[0]}"${c[0]===ch?" selected":""}>${c[1]}</option>`).join("")}</select>
+   <div class="ln">${i.funded?"Funded":'<span class="vio">Unfunded</span>'} · ${fmt(avgH(i))} FTE avg ${esc(HZ.label)} <span class="pill ${i.disc?"":"out"}">${i.disc?"Discretionary":"Non-discretionary"} (suggested)</span> · not ranked</div>
    <div class="ln"><span class="pill box">Resourcing not assessed</span> FTE ${i.q.map(fmt).join(" / ")} · ${jira}</div>
    ${i.com||i.capSens?`<div class="ln">${i.com?`${plural(i.com,"commitment")}${i.comRisk?` <span class="amb">at risk</span>`:""}`:""}${i.capSens?` <span class="pill soft">Proxy · Low</span> Capacity-sensitive: Indicative`:""}</div>`:""}</div>`;
 }
 function impactHtml(){
-  const ch=INITS.filter(i=>PILOT.includes(i.strat)&&(state.choice[i.id]||"continue")!=="continue");
+  const ch=INITS.filter(i=>i.links.some(l=>PILOT.includes(l.strat))&&(state.choice[i.id]||"continue")!=="continue");
   const head=`<div class="card-h"><span class="num">3</span><h3>What your choices change</h3></div>`;
   if(!ch.length)return head+`<p class="card-sub">Set Reduce, Pause or Stop on any initiative above to see what moves. Nothing is saved.</p>`;
-  const freed=sid=>r1(ch.filter(i=>i.strat===sid&&i.funded).reduce((a,i)=>a+avg27(i)*(1-chf(i)),0));
+  const freed=sid=>r1(ch.filter(i=>inStrat(i,sid)&&i.funded).reduce((a,i)=>a+avgS(i,sid)*(1-chf(i)),0));
   const risk=ch.reduce((a,i)=>a+i.com,0), nd=ch.filter(i=>!i.disc), miss=ch.filter(i=>!i.jira||i.jira.unsized).length;
   return head+`<p class="card-sub">${plural(ch.length,"initiative")} changed. Nothing is saved. <button class="btn sm" type="button" id="resetCh">Reset</button></p>
-   <div class="impact">${PILOT.map(sid=>`<div class="tile"><b>${fmt(freed(sid))} FTE</b><span>released from ${SBY[sid].name} (2027 average). ${SBY[sid].name} states ${SBY[sid].stated} FTE.</span></div>`).join("")}
+   <div class="impact">${PILOT.map(sid=>`<div class="tile"><b>${fmt(freed(sid))} FTE</b><span>released from ${SBY[sid].name} (${esc(HZ.label)} average). ${SBY[sid].name} states ${SBY[sid].stated} FTE.</span></div>`).join("")}
     <div class="tile${risk?" att":""}"><b>${risk}</b><span>${risk===1?"commitment":"commitments"} put at risk</span></div>
     <div class="tile${nd.length?" att":""}"><b>${nd.length}</b><span>non-discretionary ${nd.length===1?"initiative":"initiatives"} touched: ask for the reason first</span></div>
     <div class="tile att"><b>${miss} of ${ch.length}</b><span>changed initiatives have no sized epic, so the effect on dates can’t be shown</span></div></div>`;
@@ -653,45 +756,77 @@ function impactHtml(){
 /* ---------- open questions & review ---------- */
 function vQuestions(){
   const qs=state.allQ?QUESTIONS:QUESTIONS.slice(0,6);
-  return `<div class="wrap view"><h2>Open questions</h2><p class="lede">Questions the evidence raises that nobody has answered yet, each with a suggested decision maker. A question that needs a call becomes a decision in Airtable.</p>
-   <div class="notes">${qs.map(q=>`<article class="note"><div class="k"><span>${q.id}</span><span style="font-family:var(--font-body)">${q.cat}</span></div><h3>${esc(q.t)}</h3><p>${esc(q.why)}</p><small>Suggested decision maker <b>${q.dm}</b></small></article>`).join("")}</div>
+  return `<div class="wrap view"><h2>Open questions</h2><p class="lede">Questions the evidence raises that nobody has answered yet, each with a suggested decision maker. A question that needs a call becomes a decision in ${esc(T.source)}.</p>
+   <div class="notes">${qs.map(q=>`<article class="note"><div class="k"><span>${esc(q.id)}</span><span style="font-family:var(--font-body)">${esc(q.cat)}</span></div><h3>${esc(q.t)}</h3><p>${esc(q.why)}</p><small>Suggested decision maker <b>${esc(q.dm)}</b></small></article>`).join("")}</div>
    <div style="margin-top:16px"><button class="btn" type="button" id="allQ">${state.allQ?"Show fewer":"Show all "+QUESTIONS.length+" questions"}</button></div></div>`;
 }
+function rvRows(){
+  const rows=[], pill=k=>`<span class="pill amber"><i class="dot"></i>${esc(k)}</span>`;
+  CHANGES.forEach(c=>rows.push({k:"Change",s:`change ${c.n} ${c.k} indicative update`,h:`<div class="qitem"><div><div class="m">${pill(c.k)}<span class="mono">${c.d}</span><span>${c.rev?"Review "+c.rev:"Review owner not recorded"}</span></div><b>Change ${c.n}: an indicative update</b><div class="diff"><del>Indicative earlier state.</del> → <ins>Indicative new state.</ins></div></div><button class="btn sm" type="button" data-goto="decisions">See in Decisions</button></div>`}));
+  CLAIMDOCS.forEach(d=>rows.push({k:"Claims",s:`source document ${d.id} ${d.kind} claims`,h:`<div class="qitem"><div><div class="m"><span class="pill"><i class="dot"></i>Claims</span><span>${esc(d.kind)}</span></div><b>Source document ${esc(d.id)} (indicative)</b><div class="muted" style="font-size:12.5px">${d.n} claims Proposed${d.conflicts?`, <span class="red">${d.conflicts} conflict with the record</span>`:""}</div></div><button class="btn sm" type="button" data-claims="${esc(d.id)}">See claims</button></div>`}));
+  const item=(r,flagged)=>{const od=overdueOf(r.x);return {od:od.length>0,k:r.kind,s:(r.x.name+" "+r.x.id+" "+r.kind+" "+flagsOf(r.x).map(f=>FLAG_LABEL[f]||f).join(" ")).toLowerCase(),h:`<div class="qitem"><div><div class="m">${flagged?`<span class="pill amber"><i class="dot"></i>${esc(r.kind)}</span>`:`<span class="pill dash">${esc(r.kind)}</span>`}<span>${r.x.conf?esc(r.x.conf)+" confidence":""}</span><span>${flagged?flagsOf(r.x).map(k=>esc(FLAG_LABEL[k]||k)).join(", "):"Not flagged by the import"}</span>${od.length?`<span class="pill box">Challenge overdue ${od[0].d} days</span><span>${esc(escLine(r.rid))}</span>`:""}</div><b>${esc(r.x.name)}</b>${(r.x.alternatives||[]).length?`<div class="muted" style="font-size:12.5px">Other values found: ${(r.x.alternatives||[]).map(a=>esc(a.value)+(a.source?" ("+esc(a.source)+")":"")).join("; ")}</div>`:""}</div><button class="btn sm" type="button" data-rec="${esc(r.rid)}">Open and review</button></div>`}};
+  flaggedNow().sort((a,b)=>overdueOf(b.x).length-overdueOf(a.x).length).forEach(r=>rows.push(item(r,true)));
+  DATACHECKS.forEach(m=>{const mm=/^Initiative (.+?)(?::| is )/.exec(m),ini=mm&&INITS.find(i=>i.name==="Initiative "+mm[1]);rows.push({k:"Data check",s:"data check "+String(m).toLowerCase(),h:`<div class="qitem mc"><b>Data check</b><span>${esc(m)}</span><span>${ini?`<button class="btn sm" type="button" data-rec="i:${esc(ini.id)}">Open</button>`:""}</span><span class="muted" style="font-size:12.5px">Found by the page while reading the data. Fix it in the data store.</span></div>`})});
+  modelRules().forEach(r=>rows.push({k:"Model check",s:"model check should not occur "+r.t,h:`<div class="qitem mc"><b>Model check</b><span>${r.items.length} ${esc(r.t)}</span><span><button class="btn sm" type="button" data-mcheck="${r.n}">See ${r.items.length}</button></span><span class="muted" style="font-size:12.5px">This should not occur. Link each one, or remove it, in the data store.</span></div>`}));
+  MODELCHECKS.forEach(m=>rows.push({k:"Model check",s:"model check "+(m.title||m.n),h:`<div class="qitem mc"><b>Model check</b><span>${esc(m.title||"Model check "+m.n)}</span><span></span><span class="muted" style="font-size:12.5px">${esc(m.detail||"Supplied with the data.")}</span></div>`}));
+  if(state.rv.all)unflaggedNow().forEach(r=>rows.push(item(r,false)));
+  return rows.sort((a,b)=>(b.od?1:0)-(a.od?1:0));
+}
 function vReview(){
-  return `<div class="wrap view"><h2>Waiting for review</h2><p class="lede">Changes and source conflicts that need an owner to look at them before they count. Nothing changes the record until an owner accepts it.</p>
-   ${CHANGES.map(c=>`<div class="qitem"><div><div class="m"><span class="pill amber"><i class="dot"></i>${c.k}</span><span class="mono">${c.d}</span><span>${c.rev?"Review "+c.rev:"Review owner not recorded"}</span></div><b>Change ${c.n}: an indicative update</b><div class="diff"><del>Indicative earlier state.</del> → <ins>Indicative new state.</ins></div></div></div>`).join("")}
-   ${CLAIMDOCS.map(d=>`<div class="qitem"><div><div class="m"><span class="pill"><i class="dot"></i>Claims</span><span>${d.kind}</span></div><b>Source document ${d.id} (indicative)</b><div class="muted" style="font-size:12.5px">${d.n} claims Proposed${d.conflicts?`, <span class="red">${d.conflicts} conflict with the record</span>`:""}</div></div><button class="btn sm" type="button" data-claims="${d.id}">See claims</button></div>`).join("")}
-   ${MODELCHECKS.map(m=>`<div class="qitem mc"><b>Model check</b><span>Model-health flag ${m.n}</span><span></span><span class="muted" style="font-size:12.5px">Indicative detail about a gap or inconsistency in the model.</span></div>`).join("")}</div>`;
+  const rv=state.rv, rows=rvRows(), kinds=["Change","Claims","Strategy","Goal","Opportunity","Initiative","Data check","Model check"].filter(k=>rows.some(r=>r.k===k));
+  const nod=rows.filter(r=>r.od).length; if(rv.kind!=="All"&&!kinds.includes(rv.kind)&&!(rv.kind==="Overdue"&&nod))rv.kind="All";
+  const q=rv.q.trim().toLowerCase(), vis=r=>(rv.kind==="All"||(rv.kind==="Overdue"?r.od:r.k===rv.kind))&&(!q||r.s.includes(q)), n=rows.filter(vis).length;
+  const chips=["All",...(nod?["Overdue"]:[]),...kinds].map(k=>`<button class="btn sm" type="button" data-rvkind="${esc(k)}" aria-pressed="${rv.kind===k}">${k==="Overdue"?"Challenges overdue":esc(k)} ${k==="All"?rows.length:k==="Overdue"?nod:rows.filter(r=>r.k===k).length}</button>`).join(" ");
+  return `<div class="wrap view"><h2>Waiting for review</h2><p class="lede">Everything the page shows is a best guess from the sources. This list is what needs an owner first: items the import flagged, changes, source documents and data checks. Open an item to mark it reviewed, challenge it, or prefer another value. <b>${UNREVIEWED()} of ${ITEMS.length}</b> strategies, goals, opportunities and initiatives have not yet been reviewed by an owner.</p>
+   <div class="legend" role="group" aria-label="Filter by type">${chips}</div>
+   <div class="rvtools"><label class="sr" for="rvSearch">Search this list</label><input id="rvSearch" type="search" placeholder="Search by name, ID or reason" value="${esc(rv.q)}"><label><input type="checkbox" id="rvAll"${rv.all?" checked":""}> Also list unreviewed items the import did not flag (${unflaggedNow().length})</label><span class="muted" id="rvCount" role="status">${plural(n,"item")} shown</span></div>
+   ${rows.map(r=>r.h.replace(/^<div class="qitem/,`<div data-s="${esc(r.s)}" data-k="${esc(r.k)}"${r.od?' data-od="1"':""}${vis(r)?"":" hidden"} class="qitem`)).join("")}</div>`;
 }
 
 /* ---------- drawer ---------- */
+function setModal(on){["#main","header.top",".credits","#chat","#chatFab"].forEach(q=>{const e=document.querySelector(q);if(e){if(on)e.setAttribute("inert","");else e.removeAttribute("inert")}})}
 function openDrawer(kicker,title,sub,body,push){
   if(push&&!$("#drawer").hidden)state.drawerStack.push([$("#drKicker").textContent,$("#drTitle").textContent,$("#drSub").innerHTML,$("#drBody").innerHTML]);
   else if(!push)state.drawerStack=[];
+  if($("#drawer").hidden)state.opener=document.activeElement;
   $("#drKicker").textContent=kicker;$("#drTitle").textContent=title;$("#drSub").innerHTML=sub||"";
-  $("#drBody").innerHTML=(state.drawerStack.length?`<button class="btn sm" type="button" id="drBack" style="margin-bottom:8px">‹ Back</button>`:"")+body;
-  $("#drawer").hidden=false;$("#scrim").hidden=false;$("#drClose").focus();
+  $("#drBody").innerHTML=(state.drawerStack.length?`<button class="btn sm" type="button" id="drBack" style="margin-bottom:8px">‹ Back</button>`:"")+body+(state.prov||"");state.prov="";
+  $("#drawer").hidden=false;$("#scrim").hidden=false;setModal(true);$("#drClose").focus();
 }
-function closeDrawer(){$("#drawer").hidden=true;$("#scrim").hidden=true;state.drawerStack=[]}
+function closeDrawer(){
+  const was=!$("#drawer").hidden;
+  $("#drawer").hidden=true;$("#scrim").hidden=true;state.drawerStack=[];setModal(false);
+  if(was){const o=state.opener;state.opener=null;if(o&&document.contains(o)&&o.focus)o.focus({preventScroll:true})}
+}
 const recActions=`<div class="legend" style="margin-top:14px"><button class="btn sm" type="button" data-contrib="1">Contribute</button><button class="btn sm" type="button" data-contrib="1">Challenge</button></div><p class="hint">Contributions go to the owner for review before they change the record.</p>`;
 function openList(q){
-  const [,sid,g,o]=q.split(":"), s=SBY[sid], its=INITS.filter(i=>i.strat===sid&&(i.goal||"none")===g&&(i.opp||"none")===o);
+  const [,sid,g,o]=q.split(":");
+  if(sid==="none"){const its=initsOf(null);return openDrawer(`Initiatives · ${its.length}`,"Not linked to a strategy",`No strategy, goal or opportunity · ${fmt(r1(its.reduce((a,i)=>a+avgH(i),0)))} FTE average in ${esc(HZ.label)}`,[...its].sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`)}
+  if(g==="all"||g==="nogoal"){const s=SBY[sid],its=initsOf(sid).filter(i=>g==="all"||!linksIn(i,sid).some(l=>l.goal));return openDrawer(`Initiatives · ${its.length}`,g==="all"?`All work under ${sid} ${esc(s.name)}`:`${sid}: work with no goal`,`${fmt(r1(its.reduce((a,i)=>a+avgS(i,sid),0)))} FTE average in ${esc(HZ.label)}`,[...its].sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button>${reviewPill(i)}<small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, review or challenge it.</p>`)}
+  const s=SBY[sid], its=INITS.filter(i=>linksIn(i,sid).some(l=>(l.goal||"none")===g&&(l.opp||"none")===o));
   const title=g==="none"&&o==="none"?`${sid}: work with no goal`:o!=="none"?`Opportunity ${o}`:`Goal ${g}`;
-  const sub=`${g==="none"&&o==="none"?`Linked straight to ${sid} ${s.name}`:o!=="none"?`Via proposed opportunity ${o}${g!=="none"?" under goal "+g:""}`:`Under goal ${g}`} · ${fmt(r1(its.reduce((a,i)=>a+avg27(i),0)))} FTE average in 2027`;
-  openDrawer(`Initiatives · ${its.length}`,title,sub,its.sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${i.id}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · Workstream ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`);
+  const sub=`${g==="none"&&o==="none"?`Linked straight to ${sid} ${esc(s.name)}`:o!=="none"?`Via proposed opportunity ${o}${g!=="none"?" under goal "+g:""}`:`Under goal ${g}`} · ${fmt(r1(its.reduce((a,i)=>a+avgS(i,sid),0)))} FTE average in ${esc(HZ.label)}`;
+  openDrawer(`Initiatives · ${its.length}`,title,sub,its.sort((a,b)=>b.fte-a.fte).map(i=>`<div class="li"><button class="lnk" type="button" data-rec="i:${esc(i.id)}" data-push="1">${esc(i.name)}</button><small>${i.funded?"Funded":"Unfunded"} · ${fmt(i.fte)} FTE · ${esc(T.workstream)} ${i.ws}</small></div>`).join("")+`<p class="hint">Click an initiative to open its record, contribute or challenge it.</p>`);
+}
+function linksHtml(i){
+  if(!i.links.length)return "Not linked to a strategy";
+  const ss=strOf(i);
+  return i.links.map(l=>`${esc(l.strat+" "+((SBY[l.strat]||{}).name||""))} · ${l.goal?"goal "+esc(l.goal):"no goal yet"}${l.opp?" · opportunity "+esc(l.opp)+" (proposed)":""}`).join("<br>")+(ss.length>1?`<br><span class="muted">FTE split: ${ss.map(x=>esc(x)+" "+Math.round(100*sh(i,x))+"%").join(", ")}</span>`:"");
 }
 function openRec(id,push){
+  { const [k0,a0,b0]=id.split(":"); const xx=k0==="s"&&a0!=="none"?SBY[a0]:k0==="g"?GBY[b0]:k0==="p"?OBY[a0]:k0==="i"?INITS.find(x=>x.id===a0):null; state.prov=provHtml(xx,xx?id:null); }
   const [k,a,b]=id.split(":");
   if(id==="vision")return openDrawer("North Star · Org vision",VISION,"Owner: Org leadership · source: Org strategy (indicative)",`<p>The Org vision is the outcome the organisation exists to create. It is not yet measured, so the North Star level shows as not assessed.</p>`+recActions,push);
   if(k==="o"){const o=OBJECTIVES.find(x=>x.id===a),ss=STRATS.filter(s=>s.objs.includes(a));return openDrawer("Org objective · "+a,o.name,"Indicative description of this objective.",`<dl class="rec"><dt>Team strategies</dt><dd>${ss.map(s=>s.id+" "+s.name).join(", ")||"None"}</dd><dt>Status</dt><dd>Not assessed</dd></dl>`+recActions,push)}
-  if(k==="s"){const s=SBY[a],its=initsOf(a);return openDrawer("Team strategy · "+a,s.name,`Q3 quarterly review: ${ST_LABEL[s.status]}`,`<dl class="rec"><dt>Serves</dt><dd>${s.objs.join(", ")}</dd><dt>Stated FTE</dt><dd>${s.stated}</dd><dt>FTE in initiatives</dt><dd>${fmt(r1(its.filter(i=>i.funded).reduce((x,i)=>x+avg27(i),0)))} (2027 average, funded)</dd><dt>Goals</dt><dd>${s.goals.map(g=>g.id).join(", ")}</dd><dt>Success measure</dt><dd>${s.success?esc(s.success.m)+" · by "+s.success.by:"Through its goals"}</dd><dt>Initiatives</dt><dd>${its.length} (${its.filter(i=>!i.goal).length} with no goal)</dd></dl>`+recActions,push)}
-  if(k==="g"){const g=GBY[b];return openDrawer("Team goal · "+b,g.name,`Under ${a} ${SBY[a].name}`,`<dl class="rec"><dt>Measured</dt><dd>${g.measured?"Yes, a metric has a current value":"No current value"}</dd><dt>Measures</dt><dd>${g.measures.length?g.measures.map(m=>`${esc(m.m)} (${m.kind}${m.by?", by "+m.by:", no date"})`).join("<br>"):"None recorded"}</dd><dt>Initiatives</dt><dd>${INITS.filter(i=>i.goal===b).length}</dd></dl>`+recActions,push)}
+  if(k==="s"&&a==="none"){const its=initsOf(null);return openDrawer("Unlinked work","Not linked to a strategy","Initiatives with no strategy",`<p>${plural(its.length,"initiative")} ${its.length===1?"has":"have"} no strategy, so ${its.length===1?"it does":"they do"} not trace to a goal or an Org objective. An owner should link each one to a strategy, or confirm it stands alone and say why.</p><dl class="rec"><dt>FTE (${esc(HZ.label)} average)</dt><dd>${fmt(r1(its.reduce((x,i)=>x+avgH(i),0)))}</dd><dt>Unfunded</dt><dd>${its.filter(i=>!i.funded).length}</dd></dl>`+recActions,push)}
+  if(k==="s"){const s=SBY[a],its=initsOf(a);return openDrawer("Team strategy · "+a,s.name,`${T.review}: ${ST_LABEL[s.status]}`,`<dl class="rec"><dt>Serves</dt><dd>${s.objs.join(", ")}</dd><dt>Stated FTE</dt><dd>${s.stated}</dd><dt>FTE in initiatives</dt><dd>${fmt(r1(its.filter(i=>i.funded).reduce((x,i)=>x+avgS(i,a),0)))} (${esc(HZ.label)} average, funded)</dd><dt>Goals</dt><dd>${s.goals.map(g=>g.id).join(", ")}</dd><dt>Success measure</dt><dd>${s.success?esc(s.success.m)+(s.success.by?" · by "+s.success.by:" · no date"):"Through its goals"}</dd><dt>Initiatives</dt><dd>${its.length} (${its.filter(i=>!i.goal).length} with no goal)</dd></dl>`+recActions,push)}
+  if(k==="g"){const g=GBY[b];return openDrawer("Team goal · "+b,g.name,`Under ${a} ${SBY[a].name}`,`<dl class="rec"><dt>Measured</dt><dd>${g.measured?"Yes, a metric has a current value":"No current value"}</dd><dt>Measures</dt><dd>${g.measures.length?g.measures.map(m=>`${esc(m.m)} (${esc(m.kind)}${m.by?", by "+m.by:", no date"})`).join("<br>"):"None recorded"}</dd><dt>Initiatives</dt><dd>${INITS.filter(i=>i.links.some(l=>l.goal===b)).length}</dd></dl>`+recActions,push)}
   if(k==="p"){const o=OBY[a];return openDrawer("Opportunity · Proposed",o.name,`${o.goal?"Under goal "+o.goal:"Under "+o.strat+" (no goal yet)"}`,`<p>Indicative description of this item. Opportunities are proposed until an owner accepts, rewords or rejects them.</p>`+recActions,push)}
-  if(k==="i"){const i=INITS.find(x=>x.id===a);return openDrawer("Initiative",i.name,`${i.funded?"Funded":"Unfunded"} · Workstream ${i.ws}`,`<dl class="rec"><dt>Strategy</dt><dd>${i.strat?i.strat+" "+SBY[i.strat].name:"Not linked"}</dd><dt>Goal</dt><dd>${i.goal||"No goal yet"}</dd><dt>Opportunity</dt><dd>${i.opp?i.opp+" (proposed)":"None"}</dd><dt>FTE by quarter</dt><dd class="mono">${Q.map((q,n)=>q+" "+fmt(i.q[n])).join(" · ")}</dd><dt>Beneficiary</dt><dd>${i.benef}</dd><dt>Discretion</dt><dd>${i.disc?"Discretionary":"Non-discretionary"} (suggested by rule)</dd><dt>Jira</dt><dd>${i.jira?`${i.jira.open} open epics, ${i.jira.unsized} unsized`:"No epic linked"}</dd><dt>Commitments</dt><dd>${i.com?i.com+(i.comRisk?" (at risk)":""):"None recorded"}</dd></dl>`+recActions,push)}
+  if(k==="i"){const i=INITS.find(x=>x.id===a);return openDrawer("Initiative",i.name,`${i.funded?"Funded":"Unfunded"} · ${esc(T.workstream)} ${i.ws}`,`<dl class="rec"><dt>Serves</dt><dd>${linksHtml(i)}</dd><dt>FTE by quarter</dt><dd class="mono">${Q.map((q,n)=>q+" "+fmt(i.q[n])).join(" · ")}</dd><dt>Beneficiary</dt><dd>${esc(i.benef)}</dd><dt>Discretion</dt><dd>${i.disc?"Discretionary":"Non-discretionary"} (suggested by rule)</dd><dt>${esc(T.tracker)}</dt><dd>${i.jira?`${i.jira.open} open epics, ${i.jira.unsized} unsized`:"No epic linked"}</dd><dt>Commitments</dt><dd>${i.com?i.com+(i.comRisk?" (at risk)":""):"None recorded"}</dd></dl>`+recActions,push)}
 }
 function openClaims(d){
   const doc=CLAIMDOCS.find(x=>x.id===d);
-  openDrawer(`Claims · ${doc.n}`,`Source document ${d} (indicative)`,`${doc.kind} · ${doc.n} claims Proposed`,[...Array(doc.n)].map((_,k)=>`<div class="li"><b>Claim ${d}${k+1}: an indicative statement from the source</b><small>${k<doc.conflicts?'<span class="red">Conflicts with the record:</span> the record says something different':"Proposed · matches nothing in the record yet"}</small></div>`).join("")+`<p class="hint">An owner accepts or rejects each claim. Accepted claims update the record and are logged.</p>`);
+  openDrawer(`Claims · ${doc.n}`,`Source document ${d} (indicative)`,`${esc(doc.kind)} · ${doc.n} claims Proposed`,[...Array(doc.n)].map((_,k)=>`<div class="li"><b>Claim ${d}${k+1}: an indicative statement from the source</b><small>${k<doc.conflicts?'<span class="red">Conflicts with the record:</span> the record says something different':"Proposed · matches nothing in the record yet"}</small></div>`).join("")+`<p class="hint">An owner accepts or rejects each claim. Accepted claims update the record and are logged.</p>`);
 }
 
 /* ---------- flock ---------- */
@@ -703,14 +838,14 @@ function initFlock(){
   const N=230,B=[]; for(let i=0;i<N;i++)B.push({x:W*.4+Math.random()*W*.2,y:H*.5+(Math.random()-.5)*H*.5,vx:1+Math.random(),vy:Math.random()-.5,p:Math.random()*6.28,g:Math.random()<.52?0:1,sp:.8+Math.random()*.4,wa:Math.random()*6.28});
   let t=0,color="#111"; const cvar=SK.colorVar||"--fg"; let SX=W-90,SY=56;
   const locStar=()=>{const s=document.querySelector(".starbig");if(!s)return;const r=s.getBoundingClientRect(),c=cv.getBoundingClientRect();SX=r.left+r.width/2-c.left;SY=r.top+r.height/2-c.top};locStar();
-  window.onresize=()=>{size();locStar();if(state.view==="strategy")drawWires()};
+  window.onresize=()=>{size();locStar()};
   function step(){t++;
     const coh=.0006+.0078*score*score+.002*score, ali=.004+.085*score, sep=.55, wander=.2+.75*(1-score), pull=.0005+.0019*score;
     const lean=-.30+1.0*score, px=W*.45+Math.sin(t/310)*W*.15, py=H*.58+Math.sin(t/190+1)*H*.18;
     const ax=Math.max(W*.08,Math.min(W*.94,px+lean*(SX-px))), ay=Math.max(H*.1,Math.min(H*.85,py+lean*(SY-py)));
     const sw=Math.max(0,Math.sin(t/420)), split=Math.pow(sw,3)*.17*(.4+.6*score), bx=ax+Math.cos(t/520)*W*split, by=ay+Math.sin(t/520)*H*split*1.6, spd=1.4+.5*score;
-    for(const b of B){const ds=[];for(const o of B){if(o===b)continue;const dx=o.x-b.x,dy=o.y-b.y;ds.push([dx*dx+dy*dy,o])}ds.sort((p,q)=>p[0]-q[0]);
-      let cx=0,cy=0,vx=0,vy=0,sx=0,sy=0;for(let i=0;i<7;i++){const[d,o]=ds[i];cx+=o.x;cy+=o.y;vx+=o.vx;vy+=o.vy;if(d<300){const f=1-d/300;sx+=(b.x-o.x)*f;sy+=(b.y-o.y)*f}}
+    for(const b of B){const nd=[1e18,1e18,1e18,1e18,1e18,1e18,1e18],no=[null,null,null,null,null,null,null];for(const o of B){if(o===b)continue;const dx=o.x-b.x,dy=o.y-b.y,d=dx*dx+dy*dy;if(d<nd[6]){let j=6;while(j>0&&nd[j-1]>d){nd[j]=nd[j-1];no[j]=no[j-1];j--}nd[j]=d;no[j]=o}}
+      let cx=0,cy=0,vx=0,vy=0,sx=0,sy=0;for(let i=0;i<7;i++){const d=nd[i],o=no[i];cx+=o.x;cy+=o.y;vx+=o.vx;vy+=o.vy;if(d<300){const f=1-d/300;sx+=(b.x-o.x)*f;sy+=(b.y-o.y)*f}}
       cx/=7;cy/=7;vx/=7;vy/=7;b.vx+=(cx-b.x)*coh+(vx-b.vx)*ali+sx*sep*.012;b.vy+=(cy-b.y)*coh+(vy-b.vy)*ali+sy*sep*.012;
       const tx=b.g?bx:ax,ty=b.g?by:ay;b.vx+=(tx-b.x)*pull;b.vy+=(ty-b.y)*pull;b.wa+=(Math.random()-.5)*.25;b.vx+=Math.cos(b.wa)*wander*.1;b.vy+=Math.sin(b.wa)*wander*.1;
       const m=46;if(b.x<m)b.vx+=.24*(m-b.x)/m;if(b.x>W-26)b.vx-=.24*(b.x-(W-26))/m;if(b.y<m)b.vy+=.24*(m-b.y)/m;if(b.y>H-m-24)b.vy-=.24*(b.y-(H-m-24))/m;
@@ -719,25 +854,48 @@ function initFlock(){
   function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle=color;ctx.globalAlpha=SK.alpha||.85;
     for(const b of B){const a=Math.atan2(b.vy,b.vx),f=.55+.45*Math.sin(t*.35+b.p);ctx.save();ctx.translate(b.x,b.y);ctx.rotate(a);ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-4,-3.4*f);ctx.lineTo(-2,0);ctx.lineTo(-4,3.4*f);ctx.closePath();ctx.fill();ctx.restore()}ctx.globalAlpha=1}
   const getC=()=>getComputedStyle(document.documentElement).getPropertyValue(cvar).trim()||color;
-  function loop(){if(run!==flockRun||!document.body.contains(cv))return;if(t%45===0)color=getC();step();draw();requestAnimationFrame(loop)}
+  function loop(){if(run!==flockRun||!document.body.contains(cv))return;if(t%45===0)color=getC();if(!state.flockPaused)step();draw();requestAnimationFrame(loop)}
   color=getC(); if(reduce){for(let i=0;i<500;i++)step();draw()}else loop();
 }
 
 /* ---------- routing and events ---------- */
 const RENDER={overview:vOverview,strategy:vStrategy,work:vWork,decisions:vDecisions,questions:vQuestions,review:vReview};
+const FKEYS=["data-toggle","data-wopen","data-wview","data-wlevel","data-wgrp","data-choice","data-list","data-rec","data-node","data-rvkind"];
+function focusKey(el){
+  if(!el||!el.closest||!el.closest("#main"))return null;
+  for(const k of FKEYS){const h=el.closest("["+k+"]");if(h&&el.closest("#main"))return "["+k+'="'+String(h.getAttribute(k)).replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'"]'}
+  const id=el.closest("#resBtn,#ndBtn,#allQ,#expandAll,#resetCh,#rvAll");return id?"#"+id.id:null;
+}
+function annotate(){
+  document.querySelectorAll(".board [data-node]").forEach(e=>{e.setAttribute("role","group");e.setAttribute("aria-label",e.textContent.replace(/\s+/g," ").trim().slice(0,140));if(e.dataset.node===state.sel)e.setAttribute("aria-current","true")});
+  document.querySelectorAll("#main .ib[title],#main .dia[title],#main .mini[title]").forEach(e=>{e.setAttribute("role","img");e.setAttribute("aria-label",e.getAttribute("title"))});
+}
 function render(keepScroll){
-  const y=scrollY; renderHeader(); $("#main").innerHTML=RENDER[state.view]();
+  const y=scrollY, fk=keepScroll?focusKey(document.activeElement):null; renderHeader(); $("#main").innerHTML=RENDER[state.view]();
   if(state.view==="overview")initFlock(); else flockRun++;
-  if(state.view==="strategy")requestAnimationFrame(drawWires);
+  if(state.view==="strategy"){
+    if(state.sel&&![...document.querySelectorAll(".board [data-node]")].some(e=>e.dataset.node===state.sel)){state.sel=null;return render(keepScroll)}
+    requestAnimationFrame(drawWires)}
+  annotate();
+  if(fk){try{const el=document.querySelector("#main "+fk)||document.querySelector(fk);if(el&&el.focus)el.focus({preventScroll:true})}catch(_){}}
   if(keepScroll)scrollTo(0,y);
 }
-function route(){const h=location.hash.slice(1);const v=RENDER[h]?h:"overview";const changed=v!==state.view;state.view=v;if(changed)closeDrawer();render(!changed);if(changed)scrollTo(0,0)}
+function route(){const h=location.hash.slice(1);const v=RENDER[h]?h:"overview";const changed=v!==state.view;state.view=v;if(changed)closeDrawer();render(!changed);if(changed){scrollTo(0,0);const l=VIEWS.find(x=>x[0]===v);$("#live").textContent=l?l[1]+" view":""}}
 addEventListener("hashchange",route);
+addEventListener("resize",()=>{if(state.view==="strategy")drawWires()});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(state.view==="strategy")drawWires()});
 document.addEventListener("click",e=>{
   const t=e.target;
   if(t.closest("#drClose")||t.closest("#scrim"))return closeDrawer();
   if(t.closest("#drBack")){const p=state.drawerStack.pop();$("#drKicker").textContent=p[0];$("#drTitle").textContent=p[1];$("#drSub").innerHTML=p[2];$("#drBody").innerHTML=p[3];return}
-  if(t.closest("#themeBtn")){const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=dark?"light":"dark";if(state.view==="strategy")drawWires();return}
+  if(t.closest("#themeBtn")){const r=document.documentElement;const dark=r.dataset.theme==="dark";r.dataset.theme=dark?"light":"dark";if(state.view==="strategy")drawWires();return}
+  const ra=t.closest("[data-rvact]"); if(ra)return doReview(ra);
+  const rk=t.closest("[data-rvkind]"); if(rk){state.rv.kind=rk.dataset.rvkind;return render(true)}
+  const mc=t.closest("[data-mcheck]"); if(mc){const r=modelRules().find(z=>z.n===Number(mc.dataset.mcheck));if(r)openDrawer("Model check",`${r.items.length} ${r.t}`,"These should not occur. Fix them in the data store, then reload.",r.items.map(i=>`<div class="li"><button class="lnk" type="button" data-rec="${esc(i.rid)}" data-push="1">${esc(i.x.name)}</button>${i.kind?`<small>${esc(i.kind)}</small>`:""}</div>`).join(""));return}
+  const gt=t.closest("[data-goto]"); if(gt){location.hash=gt.dataset.goto;return}
+  if(t.closest("#askTop")||t.closest("#chatFab"))return openChat(true,t.closest("button"));
+  if(t.closest("#chatClose"))return openChat(false);
+  const cc=t.closest("#chatChips .chip"); if(cc)return ask(cc.textContent);
   const rec=t.closest("[data-rec]"); if(rec){e.stopPropagation();return openRec(rec.dataset.rec,!!rec.dataset.push)}
   const ls=t.closest("[data-list]"); if(ls)return openList(ls.dataset.list);
   if(t.closest("[data-contrib]"))return toast("Prototype: nothing is saved. In a live build this goes to the owner for review.");
@@ -748,6 +906,7 @@ document.addEventListener("click",e=>{
   const wl=t.closest("[data-wlevel]"); if(wl){state.work.level=wl.dataset.wlevel;state.work.open={};return render(true)}
   const wo=t.closest("[data-wopen]"); if(wo){const id=wo.dataset.wopen;if(state.work.level!=="strategies"){state.work.level="strategies";state.work.open={};STRATS.forEach(s=>{if(s.id!==id)state.work.open[s.id]=true})}else state.work.open[id]=!state.work.open[id];return render(true)}
   const wg=t.closest("[data-wgrp]"); if(wg){const k="g"+wg.dataset.wgrp;state.work.open[k]=!state.work.open[k];return render(true)}
+  if(t.closest("#flockPause")){state.flockPaused=!state.flockPaused;const b=$("#flockPause");b.setAttribute("aria-pressed",String(!!state.flockPaused));return}
   if(t.closest("#resBtn")){state.work.research=!state.work.research;return render(true)}
   if(t.closest("#ndBtn")){state.showNonDisc=!state.showNonDisc;return render(true)}
   if(t.closest("#resetCh")){state.choice={};return render(true)}
@@ -756,8 +915,69 @@ document.addEventListener("click",e=>{
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&!$("#drawer").hidden)return closeDrawer();
+  if(e.key==="Escape"&&!$("#chat").hidden)return openChat(false);
+  if(e.key==="Tab"&&!$("#drawer").hidden){const f=[...$("#drawer").querySelectorAll("button,[href],select,input,textarea,[tabindex]:not([tabindex='-1'])")].filter(x=>!x.disabled&&!x.closest("[hidden]"));if(f.length){const first=f[0],last=f[f.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}}
   if((e.key==="Enter"||e.key===" ")&&e.target.matches(".board [data-node]")){e.preventDefault();e.target.click()}
 });
-document.addEventListener("change",e=>{const s=e.target.closest("[data-choice]");if(s){state.choice[s.dataset.choice]=s.value;render(true)}});
+document.addEventListener("input",e=>{if(e.target.id!=="rvSearch")return;state.rv.q=e.target.value;const q=state.rv.q.trim().toLowerCase();let n=0;document.querySelectorAll("#main [data-s]").forEach(r=>{const ok=(state.rv.kind==="All"||(state.rv.kind==="Overdue"?r.dataset.od:r.dataset.k===state.rv.kind))&&(!q||r.dataset.s.includes(q));r.hidden=!ok;if(ok)n++});const c=$("#rvCount");if(c)c.textContent=plural(n,"item")+" shown"});
+document.addEventListener("change",e=>{if(e.target.id==="rvAll"){state.rv.all=e.target.checked;return render(true)}const s=e.target.closest("[data-choice]");if(s){state.choice[s.dataset.choice]=s.value;render(true)}});
+function doReview(btn){
+  const rid=btn.dataset.rid, act=btn.dataset.rvact, role=(($("#rvRole")||{}).value||"").trim(), note=(($("#rvNote")||{}).value||"").trim(), msg=$("#rvMsg");
+  const r=ITEMS.find(z=>z.rid===rid); if(!r)return;
+  if(!role){msg.textContent="Add your role first, so the review can be traced to someone.";$("#rvRole").focus();return}
+  if((act==="challenge"||act==="reject")&&!note){msg.textContent=act==="reject"?"Add the reason you are rejecting this challenge.":"Add a note saying what you would challenge.";$("#rvNote").focus();return}
+  state.role=role;
+  if(act==="accept"||act==="reject"){
+    respondChallenge(rid,Number(btn.dataset.ch),act==="accept"?"accepted":"rejected",role,note);
+    const t2=document.createElement("div");t2.innerHTML=provHtml(r.x,rid);$("#rvwrap").replaceWith(t2.firstElementChild);$("#rvwrap").focus();
+    toast(act==="accept"?"Challenge accepted. The item stays flagged until it is edited and reviewed (sample: kept in this page only)":"Challenge rejected with your reason (sample: kept in this page only)");
+    return render(true);
+  }
+  const val=act==="prefer"?((r.x.alternatives||[])[Number(btn.dataset.val)]||{}).value:null;
+  recordReview(rid,act==="ok"||act==="prefer"?"reviewed":"challenge",role,note,val);
+  const tmp=document.createElement("div");tmp.innerHTML=provHtml(r.x,rid);$("#rvwrap").replaceWith(tmp.firstElementChild);$("#rvwrap").focus();
+  const ev=EVENTS[EVENTS.length-1];
+  toast(act==="challenge"?(ev.notify?`Challenge recorded. A live build would notify ${ev.notify}${ev.notifyVia?" (owner of "+ev.notifyVia+")":""}. Sample: nothing is sent.`:"Challenge recorded. No owner found up the chain, so it stays in the review list only."):"Marked reviewed (sample: kept in this page only)");
+  render(true);
+}
+
+/* ---------- Ask Starling (chat overlay) ---------- */
+const CHATCFG=D.chat||{};
+function chatItems(arr){return arr.map(r=>`<button class="lnk" type="button" data-rec="${esc(r.rid)}">${esc(r.x.name)}</button>`).join("")}
+function chatIntents(){
+  const top=(arr,n)=>arr.slice(0,n);
+  return [
+   {k:["conflict","disagree","contradict","differ"],f:()=>{const c=ITEMS.filter(r=>!r.x.reviewed&&(flagsOf(r.x).includes("conflict")||(r.x.alternatives||[]).length));return{t:c.length?`${plural(c.length,"item")} ${c.length===1?"has":"have"} sources that disagree. ${top(c,3).map(r=>`${r.x.name}: ${(r.x.alternatives||[]).map(a=>a.value+(a.source?" ("+a.source+")":"")).join(" vs ")||"see record"}`).join(". ")}.`:"No unreviewed item currently has conflicting sources.",cites:top(c,5),act:[["Open the review list","#review"]]}}},
+   {k:["overdue","unanswered","escalat","challenge"],f:()=>{const o=ITEMS.filter(r=>overdueOf(r.x).length);return{t:o.length?`${plural(o.length,"item")} ${o.length===1?"has":"have"} a challenge unanswered for more than ${CH_DAYS} days. ${top(o,3).map(r=>r.x.name+": "+escLine(r.rid)).join(" ")}`:`No challenge has been unanswered for more than ${CH_DAYS} days.`,cites:top(o,5),act:[["Open the review list","#review"]]}}},
+   {k:["unlinked","not linked","no strategy","orphan","unaligned","align"],f:()=>{const its=initsOf(null),fte=r1(its.reduce((a,i)=>a+avgH(i),0));return{t:its.length?`${plural(its.length,"initiative")} ${its.length===1?"is":"are"} not linked to a strategy, about ${fmt(fte)} FTE on average in ${HZ.label||"the period"}. Largest: ${top([...its].sort((a,b)=>b.fte-a.fte),3).map(i=>i.name+" ("+fmt(i.fte)+" FTE)").join(", ")}.`:"Every initiative is linked to a strategy.",cites:top([...its].sort((a,b)=>b.fte-a.fte),3).map(i=>ITEMS.find(r=>r.rid==="i:"+i.id)).filter(Boolean),act:[["See it on the Strategy tab","#strategy"]]}}},
+   {k:["no initiative","no work","uncovered","without work","goals"],f:()=>{const g=goalsNoInit();return{t:g.length?`${g.length} of ${GOALS.length} goals have no initiative: ${top(g,8).map(x=>x.id).join(", ")}${g.length>8?", …":""}.`:"Every goal has at least one initiative.",cites:top(g,5).map(x=>ITEMS.find(r=>r.rid==="g:"+x.strat+":"+x.id)).filter(Boolean),act:[["See the Work tab","#work"]]}}},
+   {k:["unfunded"],f:()=>{const u=unfunded();return{t:u.length?`${plural(u.length,"initiative")} ${u.length===1?"is":"are"} unfunded: ${top(u,5).map(i=>i.name).join(", ")}${u.length>5?", …":""}.`:"No initiative is unfunded.",cites:top(u,5).map(i=>ITEMS.find(r=>r.rid==="i:"+i.id)).filter(Boolean),act:[["See the Work tab","#work"]]}}},
+   {k:["fte","coverage","stated","capacity","headcount"],f:()=>{const c=coverage();return{t:`${c.inRec} of ${c.stated} stated strategy FTE${c.pct===null?"":` (${c.pct}%)`} is in recorded, funded initiatives linked to a strategy.`,cites:[],act:[["See the Work tab","#work"]]}}},
+   {k:["owner","who owns","no owner","accountable"],f:()=>{const c=ITEMS.filter(r=>!r.x.reviewed&&flagsOf(r.x).includes("no_owner"));return{t:c.length?`${plural(c.length,"item")} ${c.length===1?"has":"have"} no owner: ${top(c,4).map(r=>r.x.name).join(", ")}${c.length>4?", …":""}.`:"No unreviewed item is flagged as having no owner.",cites:top(c,5),act:[["Open the review list","#review"]]}}},
+   {k:["decision","decide"],f:()=>({t:`${plural(decisionCount(),"decision")} ${decisionCount()===1?"is":"are"} waiting.`,cites:[],act:[["See Decisions","#decisions"]]})},
+   {k:["question","open"],f:()=>({t:`${plural(QUESTIONS.length,"question")} ${QUESTIONS.length===1?"is":"are"} open. ${top(QUESTIONS,3).map(q=>q.t+" (suggested decision maker "+q.dm+")").join(". ")}.`,cites:[],act:[["See open questions","#questions"]]})},
+   {k:["review","flag","unreviewed","trust","confiden","uncertain","check","wrong"],f:()=>{const fl=flaggedNow();return{t:`${fl.length} items are flagged by the import, and ${UNREVIEWED()} of ${ITEMS.length} have not yet been reviewed by an owner.${fl.length?` Flagged: ${top(fl,4).map(r=>r.x.name).join(", ")}${fl.length>4?", …":""}.`:""}`,cites:top(fl,5),act:[["Open the review list","#review"]]}}}
+  ];
+}
+function chatAnswer(q){
+  const l=q.toLowerCase(), has=k=>new RegExp("\\b"+k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).test(l);
+  const own=(CHATCFG.answers||[]).find(c=>(c.k||[]).some(has));
+  let t,cites=[],act=[],basis=true;
+  if(own){t=own.a;cites=(own.cites||[]).map(id=>ITEMS.find(r=>r.rid===id)).filter(Boolean);act=own.act||[]}
+  else{const hit=chatIntents().find(c=>c.k.some(has));
+    if(hit){const r=hit.f();t=r.t;cites=r.cites||[];act=r.act||[]}
+    else{t="I can’t find that in the data on this page. In this sample I can answer about review and flags, conflicting sources, unlinked work, goals with no initiative, unfunded work, FTE coverage, owners, decisions and open questions.";basis=false}}
+  return `${esc(t)}${cites.length?`<div class="cites">${chatItems(cites)}</div>`:""}${act.length?`<div class="cites">${act.map(a=>`<a href="${esc(a[1])}" data-closechat>${esc(a[0])}</a>`).join("")}</div>`:""}${basis?`<div class="basis">Based on best guesses: ${UNREVIEWED()} of ${ITEMS.length} items are not yet reviewed.</div>`:""}`;
+}
+function chatMsg(cls,html){const d=document.createElement("div");d.className="msg "+cls;d.innerHTML=html;$("#chatMsgs").appendChild(d);$("#chatMsgs").scrollTop=$("#chatMsgs").scrollHeight}
+function ask(q){chatMsg("u",esc(q));setTimeout(()=>chatMsg("a",chatAnswer(q)),200)}
+function openChat(o,from){
+  $("#chat").hidden=!o;$("#chatFab").hidden=o;$("#chatFab").setAttribute("aria-expanded",o);$("#askTop").setAttribute("aria-expanded",o);
+  if(o){state.chatOpener=from||document.activeElement;$("#chatIn").focus()}else{const f=state.chatOpener;state.chatOpener=null;const el=f&&f.isConnected&&!f.hidden?f:$("#askTop");if(el)el.focus()}
+}
+document.addEventListener("click",e=>{const c=e.target.closest("[data-closechat]");if(c)openChat(false)});
+$("#chatForm").onsubmit=e=>{e.preventDefault();const v=$("#chatIn").value.trim();if(!v)return;$("#chatIn").value="";ask(v)};
+chatMsg("a",esc(CHATCFG.intro||"Ask what needs review, where sources disagree, what work is unlinked, or what decision is next. I answer from the data on this page and say how much of it is unreviewed."));
+$("#chatChips").innerHTML=(CHATCFG.chips||["What needs review?","Where do sources disagree?","What work is unlinked?","Which goals have no initiative?","What is open?"]).map(c=>`<button class="chip" type="button">${esc(c)}</button>`).join("");
 route();
 </script>

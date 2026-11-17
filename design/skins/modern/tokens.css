@@ -14,14 +14,6 @@
   --wire:#c9c9c9; --wire-on:#111111;
   --font-display:"Geist",system-ui,sans-serif; --font-body:"Geist",system-ui,sans-serif; --font-mono:"Geist Mono",ui-monospace,monospace; --font-hand:"Caveat","Comic Sans MS",cursive;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0d0d0d; --surface:#161616; --surface2:#1e1e1e; --fg:#f5f5f5; --muted:#a3a3a3; --line:#2a2a2a;
-  --accent:#F9AE21; --accent-fg:#111111; --accent-soft:#2f2610;
-  --ok:#4ade80; --ok-soft:#10301d; --warn:#fbbf24; --warn-line:#d99a12; --warn-soft:#352706; --bad:#f87171; --bad-soft:#3a1717; --hyp:#c9c9c9; --hyp-soft:#2a2a2a;
-  --violet:#a994ff; --violet-soft:#241d40;
-  --col-goal:#1b1e22; --col-opp:#1e1c24; --col-init:#1a211c;
-  --bar-dark:#f0f0f0; --bar-dark-fg:#111111; --track:#2a2a2a;
-  --g-res:#7a7a7a; --wire:#3a3a3a; --wire-on:#f5f5f5; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0d0d0d; --surface:#161616; --surface2:#1e1e1e; --fg:#f5f5f5; --muted:#a3a3a3; --line:#2a2a2a;
   --accent:#F9AE21; --accent-fg:#111111; --accent-soft:#2f2610;

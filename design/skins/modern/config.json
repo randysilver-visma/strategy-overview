@@ -1,6 +1,7 @@
 {
+  "product": "Strategy Mirror",
   "title_tag": "Strategy Mirror",
-  "logo": false,
+  "logo": true,
   "broughtBy": "Brought to you by",
   "birds": "chevron",
   "dotR": 2,

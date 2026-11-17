@@ -30,9 +30,9 @@ Build: `python design/build.py`. For hosts that add their own page skeleton: `py
 | --- | --- | --- |
 | modern | Neutral canvas in Out of Owls brand colours, large type, tabbed views, post-it questions, gradient green-amber-red level bars, violet for unfunded work, star-dotted wordmark with a tagline, soft tonal-wash background, North Star top right. The header logo is off (`logo: false`). | Chevron birds, no trails |
 
-Three further skins (starling, corporate, arcade) were tried and dropped. The playful `starling` skin (grid paper, navy and yellow, sticky notes) was removed for e-conomic and can be recovered from git history.
+Three further skins (starling, corporate, arcade) were tried and dropped. The playful `starling` skin (grid paper, navy and yellow, sticky notes) was removed in favour of a single look.
 
-`config.json` options: `title_tag`, `wordmark` (star-dotted "i"), `tagline`, `logo` (true shows the logo from `design/assets` with the `broughtBy` text), `broughtBy`, `starLabel`, `birds` (`chevron` is the one drawn), `alpha`, `colorVar`.
+`config.json` options: `product` (the product name shown in the wordmark, title and "Ask" buttons; default Starling), `title_tag`, `wordmark` (star-dotted "i"), `tagline`, `logo` (true shows the logo from `design/assets` with the `broughtBy` text), `broughtBy`, `starLabel`, `birds` (`chevron` is the one drawn), `alpha`, `colorVar`.
 
 ## Adding a skin
 
